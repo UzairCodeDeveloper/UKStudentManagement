@@ -1,0 +1,64 @@
+.classContainer {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin-top: 45px;
+}
+
+.classBox {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 500px; /* Fixed width for the class box */
+    max-width: 100%; /* Responsive on smaller screens */
+    text-align: center;
+}
+
+.AddClassFormGroup{
+    margin: 30px 0px;
+}
+
+.submit-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 15px; /* Inner spacing */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition for hover */
+}
+
+.submit-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+
+  
+  .checkbox-item {
+    margin: 5px 5px;
+  }
+  
+  .btn-check {
+    display: none; /* Hide the default checkbox */
+  }
+  
+  .btn-outline-primary {
+    border: 2px solid #7b5fed; /* Set border color */
+    color: #7b5fed; /* Set text color */
+    background-color: white; /* Set background color */
+    padding: 5px 10px; /* Add some padding */
+    cursor: pointer; /* Change cursor to pointer */
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #7b5fed; /* Change background on hover */
+    color: white; /* Change text color on hover */
+  }
+  
+  .btn-check:checked + .btn-outline-primary {
+    background-color: #7b5fed; /* Set checked background color */
+    color: white; /* Set checked text color */
+    border-color: #7b5fed; /* Set checked border color */
+  }
+  

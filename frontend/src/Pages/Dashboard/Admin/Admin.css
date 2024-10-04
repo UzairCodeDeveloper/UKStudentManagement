@@ -1,0 +1,135 @@
+.admin-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.dashboard-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #ffffff; /* White background color */
+    padding-top: 25px;
+    color: #2c3e50; /* Dark text color for contrast */
+    box-shadow: 2px 0 2.94px 0.06px rgba(4, 26, 55, 0.16);
+    transition: background-color 0.3s, transform 0.3s ease-in-out; /* Updated transition */
+}
+
+.sidebar.open {
+    transform: translateX(0); /* Sidebar open state */
+}
+
+.sidebar ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+.sidebar-item {
+    padding: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Add transform for effect */
+    display: flex; /* Make items flexible */
+    align-items: center; /* Center items vertically */
+}
+
+/* Specific styles for sidebar items with submenus */
+.sidebar-item-with-submenu {
+    justify-content: space-between;
+}
+
+.sidebar-item-with-submenu:hover {
+    color: #3498db; /* Change color on hover */
+}
+
+.sub-menu {
+    list-style: none;
+    padding: 0; /* Remove default padding */
+    max-height: 0; /* Initially hide sub-menu */
+    overflow: hidden; /* Hide overflow when closed */
+    transition: max-height 0.3s ease; /* Smooth transition for opening */
+    text-align: center; /* Align text to center */
+}
+
+.sub-menu.open {
+    max-height: 100px; /* Set a max height when open */
+    transition: max-height 0.5s ease; /* Smooth transition for opening */
+}
+
+.sub-menu-item {
+    padding: 8px;
+    cursor: pointer;
+    color: #2c3e50; /* Dark color for sub-menu items */
+    transition: background-color 0.3s; /* Transition for hover */
+    display: flex;
+    align-items: center; /* Align items vertically */
+    justify-content: center; /* Center items horizontally */
+    width: 100%; /* Full width to ensure centering */
+}
+
+.sub-menu-item:hover {
+    background-color: #ecf0f1; /* Highlight on hover for sub-menu items */
+}
+
+.sub-menu-icon {
+    margin-left: auto; /* Automatically space out to the right */
+    color: #3498db; /* Icon color for sub-menu */
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #ecf0f1; /* Light background for content area */
+}
+
+.content {
+    padding: 20px;
+    background: #fff; /* Background for content area */
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Active state for the selected dashboard item */ 
+.sidebar-item.active {
+    background-color: #3498db; 
+    color: white; 
+    font-weight: 500;
+}
+
+/* Menu toggle button styles */
+.menu-toggle-btn {
+    display: none; /* Hide by default */
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%); /* Hide sidebar off-screen */
+        position: absolute; /* Position absolute for overlay effect */
+        z-index: 999; /* Ensure sidebar is on top */
+        height: 100%; /* Full height */
+    }
+
+    .sidebar.open {
+        transform: translateX(0); /* Show sidebar when open */
+    }
+
+    .menu-toggle-btn {
+        display: block; /* Show menu button on small screens */
+    }
+
+    .content-area {
+        margin-left: 0; /* Ensure content takes full width when sidebar is hidden */
+    }
+}

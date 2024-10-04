@@ -1,0 +1,167 @@
+/* Container Styles */
+.loginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('./background.webp') no-repeat center center/cover;
+    padding: 20px; /* Add padding to prevent overflow on small screens */
+    box-sizing: border-box;
+}
+
+.loginBoxWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    min-height: 500px; /* Ensures minimum height */
+    background-color: #fff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 30px;
+    margin: 30px;
+    box-sizing: border-box;
+}
+
+/* Form Container */
+.loginFormContainer {
+    width: 48%;
+    padding: 30px;
+    order: 1;
+    box-sizing: border-box;
+}
+
+/* Logo Styles */
+.loginLogo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 100px;
+    height: 100px;
+}
+
+@media (max-width: 768px) {
+    .loginLogo {
+        display: none;
+    }
+}
+
+/* Form Styles */
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #333;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+}
+
+.error {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font-size: 12px;
+    color: red;
+    margin-top: 3px;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+.forgotPassword {
+    text-align: right;
+    font-size: 12px;
+}
+
+.forgotPassword a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgotPassword a:hover {
+    text-decoration: underline;
+}
+
+.loginBtn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.loginBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Avatar Container */
+.loginAvatarContainer {
+    width: 48%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    order: 2;
+    box-sizing: border-box;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .loginBoxWrapper {
+        flex-direction: column;
+        width: 100%;
+        padding: 20px;
+        min-height: 600px; /* Increase height on smaller screens to avoid overflow */
+    }
+
+    .loginFormContainer, .loginAvatarContainer {
+        width: 100%;
+    }
+
+    .loginAvatarContainer {
+        order: 1;
+    }
+
+    .loginFormContainer {
+        order: 2;
+    }
+}
+
+@media (max-width: 576px) {
+    .loginBoxWrapper {
+        width: 100%;
+        padding: 15px;
+        min-height: 650px; /* Further increase on smaller devices */
+    }
+
+    .loginFormContainer {
+        padding: 15px;
+    }
+}
