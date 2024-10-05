@@ -9,10 +9,10 @@ import { CiViewTimeline } from "react-icons/ci";
 import { TfiHandStop } from "react-icons/tfi";
 import './Admin.css'; // Ensure you have this CSS file for styles
 import AdminHomeDashbboard from './RightsideContent/DefaultDashboard/AdminHomeDashbboard';
-import AddStudent from './RightsideContent/AddStudent/AddStudent';
-import ShowStudents from './ShowStudents/ShowStudents';
-import AllClasses from './AllClasses/AllClasses'; // Import AllClasses component
-import AddClass from './AddClass/AddClass'; // Import AddClass component
+import AddStudent from './Student/AddStudent/AddStudent';
+import ShowStudents from './Student/ShowStudents/ShowStudents';
+import AllClasses from './Classes/AllClasses/AllClasses'; // Import AllClasses component
+import AddClass from './Classes/AddClass/AddClass'; // Import AddClass component
 import Timetable from './TimeTable/Timetable'; // Import Timetable component
 import Attendance from './Attendence/Attendence'; // Import Attendance component
 

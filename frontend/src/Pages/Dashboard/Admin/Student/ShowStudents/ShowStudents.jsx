@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
-import Loader from '../../../../components/Loader/Loader'; // Import the Loader component
+import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
 import './ShowStudents.css'; // Import the CSS file
 
 export default function ShowStudents() {
