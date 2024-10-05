@@ -18,6 +18,8 @@ import AllSubjects from './Subjects/AllSubjects/AllSubjects'
 import AddSubjects from './Subjects/AddSubjects/AddSubjects'
 import StudentAttendence from './Attendence/Student/StudentAttendence';
 import EmployeeAttendence from './Attendence/Employee/EmployeeAttendence';
+import AllEmployee from './Employee/AllEmployee/AllEmployee';
+import AddEmployee from './Employee/AddEmployee/AddEmployee';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
 
@@ -280,9 +282,9 @@ export default function AdminDashboard() {
         case 'employeeAttendence':
         return <EmployeeAttendence/> 
       case 'allEmployees':
-        return <div className="content">All Employees Content</div>;
+        return <AllEmployee/>
       case 'addEmployee':
-        return <div className="content">Add Employee Form</div>;
+        return <AddEmployee/>
       case 'fees':
         return <div className="content">Fees Management Content</div>;
       default:
