@@ -38,7 +38,10 @@ export default function ShowStudents() {
   }
 
   return (
-    <div className="students-container">
+    <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
+    <div className="table-container" >
+    <div className="students-container" style={{backgroundColor:'white'}}>
+     
       <div className="header">
         <h6>
           Students <span className="sub-header"><AiOutlineHome className="sidebar-icon" />- All Students</span>
@@ -66,7 +69,7 @@ export default function ShowStudents() {
         </select>
       </div>
 
-      <div className="table-container">
+      
         <table className="table table-striped">
           <thead>
             <tr>
@@ -97,6 +100,7 @@ export default function ShowStudents() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }
