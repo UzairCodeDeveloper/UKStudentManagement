@@ -1,0 +1,54 @@
+/* EmployeeAttendence.css */
+.attendance-table {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+  
+  .attendance-table.show {
+    max-height: 1000px;
+    opacity: 1;
+  }
+  
+  .status-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .status-btn {
+    padding: 5px 15px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .status-btn.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .status-btn:not(.active) {
+    background-color: #f1f1f1;
+  }
+  
+  .class-dropdown {
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  .mark-button, .update-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .mark-button:hover, .update-button:hover {
+    background-color: #0056b3;
+  }
+  

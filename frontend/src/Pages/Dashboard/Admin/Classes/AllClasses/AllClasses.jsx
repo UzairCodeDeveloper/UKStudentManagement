@@ -14,9 +14,9 @@ export default function ShowClasses() {
     setTimeout(() => {
       // Replace this with your actual data fetching logic
       setClasses([
-        { id: 1, name: 'Mathematics', teachers: ['John Doe', 'Jane Smith'], subjects: ['Algebra', 'Geometry'] },
-        { id: 2, name: 'Science', teachers: ['Sara Connor', 'Mark Johnson'], subjects: ['Physics', 'Chemistry'] },
-        { id: 3, name: 'History', teachers: ['Emma Watson'], subjects: ['Ancient Civilizations', 'Modern History'] },
+        { id: 1, name: 'Class 1', teachers: ['John Doe', 'Jane Smith'], subjects: ['Algebra', 'Geometry'] },
+        { id: 2, name: 'Class 2', teachers: ['Sara Connor', 'Mark Johnson'], subjects: ['Physics', 'Chemistry'] },
+        { id: 3, name: 'Class 3', teachers: ['Emma Watson'], subjects: ['Ancient Civilizations', 'Modern History'] },
       ]);
       setLoading(false); // Set loading to false after data is fetched
     }, 2000); // Simulating a 2-second delay

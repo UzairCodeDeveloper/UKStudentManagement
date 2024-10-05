@@ -14,8 +14,10 @@ import ShowStudents from './Student/ShowStudents/ShowStudents';
 import AllClasses from './Classes/AllClasses/AllClasses'; // Import AllClasses component
 import AddClass from './Classes/AddClass/AddClass'; // Import AddClass component
 import Timetable from './TimeTable/Timetable'; // Import Timetable component
-import Attendance from './Attendence/Attendence'; // Import Attendance component
-
+import AllSubjects from './Subjects/AllSubjects/AllSubjects'
+import AddSubjects from './Subjects/AddSubjects/AddSubjects'
+import StudentAttendence from './Attendence/Student/StudentAttendence';
+import EmployeeAttendence from './Attendence/Employee/EmployeeAttendence';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
 
@@ -27,7 +29,8 @@ export default function AdminDashboard() {
     const [isStudentOpen, setIsStudentOpen] = useState(false);
     const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
     const [isClassOpen, setIsClassOpen] = useState(false); // New state for Classes
-
+    const [isSubjectOpen, setIsSubjectOpen] = useState(false);
+    const [isAttendenceOpen, setIsAttendenceOpen] = useState(false);
     const handleToggleStudents = () => {
       setIsStudentOpen(!isStudentOpen);
     };
@@ -38,6 +41,12 @@ export default function AdminDashboard() {
 
     const handleToggleClasses = () => {
       setIsClassOpen(!isClassOpen); // Toggle for Classes
+    };
+    const handleToggleSubject = () => {
+      setIsSubjectOpen(!isSubjectOpen); // Toggle for Classes
+    };
+    const handleToggleAttendence = () => {
+      setIsAttendenceOpen(!isAttendenceOpen); // Toggle for Classes
     };
 
     return (
@@ -112,10 +121,57 @@ export default function AdminDashboard() {
             </li>
           </ul>
           
+
+          <li
+            className={`sidebar-item sidebar-item-with-submenu ${selectedComponent === 'classes' ? 'active' : ''}`}
+            onClick={handleToggleSubject}
+          >
+
+                
+                
+
+
+
+            <div>
+              <GiNotebook className="sidebar-icon" style={{ marginRight: '10px' }} /> Subjects
+            </div>
+            <span className="sidebar-toggle">
+              {isSubjectOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
+            </span>
+          </li>
+          <ul className={`sub-menu ${isSubjectOpen ? 'open' : ''}`}>
+            <li
+              onClick={() => {
+                handleSelect('allSubjects');
+                setIsSubjectOpen(false); // Close submenu when selecting
+              }}
+              className={`sub-menu-item ${selectedComponent === 'allSubjects' ? 'active' : ''}`}
+            >
+              All Subjects
+            </li>
+            <li
+              onClick={() => {
+                handleSelect('addSubjects');
+                setIsClassOpen(false); // Close submenu when selecting
+              }}
+              className={`sub-menu-item ${selectedComponent === 'addSubjects' ? 'active' : ''}`}
+            >
+              Add Subjects
+            </li>
+          </ul>
+
+
+
           <li
             className={`sidebar-item sidebar-item-with-submenu ${selectedComponent === 'classes' ? 'active' : ''}`}
             onClick={handleToggleClasses}
           >
+
+                
+                
+
+
+
             <div>
               <GiNotebook className="sidebar-icon" style={{ marginRight: '10px' }} /> Classes
             </div>
@@ -151,11 +207,42 @@ export default function AdminDashboard() {
             <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Timetable</span>
           </li>
           <li
-            onClick={() => handleSelect('attendance')}
-            className={`sidebar-item ${selectedComponent === 'attendance' ? 'active' : ''}`}
+            className={`sidebar-item sidebar-item-with-submenu ${selectedComponent === 'classes' ? 'active' : ''}`}
+            onClick={handleToggleAttendence}
           >
-            <TfiHandStop className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Attendance</span>
+
+                
+                
+
+
+
+            <div>
+              <GiNotebook className="sidebar-icon" style={{ marginRight: '10px' }} /> Attendence
+            </div>
+            <span className="sidebar-toggle">
+              {isAttendenceOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
+            </span>
           </li>
+          <ul className={`sub-menu ${isAttendenceOpen ? 'open' : ''}`}>
+            <li
+              onClick={() => {
+                handleSelect('studentAttendence');
+                setIsAttendenceOpen(false); // Close submenu when selecting
+              }}
+              className={`sub-menu-item ${selectedComponent === 'allClasses' ? 'active' : ''}`}
+            >
+              Student Attendence
+            </li>
+            <li
+              onClick={() => {
+                handleSelect('employeeAttendence');
+                setIsAttendenceOpen(false); // Close submenu when selecting
+              }}
+              className={`sub-menu-item ${selectedComponent === 'addClass' ? 'active' : ''}`}
+            >
+              Employee Attendence
+            </li>
+          </ul>
           
           <li
             onClick={() => handleSelect('fees')}
@@ -180,10 +267,18 @@ export default function AdminDashboard() {
         return <AllClasses />; // Add Classes content
       case 'addClass':
         return <AddClass />; // Add Class form content
+      
+        case 'allSubjects':
+          return <AllSubjects/>; // Add Classes content
+        case 'addSubjects':
+          return <AddSubjects />;
+
       case 'timetable':
         return <Timetable />; // Timetable content
-      case 'attendance':
-        return <Attendance />; // Attendance content
+      case 'studentAttendence':
+        return <StudentAttendence/> 
+        case 'employeeAttendence':
+        return <EmployeeAttendence/> 
       case 'allEmployees':
         return <div className="content">All Employees Content</div>;
       case 'addEmployee':
