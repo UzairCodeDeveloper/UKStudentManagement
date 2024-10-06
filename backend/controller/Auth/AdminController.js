@@ -89,10 +89,10 @@ const registerAdmin = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
   
-        const { email, password } = req.body;
+        const { username, password } = req.body;
   
         // Find admin by email
-        const admin = await Admin.findOne({ email });
+        const admin = await Admin.findOne({ username });
   
         if (!admin) {
             return res.status(400).json({ errors: [{ msg: "admin not found" }] });

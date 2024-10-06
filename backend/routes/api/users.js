@@ -5,6 +5,7 @@ const { check } = require("express-validator");
 
 // Register Controller Function
 const { registerUser, loginUser } = require("../../controller/Auth/UserController");
+const adminAuth = require("../../middleware/adminAuth");
 
 
 
@@ -13,13 +14,6 @@ const { registerUser, loginUser } = require("../../controller/Auth/UserControlle
 // @access      Public
 router.post(
     "/login",
-    [
-        check("email", "Please include valid email").isEmail(),
-        check(
-            "password",
-            "Please enter a password with 6 or more characters"
-        ).isLength({ min: 6 }),
-    ],
     loginUser // Use controller function for user login
 );
 
@@ -30,14 +24,7 @@ router.post(
 // @access      SHould be private and add admin middleware
 router.post(
     "/:role",
-    [
-        check("name", "Name is required").not().isEmpty(),
-        check("email", "Please include valid email").isEmail(),
-        check(
-            "password",
-            "Please enter a password with 6 or more characters"
-        ).isLength({ min: 6 }),
-    ],
+    adminAuth,
     registerUser // Use controller function for user registration
 );
 

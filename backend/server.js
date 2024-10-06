@@ -50,6 +50,15 @@ app.use('/api/users', require('./routes/api/users'))
 // ADMIN AUTH APIs
 app.use('/api/admin', require('./routes/api/admin'))
 
+// Class APIs
+app.use('/api/class', require('./routes/api/class'))
+
+// Course APIs
+app.use('/api/course', require('./routes/api/course'))
+
+// Volunteer APIs
+app.use('/api/volunteer', require('./routes/api/volunteer'))
+
 
 // for production
 // Serve static assets in production

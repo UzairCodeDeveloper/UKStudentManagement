@@ -1,11 +1,23 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-    email: {
-        type: String,
+
+// Create a separate schema for tracking roll numbers
+const rollNumberSchema = new mongoose.Schema({
+    year: {
+        type: Number,
         required: true,
         unique: true
     },
+    roll_number: {
+        type: Number,
+        required: true,
+        default: 0
+    }
+});
+
+const RollNumber = mongoose.model('RollNumber', rollNumberSchema);
+
+const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
@@ -22,6 +34,14 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Role',
         required: true
+    },
+    user_id: { // New field for formatted user ID
+        type: String,
+        unique: true
+    },
+    roll_number: { // New field for auto-incrementing roll number
+        type: Number,
+        unique: true
     },
     profile_picture: {
         type: String
@@ -118,6 +138,27 @@ const userSchema = new mongoose.Schema({
             }
         },
     }
+});
+
+// Pre-save hook to auto-increment roll_number and create user_id
+userSchema.pre('save', async function(next) {
+    const currentYear = new Date().getFullYear();
+    
+    // Find or create roll number entry for the current year
+    let rollEntry = await RollNumber.findOne({ year: currentYear });
+    if (!rollEntry) {
+        rollEntry = new RollNumber({ year: currentYear });
+    }
+
+    // Increment the roll number
+    rollEntry.roll_number += 1;
+    await rollEntry.save();
+
+    // Set the user_id and roll_number
+    this.roll_number = rollEntry.roll_number;
+    this.user_id = `${currentYear}-${String(rollEntry.roll_number).padStart(3, '0')}`; // Format: YYYY-XXX
+
+    next();
 });
 
 module.exports = mongoose.model('User', userSchema);
