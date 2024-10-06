@@ -1,16 +1,31 @@
-import React from 'react';
 import { useForm } from 'react-hook-form'; // Import useForm from react-hook-form
 import './login.css';
 import logo from '../../assets/logo.webp';
 import animation from './loginAnimation.json';
 import Lottie from 'lottie-react';
+import AdminUserServices from "../../api/services/admin/adminUser"
+import { useDispatch } from 'react-redux';
+import { setAdminUser } from '../../Redux/userSlice';
 
 export default function Login() {
+
   const { register, handleSubmit, formState: { errors } } = useForm(); // Initialize useForm
+
+  const dispatch = useDispatch();
   
   const onSubmit = (data) => {
     
-    console.log(JSON.stringify(data)); 
+    // console.log(JSON.stringify(data)); 
+    AdminUserServices.signInAdmin(data)
+    .then(response => {
+      console.log(response.data)
+      // Loading Element should be added here
+      dispatch(setAdminUser(response.data));
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
     
   };
 
@@ -24,13 +39,13 @@ export default function Login() {
          
           <form className='loginForm' onSubmit={handleSubmit(onSubmit)}>
             <div className='form-group'>
-              <label htmlFor='id'>ID</label>
+              <label htmlFor='username'>ID</label>
               
               <input 
                 type='text' 
-                id='id' 
+                id='username' 
                 placeholder='Enter your ID' 
-                {...register('id', { required: 'ID is required' })} // Update validation for ID
+                {...register('username', { required: 'Username is required' })} // Update validation for ID
               />
               
               {errors.id && <span className='error'>{errors.id.message}</span>}
