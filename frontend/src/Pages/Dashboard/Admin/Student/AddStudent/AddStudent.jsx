@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './AddStudent.css';
 import { AiOutlineHome } from "react-icons/ai";
+
+import ClassManager from "../../../../../api/services/admin/class/classManager"
 export default function AddStudent() {
   // State variables for each input
   const [forename, setForename] = useState('');
@@ -56,6 +58,7 @@ export default function AddStudent() {
       setError('Please fill in all required fields.');
       return;
     }
+
 
     // If validation passes, you can handle your submission logic here
     const studentData = {
@@ -166,6 +169,16 @@ export default function AddStudent() {
       setSelectedCertificates(selectedCertificates.filter(certificate => certificate !== id));
     }
   };
+
+  useEffect(()=>{
+    ClassManager.getAllClasses()
+    .then((res)=>{
+      console.log(res.data)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  },[])
 
   return (
     <div className="add-student-container">

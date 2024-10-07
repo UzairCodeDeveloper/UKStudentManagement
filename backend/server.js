@@ -7,7 +7,7 @@ const express = require('express');
 // // Connect Application to Database
 const connectDB = require('./config/db');
 
-// const cors = require("cors");
+const cors = require("cors");
 
 
 
@@ -34,7 +34,7 @@ const app = express();
 // Connect Database
 connectDB();
 
-// app.use(cors())
+app.use(cors())
 // init middleware 
 // to get data in request.body
 app.use(express.json({extended: false}))

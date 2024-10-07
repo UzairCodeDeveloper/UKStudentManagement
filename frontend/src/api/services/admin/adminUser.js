@@ -5,8 +5,6 @@ const signInAdmin = (credentials) => {
   return httpClient.post("/admin/login", credentials);
 };
 
-
-
 const exportedObject = {
     signInAdmin,
 };

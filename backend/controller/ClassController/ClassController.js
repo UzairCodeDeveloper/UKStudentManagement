@@ -2,7 +2,9 @@ const Class = require('../../models/Class');
 
 // Create a new class
 const createClass = async (req, res) => {
-    const { class_name, courses } = req.body;
+    const { class_name, 
+        // courses
+     } = req.body;
 
     try {
 
@@ -17,7 +19,7 @@ const createClass = async (req, res) => {
 
         const newClass = new Class({
             class_name,
-            courses
+            // courses
         });
 
         await newClass.save();
@@ -31,7 +33,7 @@ const createClass = async (req, res) => {
 // Get all classes (filter out inactive ones)
 const getAllClasses = async (req, res) => {
     try {
-        const classes = await Class.find({ is_active: true })
+        const classes = await Class.find({ is_active: true }).select("class_name")
         // .populate('courses');
         res.status(200).json(classes);
     } catch (error) {
