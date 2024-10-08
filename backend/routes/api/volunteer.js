@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { createVolunteer, getVolunteers, updateVolunteer, deleteVolunteer,getVolunteerById } = require('../../controller/VolunteerController/VolunteerControllerAdmin');
+const { createVolunteer, getVolunteers, updateVolunteer, deleteVolunteer,getVolunteerById, loginVolunteer } = require('../../controller/VolunteerController/VolunteerControllerAdmin');
 const adminAuth = require('../../middleware/adminAuth');
 
 // Create a volunteer
 router.post('/',adminAuth, createVolunteer);
+
+router.post('/login', loginVolunteer);
 
 // Get all volunteers
 router.get('/get-all',adminAuth, getVolunteers);

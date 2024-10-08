@@ -2,23 +2,33 @@ const Volunteer = require('../../models/Volunteer');
 const Role = require('../../models/Role');
 
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+
+// Function to generate a random 8-character alphanumeric password
+const generatePassword = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+};
 
 // Function to auto-generate a 4-digit employee ID
 const generateEmployeeId = async () => {
-    const lastVolunteer = await Volunteer.findOne().sort({ employee_id: -1 }).select('employee_id');
+    const lastVolunteer = await Volunteer.findOne().sort({ employee_id: -1 });
     let newEmployeeId = '0001'; // Default to 0001 if no volunteers exist
-
     if (lastVolunteer) {
-        const lastId = parseInt(lastVolunteer.employee_id, 10);
+        const lastId = parseInt(lastVolunteer.employee_id);
         newEmployeeId = String(lastId + 1).padStart(4, '0');
     }
-
     return newEmployeeId;
 };
 
 // Create a new volunteer (employee)
 const createVolunteer = async (req, res) => {
-    const { volunteer_details, password } = req.body;
+    const { volunteer_details } = req.body;
 
     try {
         const role = await Role.findOne({ name: 'volunteer' });
@@ -32,9 +42,10 @@ const createVolunteer = async (req, res) => {
             return res.status(400).json({ msg: 'Contact number already exists' });
         }
 
-        // Generate employee ID and hash the password
+        // Generate employee ID and password
         const employee_id = await generateEmployeeId();
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const password = generatePassword(); // Generate the password
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
 
         const newVolunteer = new Volunteer({
             employee_id,
@@ -51,7 +62,7 @@ const createVolunteer = async (req, res) => {
             volunteer: {
                 employee_id: newVolunteer.employee_id,
                 volunteer_details: newVolunteer.volunteer_details,
-                password, // Returning the actual password as requested
+                password // Returning the actual password as requested
             }
         });
     } catch (error) {
@@ -60,6 +71,64 @@ const createVolunteer = async (req, res) => {
     }
 };
 
+
+// Volunteer Login
+const loginVolunteer = async (req, res) => {
+    try {
+        // Extract employee_id and password from request body
+        const { employee_id, password } = req.body;
+
+        // Check if employee_id and password are provided
+        if (!employee_id || !password) {
+            return res.status(400).json({ msg: 'Please provide both employee ID and password' });
+        }
+
+        // Find the volunteer by employee_id
+        const volunteer = await Volunteer.findOne({ employee_id });
+        if (!volunteer) {
+            return res.status(400).json({ msg: 'Volunteer not found' });
+        }
+
+        // Check if the volunteer is active
+        if (!volunteer.volunteer_details.is_active) {
+            return res.status(403).json({ msg: 'Volunteer is deactivated' });
+        }
+
+        // Compare the entered password with the hashed password in the database
+        const isMatch = await bcrypt.compare(password, volunteer.password);
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Invalid password' });
+        }
+
+        // Prepare JWT payload
+        const payload = { volunteer: { id: volunteer._id } };
+
+        // Sign JWT and return token along with volunteer details
+        jwt.sign(
+            payload,
+            config.get('jwtSecret'),
+            { expiresIn: 360000 }, // Token expiry set to 100 hours (adjust as needed)
+            (err, token) => {
+                if (err) throw err;
+
+                // Remove password from response
+                volunteer.password = undefined;
+
+                res.status(200).json({
+                    msg: 'Login successful',
+                    token,
+                    volunteer: {
+                        employee_id: volunteer.employee_id,
+                        volunteer_details: volunteer.volunteer_details
+                    }
+                });
+            }
+        );
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ msg: 'Server error' });
+    }
+};
 
 // Get all volunteers
 const getVolunteers = async (req, res) => {
@@ -148,5 +217,6 @@ module.exports = {
     getVolunteers   ,
     getVolunteerById,
     updateVolunteer,
-    deleteVolunteer
+    deleteVolunteer,
+    loginVolunteer
 };

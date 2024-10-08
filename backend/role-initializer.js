@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Role = require('./models/Role');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/LMS-UK', {
+mongoose.connect('mongodb+srv://adminSDP:newpassword@lms-uk.2e1m4.mongodb.net/?retryWrites=true&w=majority&appName=LMS-UK', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
