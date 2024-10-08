@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
+
+
+import ClassManager from "../.././../../../api/services/admin/class/classManager"
 
 
 export default function ShowClasses() {
@@ -9,29 +12,44 @@ export default function ShowClasses() {
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
 
-  useEffect(() => {
-    // Simulate fetching data with a delay
-    setTimeout(() => {
-      // Replace this with your actual data fetching logic
-      setClasses([
-        { id: 1, name: 'Class 1', teachers: ['John Doe', 'Jane Smith'], subjects: ['Algebra', 'Geometry'] },
-        { id: 2, name: 'Class 2', teachers: ['Sara Connor', 'Mark Johnson'], subjects: ['Physics', 'Chemistry'] },
-        { id: 3, name: 'Class 3', teachers: ['Emma Watson'], subjects: ['Ancient Civilizations', 'Modern History'] },
-      ]);
-      setLoading(false); // Set loading to false after data is fetched
-    }, 2000); // Simulating a 2-second delay
-  }, []);
+  // useEffect(() => {
+  //   // Simulate fetching data with a delay
+  //   setTimeout(() => {
+  //     // Replace this with your actual data fetching logic
+  //     setClasses([
+  //       { id: 1, name: 'Class 1', teachers: ['John Doe', 'Jane Smith'], subjects: ['Algebra', 'Geometry'] },
+  //       { id: 2, name: 'Class 2', teachers: ['Sara Connor', 'Mark Johnson'], subjects: ['Physics', 'Chemistry'] },
+  //       { id: 3, name: 'Class 3', teachers: ['Emma Watson'], subjects: ['Ancient Civilizations', 'Modern History'] },
+  //     ]);
+  //     setLoading(false); // Set loading to false after data is fetched
+  //   }, 2000); // Simulating a 2-second delay
+  // }, []);
+
+  useEffect(()=>{
+    setLoading(true);
+    ClassManager.getAllClasses()
+    .then((res)=>{
+      console.log(res.data)
+      setClasses(res.data);
+      setLoading(false);
+
+    })
+    .catch((err)=>{
+      console.log(err)
+      setLoading(false);
+    })
+  },[])
 
   // Filter and sort classes based on search term and selected order
-  const filteredClasses = classes
-    .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => {
-      if (sortOrder === 'a-z') {
-        return a.name.localeCompare(b.name);
-      } else {
-        return b.name.localeCompare(a.name);
-      }
-    });
+  // const filteredClasses = classes
+  //   .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  //   .sort((a, b) => {
+  //     if (sortOrder === 'a-z') {
+  //       return a.name.localeCompare(b.name);
+  //     } else {
+  //       return b.name.localeCompare(a.name);
+  //     }
+  //   });
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -88,12 +106,18 @@ export default function ShowClasses() {
             </tr>
           </thead>
           <tbody>
-            {filteredClasses.map((classItem, index) => (
+            {classes.map((classItem, index) => (
               <tr key={classItem.id}>
                 <td>{index + 1}</td> {/* Dynamic row number */}
-                <td>{classItem.name}</td>
-                <td>{classItem.teachers.join(', ')}</td>
-                <td>{classItem.subjects.join(', ')}</td>
+                <td>{classItem.class_name}</td>
+                <td>
+                  ---
+                  {/* {classItem.teachers.join(', ')} */}
+                  </td>
+                <td>
+                  {/* {classItem.subjects.join(', ')} */}
+                  ---
+                  </td>
                 <td className="status-buttons">
                   <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
                     <AiOutlineEdit />

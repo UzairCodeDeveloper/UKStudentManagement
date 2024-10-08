@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import './AddClass.css'; // Ensure you have this CSS file for styles
+
+
+import ClassManager from "../.././../../../api/services/admin/class/classManager"
 
 export default function AddClass() {
   const [className, setClassName] = useState('');
@@ -40,17 +43,31 @@ export default function AddClass() {
     e.preventDefault();
 
     // Check if at least one teacher is selected
-    if (selectedTeachers.length === 0) {
-      alert("Please select at least one teacher.");
-      return;
-    }
+    // if (selectedTeachers.length === 0) {
+    //   alert("Please select at least one teacher.");
+    //   return;
+    // }
 
     // Log class name and selected teachers
-    console.log({ className, selectedTeachers });
+    // console.log({ className });
+
+    ClassManager.createNewClass({class_name: className })
+    .then((res)=>{
+      // console.log(res.data)
+          setClassName('');
+          // console.log(first)
+          alert(res.data.msg)
+    }
+    )
+    .catch((err)=>{
+      console.log(err)
+      alert(err.response.data.msg)
+    }
+    )
     
     // Clear input fields
-    setClassName('');
-    setSelectedTeachers([]);
+
+    // setSelectedTeachers([]);
   };
 
   return (
@@ -67,7 +84,7 @@ export default function AddClass() {
               <div className="input-wrapper">
                 <input
                   type="text"
-                  id="className"
+                  id="class_name"
                   className="form-input"
                   placeholder="Enter class name"
                   value={className}
@@ -77,7 +94,7 @@ export default function AddClass() {
               </div>
             </div>
 
-            <div className="certificate-section">
+            {/* <div className="certificate-section">
               <label className="certificate-label required-bg" style={{ fontSize: '12px' }}>Select Teachers*</label>
               
               <div className="checkbox-list btn-group" role="group" aria-label="Teacher Selection Toggle Button Group" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -98,7 +115,7 @@ export default function AddClass() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <button type="submit" className='submit-button'>Add Class</button>
           </form>
