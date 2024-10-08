@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../../components/Header/Header';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 import { IoPersonOutline } from "react-icons/io5";
@@ -22,9 +22,13 @@ import AllEmployee from './Employee/AllEmployee/AllEmployee';
 import AddEmployee from './Employee/AddEmployee/AddEmployee';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const handleSelect = (component) => {
     setSelectedComponent(component);
+  };
+  const toggleSidebar = () => {
+    console.log('hwllo');
+    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
   };
 
   const Sidebar = () => {
@@ -33,6 +37,7 @@ export default function AdminDashboard() {
     const [isClassOpen, setIsClassOpen] = useState(false); // New state for Classes
     const [isSubjectOpen, setIsSubjectOpen] = useState(false);
     const [isAttendenceOpen, setIsAttendenceOpen] = useState(false);
+   
     const handleToggleStudents = () => {
       setIsStudentOpen(!isStudentOpen);
     };
@@ -51,8 +56,15 @@ export default function AdminDashboard() {
       setIsAttendenceOpen(!isAttendenceOpen); // Toggle for Classes
     };
 
+    useEffect(()=>{
+      console.log("hello world")
+    },[])
+    
+
     return (
-      <div className="sidebar">
+      
+      <div className={`sidebar ${isSidebarOpen ? 'hidden ' : 'open'}`}>
+      
         <ul>
           <li
             onClick={() => handleSelect('dashboard')}
@@ -294,7 +306,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Header />
+      <Header toggleSidebar={toggleSidebar} />
       <div className="dashboard-layout">
         <Sidebar />
         <div className="content-area">

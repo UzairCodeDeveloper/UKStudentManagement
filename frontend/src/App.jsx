@@ -11,13 +11,15 @@ export default function App() {
 
   return (
     <>
-      {adminLogin ? (
+      {/* {adminLogin ? (
         // Render AdminDashboard if the user is logged in
         <AdminDashboard />
       ) : (
         // Render Login if the user is not logged in
         <Login />
-      )}
+      )} */}
+
+      <AdminDashboard/>
     </>
   );
 }

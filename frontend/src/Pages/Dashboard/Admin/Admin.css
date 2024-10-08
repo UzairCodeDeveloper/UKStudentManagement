@@ -114,15 +114,20 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+    .dashboard-layout{
+        position: relative;
+    }
     .sidebar {
-        transform: translateX(-100%); /* Hide sidebar off-screen */
+        transform: translateX(-100%);
         position: absolute; /* Position absolute for overlay effect */
-        z-index: 999; /* Ensure sidebar is on top */
+        z-index: 999777; /* Ensure sidebar is on top */
         height: 100%; /* Full height */
+        /* border: 2px solid black; */
     }
 
     .sidebar.open {
         transform: translateX(0); /* Show sidebar when open */
+        
     }
 
     .menu-toggle-btn {
@@ -132,4 +137,7 @@
     .content-area {
         margin-left: 0; /* Ensure content takes full width when sidebar is hidden */
     }
+}
+.hidden{
+    display: none;
 }

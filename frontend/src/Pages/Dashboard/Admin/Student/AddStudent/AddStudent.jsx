@@ -48,7 +48,7 @@ export default function AddStudent() {
   const [signature, setSignature] = useState('');
   // Error messages
   const [error, setError] = useState('');
-
+  const [classData,setClassData]=useState([]);
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -174,6 +174,8 @@ export default function AddStudent() {
     ClassManager.getAllClasses()
     .then((res)=>{
       console.log(res.data)
+      setClassData(res.data);
+
     })
     .catch((err)=>{
       console.log(err)
@@ -269,13 +271,11 @@ export default function AddStudent() {
                   required
                 >
                   <option value="">Select Class</option>
-                  <option value="class1">Class 1</option>
-                  <option value="class2">Class 2</option>
-                  <option value="class3">Class 3</option>
-                  <option value="class4">Class 4</option>
-                  <option value="class5">Class 5</option>
-                  <option value="class6">Class 6</option>
-                  <option value="class7">Class 7</option>
+                  {classData.map((val,key)=>{
+                    return(
+                      <option key={key} value={val.class_name}>{val.class_name}</option>
+                    )
+                  })}
                 </select>
               </div>
             </div>
