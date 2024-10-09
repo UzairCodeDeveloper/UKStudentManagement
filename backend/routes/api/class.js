@@ -14,7 +14,9 @@ const adminAuth = require("../../middleware/adminAuth")
 router.post('/create-class',adminAuth, createClass);
 
 // Route to get all classes (GET)
-router.get('/all-classes',adminAuth, getAllClasses);
+router.get('/all-classes',
+    // adminAuth,
+     getAllClasses);
 
 // Route to get a class by ID (GET)
 router.get('/find-class/:id',adminAuth, getClassById);

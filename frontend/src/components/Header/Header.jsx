@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoIosNotifications } from 'react-icons/io';
 import { FaUser, FaKey, FaSignOutAlt } from 'react-icons/fa';
 import logo from '../../assets/logo.png'; // Adjust logo path if necessary
 import './header.css';
+import { useDispatch } from 'react-redux';
+
+import { logoutUser } from '../../Redux/userSlice';
+import Loader from '../Loader/Loader';
+
 
 export default function Header({ toggleSidebar }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -16,6 +21,26 @@ export default function Header({ toggleSidebar }) {
   const toggleNotificationDropdown = () => {
     setNotificationDropdownOpen(!notificationDropdownOpen);
   };
+
+  const [loading, setLoading] = useState(false); // State to track loading
+
+  const dispatch = useDispatch();
+
+  const handleLogout = async() =>{
+    // console.log("first")
+    await setLoading(true)
+    await setTimeout(()=>{
+      dispatch(logoutUser());
+    },3000)
+    await setLoading(false)
+
+
+  }
+
+  if (loading) {
+    return <Loader />; // Show the loader if loading
+  }
+
 
   return (
     <div className="container-fluid headerContainer">
@@ -51,7 +76,7 @@ export default function Header({ toggleSidebar }) {
             <div className="dropdownItem">
               <FaKey className="dropdownIcon" /> Change Password
             </div>
-            <div className="dropdownItem">
+            <div className="dropdownItem" onClick={handleLogout}>
               <FaSignOutAlt className="dropdownIcon" /> Logout
             </div>
           </div>

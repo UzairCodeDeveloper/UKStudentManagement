@@ -2,28 +2,46 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
 
+import CourseManager from "../.././../../../api/services/admin/course/courseManager"
+
 export default function ShowClasses() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('a-z');
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
 
-  useEffect(() => {
-    // Simulate fetching data with a delay
-    setTimeout(() => {
-      // Replace this with your actual data fetching logic
-      setClasses([
-        { id: 1, name: 'Class 1', subjects: ['Algebra', 'Geometry'] },
-        { id: 2, name: 'Class 2', subjects: ['Physics', 'Chemistry'] },
-        { id: 3, name: 'Class 3', subjects: ['Ancient Civilizations', 'Modern History'] },
-      ]);
-      setLoading(false); // Set loading to false after data is fetched
-    }, 2000); // Simulating a 2-second delay
-  }, []);
+  // useEffect(() => {
+  //   // Simulate fetching data with a delay
+  //   setTimeout(() => {
+  //     // Replace this with your actual data fetching logic
+  //     setClasses([
+  //       { id: 1, name: 'Class 1', subjects: ['Algebra', 'Geometry'] },
+  //       { id: 2, name: 'Class 2', subjects: ['Physics', 'Chemistry'] },
+  //       { id: 3, name: 'Class 3', subjects: ['Ancient Civilizations', 'Modern History'] },
+  //     ]);
+  //     setLoading(false); // Set loading to false after data is fetched
+  //   }, 2000); // Simulating a 2-second delay
+  // }, []);
+
+
+  useEffect(()=>{
+    setLoading(true);
+    CourseManager.getAllCourses()
+    .then((res)=>{
+      console.log(res.data)
+      setClasses(res.data);
+      setLoading(false);
+
+    })
+    .catch((err)=>{
+      console.log(err)
+      setLoading(false);
+    })
+  },[])
 
   // Filter and sort classes based on search term and selected order
   const filteredClasses = classes
-    .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    // .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
       if (sortOrder === 'a-z') {
         return a.name.localeCompare(b.name);
@@ -86,9 +104,16 @@ export default function ShowClasses() {
             </thead>
             <tbody>
               {filteredClasses.map((classItem) => (
-                <tr key={classItem.id}>
-                  <td>{classItem.name}</td>
-                  <td>{classItem.subjects.join(', ')}</td>
+                <tr key={classItem._id}>
+                  <td>
+                    {/* {classItem.course_name} */}
+                  ---
+                  </td>
+                  <td>
+                    
+                    {/* {classItem.subjects.join(', ')} */}
+                    {classItem.course_name}
+                    </td>
                   <td className="status-buttons">
                     <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
                       <AiOutlineEdit />
