@@ -3,7 +3,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import './AddClass.css'; // Ensure you have this CSS file for styles
 
 
-import ClassManager from "../.././../../../api/services/admin/class/classManager"
+
 
 export default function AddClass() {
   const [className, setClassName] = useState('');
@@ -27,6 +27,7 @@ export default function AddClass() {
 
     fetchTeachers();
   }, []);
+
 
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;

@@ -11,6 +11,10 @@ const createCourse = async (req, res) => {
         if(!class_id){
             return res.status(400).json({ msg: 'Class ID is required' });
         }
+        const course = Course.find({course_name})
+        if(course){
+            return res.status(400).json({msg:"Course already Exists"})
+        }
         // Create a new course instance
         const newCourse = new Course({
             course_name,

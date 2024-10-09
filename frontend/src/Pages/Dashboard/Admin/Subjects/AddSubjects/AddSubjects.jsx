@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import '../../Classes/AddClass/AddClass.css'; // Ensure you have this CSS file for styles
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai"; // Import icons
 
+import ClassManager from "../.././../../../api/services/admin/class/classManager"
+
 export default function AddClass() {
   const [selectedClass, setSelectedClass] = useState(''); // State for selected class
   const [subjectInputs, setSubjectInputs] = useState([{ id: Date.now(), name: '' }]); // State for dynamic subject inputs
+  const [subject,setSubject] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   // Dummy data for classes
-  const classes = ['Class 1', 'Class 2', 'Class 3'];
+  // const classes = ['Class 1', 'Class 2', 'Class 3'];
+  const [classes, setClassData] = useState([]);
 
   useEffect(() => {
     const fetchTeachers = () => {
@@ -21,11 +25,28 @@ export default function AddClass() {
     fetchTeachers();
   }, []);
 
+  
+  useEffect(()=>{
+    ClassManager.getAllClasses()
+    .then((res)=>{
+      console.log(res.data)
+      setClassData(res.data);
+
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  },[])
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Log selected class and subjects
-    console.log({ selectedClass, subjects: subjectInputs.map(input => input.name) });
+    console.log({ class_id:selectedClass,
+      course_name: subject
+      //  subjects: subjectInputs.map(input => input.name) 
+      });
 
     // Clear input fields
     setSubjectInputs([{ id: Date.now(), name: '' }]); // Reset to one input
@@ -68,29 +89,32 @@ export default function AddClass() {
                 >
                   <option value="">Select a class</option>
                   {classes.map((cls, index) => (
-                    <option key={index} value={cls}>{cls}</option>
+                    <option key={index} value={cls._id}>{cls.class_name}</option>
                   ))}
                 </select>
               </div>
             </div>
 
             {/* Dynamic Subject Inputs */}
-            {subjectInputs.map((input, index) => (
-              <div key={input.id} className='form-group AddClassFormGroup'>
-                <label htmlFor={`subjectName${index}`} className="field-label required-bg">Subject Name*</label>
+            {/* {subjectInputs.map((input, index) => ( */}
+              <div 
+              // key={input.id} 
+              className='form-group AddClassFormGroup'>
+                <label htmlFor={`subjectName`} className="field-label required-bg">Subject Name*</label>
                 <div className="input-wrapper">
                   <input
                     type="text"
-                    id={`subjectName${index}`}
+                    id={`subjectName`}
                     className="form-input"
                     placeholder="Enter Subject name"
-                    value={input.name}
-                    onChange={(e) => handleSubjectChange(input.id, e.target.value)}
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     required // Mark as required
                   />
+                  
                 </div>
               </div>
-            ))}
+            {/* ))} */}
 
             {/* Inline Add More and Remove Button */}
             <div className='actionsSubject' style={{ display: 'flex', alignItems: 'center', justifyContent:'center' , margin: '5px', gap:"10px" }}>
