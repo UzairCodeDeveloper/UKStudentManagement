@@ -1,0 +1,271 @@
+/* Main container for the dashboard */
+.dashboard-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100vh;
+    background-color: #F4F6F9; /* Light grey background */
+   
+  }
+  
+  @media (max-width: 1200px) {
+    .dashboard-container {
+      height: auto;
+      flex-wrap: wrap; /* Allow wrapping on medium screens */
+      gap: 20px;
+    }
+  }
+  
+  /* Left section (Profile) */
+  .left-section{
+    width: 25%;
+    background-color: #fff; /* White background */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    
+  }
+  
+  @media (max-width: 768px) {
+    .left-section {
+      width: 100%;
+      margin-bottom: 20px; /* Add margin when stacked */
+    }
+  }
+  
+  /* Profile image styling */
+  .profile-image {
+    margin-bottom: 20px;
+    text-align: center;
+    
+  }
+  
+  .profile-image img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    /* border: 20px solid #9d9fd8; */
+  }
+  
+  .profile-details p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+    height: 100%;
+  }
+  
+  /* Right section (Attendance & Calendar) */
+  .right-section {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  @media (max-width: 768px) {
+    .right-section {
+      width: 100%;
+    }
+  }
+  /* Wrap for attendance and calendar */
+
+  .profile-details {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+
+}
+
+.profile-detail-item {
+    margin-bottom: 10px; /* Space between items */
+}
+
+.profile-detail-item strong {
+    display: block; /* Makes the label take up the full line */
+    color: #333; /* Label color */
+    font-size: 12px;
+}
+
+
+
+.profile-detail-item span {
+    font-size: 13px; /* Adjust as needed */
+    color: #314de0; /* Value color */
+}
+
+
+.attendance-calendar-wrap {
+    display: flex;
+    justify-content: space-between; /* Space between items */
+    align-items: stretch; /* Stretch items to equal height */
+    gap: 20px; /* Space between items */
+}
+
+/* Ensure each item can grow equally */
+.attendance-section,
+.calendar-section {
+    flex: 1; /* Grow equally */
+    
+    min-height: 300px; /* Set a minimum height for better responsiveness */
+    display: flex; /* Enable flex properties on these items */
+    flex-direction: column; /* Stack contents vertically */
+    justify-content: center; /* Center the content */
+}
+
+  /* Attendance Section */
+  .attendance-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .attendance-chart {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  /* Small pie chart styling */
+  .small-pie-chart canvas {
+    max-width: 500px;  
+    max-height: 200px;
+   
+    display: flex;
+    justify-content: center;
+  }
+  
+  @media (max-width: 768px) {
+    
+  }
+  
+  .attendance-summary {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+  }
+  
+  @media (max-width: 768px) {
+    .attendance-summary {
+      flex-direction: column; /* Stack items on mobile */
+      align-items: center;
+    }
+  }
+  
+  .attendencebox {
+    width: 40%;
+    display: flex;
+    
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 768px) {
+    .attendencebox {
+      width: 80%;
+    }
+  }
+  
+  /* Present and Absent Box */
+  .present,
+  .absent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #6688f5; /* Blue background for present */
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .absent {
+    background-color: #fa8b95; /* Red background for absent */
+  }
+  .attendance-report-heading {
+    font-size: 1.2rem; /* Adjust size as needed */
+    background: linear-gradient(to right, rgba(98, 38, 194, 0.692), rgba(255, 0, 242, 0.916), rgba(224, 0, 41, 0.811)); /* Gradient from red to blue to purple */
+    -webkit-background-clip: text; /* Clip background to text */
+    -webkit-text-fill-color: transparent; /* Make text transparent to show gradient */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+.Intro {
+    background-color: #2840e0;
+    padding: 30px;
+    border-radius: 20px 7px 20px 10px;
+    position: relative; /* Make this position relative for absolute child positioning */
+    margin:30px 0px;
+}
+
+.TeacherDashboardImage {
+    position: absolute; /* Position the image absolutely */
+    right: 0; /* Align to the right */
+    top: 50%; /* Center vertically */
+    transform: translateY(-70%); /* Shift it back to center the vertical position */
+}
+
+.org-image {
+    width: 200px; /* Adjust size as needed */
+    height: auto; /* Maintain aspect ratio */
+    /* Additional styles for half visible effect */
+    
+}
+
+  /* Arrow animation */
+  .arrow-container {
+    display: flex;
+    align-items: center; /* Vertically align the arrow and number */
+  }
+  
+  .animated-arrow {
+    margin: 0 5px; /* Add space between the arrow and text */
+    animation: moveArrow 1s infinite; /* Apply animation with infinite loop */
+  }
+  
+  @keyframes moveArrow {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(10px); /* Arrow moves slightly to the right */
+    }
+    100% {
+      transform: translateX(0); /* Arrow moves back to the original position */
+    }
+  }
+  
+  /* Calendar Section */
+  .calendar-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .calendar-section {
+      width: 100%;
+    }
+  }
+  
+  /* Headings styling */
+ 
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      flex-direction: column;
+    }
+  
+    .left-section,
+    .right-section {
+      width: 100%;
+    }
+  
+    .right-section {
+      flex-direction: column;
+    }
+  }
+  
