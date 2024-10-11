@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
+import ClassManager from "../.././../../../api/services/admin/volunteer/volunteerManager"
+
 export default function AddStudent() {
     // State variables for each input
     const [FullName, setFullName] = useState('');
@@ -16,15 +18,15 @@ export default function AddStudent() {
     
     const [Schedule, setSchedule] = useState('');
     
-    const [PreviousTeachingExperience, setPreviousTeachingExperience] = useState('');
+    const [PreviousTeachingExperience, setPreviousTeachingExperience] = useState(false);
     
     const [ScheduleDetail, setScheduleDetail] = useState('')
     const [PreviousExperienceDetail, setPreviousExperienceDetail] = useState('')
     const [BriefExperienceDetail,setBriefExperienceDetail]=useState('')
-    const [firstAidCertificate,setFirstAidCertificate]=useState(null)
+    const [firstAidCertificate,setFirstAidCertificate]=useState(false)
     const [interestInJoining, setInterestInJoining] = useState(false);
   const [alreadyTeacher, setAlreadyTeacher] = useState(false);
-    const [FirstAid, setFirstAid] = useState('');
+    const [FirstAid, setFirstAid] = useState(false);
     
     const [error, setError] = useState('');
 
@@ -39,43 +41,47 @@ export default function AddStudent() {
             return;
           }
         // If validation passes, you can handle your submission logic here
-        const studentData = {
-            FullName,
-            FullAddress,
-            ContactNumber,
-            dob,
-            gender,
-            PostCode,
-            VolunteringDetails: {
-                WorkingCommit,
-                Schedule,
-                ScheduleDetail,
-                DaystoCommit,
-                Areasofworking,
-                AgeGroup,
-
-                
+        const volunteerData = {
+            volunteer_details: {
+                full_name: FullName,
+                address: FullAddress,
+                contact_number: ContactNumber,
+                gender,
+                dob,
+                postal_code: PostCode,
+                working_commitment: WorkingCommit,
+                schedule: Schedule,
+                days_to_commit: DaystoCommit,
+                areas_of_working: Areasofworking,
+                age_group: AgeGroup,
+                qualification: {
+                    previous_experience: PreviousTeachingExperience,
+                    previous_experience_detail: PreviousExperienceDetail,
+                    first_aid_qualified: FirstAid,
+                    first_aid_certificate: firstAidCertificate,
+                    brief_details: BriefExperienceDetail,
+                },
             },
-            Qualification: {
-                PreviousTeachingExperience,
-                PreviousExperienceDetail,
-                FirstAid,
-                firstAidCertificate,
-                BriefExperienceDetail,
-                
-            },
-            TermsandConditions:{
-                alreadyTeacher,
-                interestInJoining
-            }
-            
+            already_teacher: alreadyTeacher,
+            interest_in_joining: interestInJoining,
         };
 
-        // Here, you can send studentData to your backend
-        console.log('Student Data:', studentData);
+          console.log(volunteerData);
 
+          ClassManager.createNewVolunteer(volunteerData)
+          .then((res)=>{
+            console.log(res.data)
+                    resetform();
+            alert("Volunteer added successfully")
+            })
+            .catch((err)=>{
+            console.log(err.response.data.msg)
+            alert(err.response.data.msg)
+            setError(err.response.data.msg)
+            })
+        
         // Reset the form after submission (optional)
-        resetform();
+
 
         
         
@@ -461,8 +467,8 @@ export default function AddStudent() {
                                     required
                                 >
                                     <option value="">Select</option>
-                                    <option value="No">No</option>
-                                    <option value="Yes">Yes</option>
+                                    <option value={false}>No</option>
+                                    <option value={true}>Yes</option>
                                 </select>
                             </div>
                         </div>
@@ -492,8 +498,8 @@ export default function AddStudent() {
                                     required
                                 >
                                     <option value="">Select</option>
-                                    <option value="No">No</option>
-                                    <option value="Yes">Yes</option>
+                                    <option value={false}>No</option>
+                                    <option value={true}>Yes</option>
                                 </select>
                             </div>
                         </div>

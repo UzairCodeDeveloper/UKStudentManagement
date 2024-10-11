@@ -3,6 +3,10 @@ import './AddStudent.css';
 import { AiOutlineHome } from "react-icons/ai";
 
 import ClassManager from "../../../../../api/services/admin/class/classManager"
+
+import StudentServices from "../../../../../api/services/admin/student/studentManager";
+import Loader from '../../../../../components/Loader/Loader';
+
 export default function AddStudent() {
   // State variables for each input
   const [forename, setForename] = useState('');
@@ -15,10 +19,10 @@ export default function AddStudent() {
   const [doctorName, setDoctorName] = useState('');
   const [doctorAddress, setDoctorAddress] = useState('');
   const [gpSurgeryContact, setGpSurgeryContact] = useState('');
-  const [childAllergic, setChildAllergic] = useState('');
-  const [takeMedicine, setTakeMedicine] = useState('');
-  const [learningDifficulty, setLearningDifficulty] = useState('');
-  const [concernAware, setConcernAware] = useState('');
+  const [childAllergic, setChildAllergic] = useState(false);
+  const [takeMedicine, setTakeMedicine] = useState(false);
+  const [learningDifficulty, setLearningDifficulty] = useState(false);
+  const [concernAware, setConcernAware] = useState(false);
   const [medicalInfo, setMedicalInfo] = useState('');
   const [childAlergicDetail, setChildAllergicDetail] = useState('')
   const [TakeMedicineDetail, setTakeMedicineDetail] = useState('')
@@ -34,8 +38,8 @@ export default function AddStudent() {
 
   // Interest/Hobby details
   const [hobbyInterest, setHobbyInterest] = useState('');
-  const [involvedInSport, setInvolvedInSport] = useState('');
-  const [fitForActivity, setFitForActivity] = useState('');
+  const [involvedInSport, setInvolvedInSport] = useState(false);
+  const [fitForActivity, setFitForActivity] = useState(false);
 
   // Fees Payment details
   const [paymentType, setPaymentType] = useState('');
@@ -49,61 +53,71 @@ export default function AddStudent() {
   // Error messages
   const [error, setError] = useState('');
   const [classData,setClassData]=useState([]);
+
+  const [loading, setLoading] = useState(true); // State to track loading
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Basic validation
-    if (!forename || !surname || !gender || !dob || !doctorName || !doctorAddress || !gpSurgeryContact || !childAllergic || !guardianName || !relationToChild || !guardianAddress || !primaryContactNumber || !primaryContactNumber) {
+    if (!forename || !surname || !gender || !dob || !doctorName || !doctorAddress || !gpSurgeryContact  || !guardianName || !relationToChild || !guardianAddress || !primaryContactNumber || !primaryContactNumber) {
       setError('Please fill in all required fields.');
       return;
     }
-
 
     // If validation passes, you can handle your submission logic here
     const studentData = {
       forename,
       surname,
       gender,
-      dob,
-      classes,
-      selectedCertificates,
+      dob, // Ensure this is in "YYYY-MM-DD" format
+      class_id: classes, // Assuming 'classes' holds the class ID value
+      msuExamCertificate: selectedCertificates.map((certificate) => ({
+          certificateName: certificate.name,
+          certificateDate: certificate.date,
+      })),
       doctorDetails: {
-        doctorName,
-        doctorAddress,
-        gpSurgeryContact,
-        childAllergic,
-        childAlergicDetail,
-        takeMedicine,
-        TakeMedicineDetail,
-        learningDifficulty,
-        LearningDifficultyDetail,
-        concernAware,
-        concernAwareDetail,
-        medicalInfo,
+          doctorName,
+          doctorAddress,
+          gpSurgeryContact,
+          childAllergic,
+          childAlergicDetail,
+          takeMedicine,
+          takeMedicineDetail: TakeMedicineDetail, // Correct the casing here
+          learningDifficulty,
+          learningDifficultyDetail: LearningDifficultyDetail, // Correct the casing here
+          concernAware,
+          concernAwareDetail,
+          medicalInfo,
       },
       guardianDetails: {
-        guardianName,
-        relationToChild,
-        guardianAddress,
-        primaryContactNumber,
-        secondaryContactNumber,
+          guardianName,
+          relationToChild,
+          guardianAddress,
+          primaryContactNumber,
+          secondaryContactNumber,
       },
       interests: {
-        hobbyInterest,
-        involvedInSport,
-        fitForActivity,
-      },
-      paymentType,
-      otherPaymentType,
-      AuthorisationandDeclaration:{
-        photoConsent,
-        signature
+          hobbyInterest,
+          involvedInSport,
+          fitForActivity,
       }
-    };
+  };
+  
+  // Example output to check
+  // console.log('Student Data:', studentData);
+  StudentServices.createStudent(studentData)
+  .then((res)=>{
+    setLoading(false);
+    console.log(res.data)
+    alert("Student added successfully")
+  })
+  .catch((err)=>{
+    console.log(err.response.data.msg)
+    alert(err.response.data.msg)
+    setLoading(false);
+  })
 
-    // Here, you can send studentData to your backend
-    console.log('Student Data:', studentData);
 
     // Reset the form after submission (optional)
     resetForm();
@@ -119,10 +133,10 @@ export default function AddStudent() {
     setDoctorName('');
     setDoctorAddress('');
     setGpSurgeryContact('');
-    setChildAllergic('');
-    setTakeMedicine('No');
-    setLearningDifficulty('No');
-    setConcernAware('No');
+    setChildAllergic(false);
+    setTakeMedicine(false);
+    setLearningDifficulty(false);
+    setConcernAware(false);
     setMedicalInfo('');
     setGuardianName('');
     setRelationToChild('');
@@ -130,12 +144,12 @@ export default function AddStudent() {
     setPrimaryContactNumber('');
     setSecondaryContactNumber('');
     setHobbyInterest('');
-    setInvolvedInSport('');
-    setFitForActivity('');
+    setInvolvedInSport(false);
+    setFitForActivity(false);
     setPaymentType('');
     setOtherPaymentType('');
-    setChildAllergicDetail(''),
-      setTakeMedicineDetail(''),
+    setChildAllergicDetail(false),
+      setTakeMedicineDetail(false),
       setLearningDifficultyDetail(''),
       setConcernAwareDetail(''),
       setError(''); // Clear any existing errors
@@ -171,16 +185,24 @@ export default function AddStudent() {
   };
 
   useEffect(()=>{
+    setLoading(true);
     ClassManager.getAllClasses()
     .then((res)=>{
       console.log(res.data)
       setClassData(res.data);
+      setLoading(false);
 
     })
     .catch((err)=>{
       console.log(err)
+      setLoading(false);
     })
   },[])
+
+
+  if (loading) {
+    return <Loader />; // Show the loader if loading
+  }
 
   return (
     <div className="add-student-container">
@@ -273,7 +295,7 @@ export default function AddStudent() {
                   <option value="">Select Class</option>
                   {classData.map((val,key)=>{
                     return(
-                      <option key={key} value={val.class_name}>{val.class_name}</option>
+                      <option key={key} value={val._id}>{val.class_name}</option>
                     )
                   })}
                 </select>
@@ -368,17 +390,17 @@ export default function AddStudent() {
                 <select
                   className="form-input"
                   value={childAllergic}
-                  onChange={(e) => setChildAllergic(e.target.value)}
+                  onChange={(e) => setChildAllergic(e.target.value === "true")}
                   required
                 >
                   <option value="">Select</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
                 </select>
               </div>
             </div>
 
-            {childAllergic === 'Yes' && (
+            {childAllergic && (
               <div className="form-group">
                 <label className="field-label required-bg">Enter Child Allergies*</label>
                 <div className="input-wrapper">
@@ -401,17 +423,17 @@ export default function AddStudent() {
                 <select
                   className="form-input"
                   value={takeMedicine}
-                  onChange={(e) => setTakeMedicine(e.target.value)}
+                  onChange={(e) => setTakeMedicine(e.target.value === "true")} 
                   required
                 >
                 <option value="">Select</option>
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
+                  <option value={false}>No</option>
+                  <option value={true}>Yes</option>
                 </select>
               </div>
             </div>
 
-            {takeMedicine === 'Yes' && (
+            {takeMedicine  && (
               <div className="form-group">
                 <label className="field-label required-bg">Enter Medicine Details*</label>
                 <div className="input-wrapper">
@@ -436,13 +458,13 @@ export default function AddStudent() {
                   onChange={(e) => setLearningDifficulty(e.target.value)}
                 >
                 <option value="">Select</option>
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
+                  <option value={false}>No</option>
+                  <option value={true}>Yes</option>
                 </select>
               </div>
             </div>
 
-            {learningDifficulty === 'Yes' && (
+            {learningDifficulty  && (
               <div className="form-group">
                 <label className="field-label required-bg">Enter Learning Difficulty Details*</label>
                 <div className="input-wrapper">
@@ -468,13 +490,13 @@ export default function AddStudent() {
                   required
                 >
                 <option value="">Select</option>
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
+                  <option value={false}>No</option>
+                  <option value={true}>Yes</option>
                 </select>
               </div>
             </div>
 
-            {concernAware === 'Yes' && (
+            {concernAware  && (
               <div className="form-group">
                 <label className="field-label required-bg">Enter Concern Details*</label>
                 <div className="input-wrapper">
@@ -618,8 +640,8 @@ export default function AddStudent() {
                   onChange={(e) => setInvolvedInSport(e.target.value)}
                 >
                   <option value="">Select</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
                 </select>
               </div>
             </div>
@@ -634,8 +656,8 @@ export default function AddStudent() {
                   onChange={(e) => setFitForActivity(e.target.value)}
                 >
                   <option value="">Select</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
                 </select>
               </div>
             </div>

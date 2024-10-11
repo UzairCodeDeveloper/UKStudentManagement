@@ -3,11 +3,11 @@ import { getToken } from '../../../../util/adminUtil';
 
 
 
-// GET ALL classes
-const getAllCourses = () => {
+// GET ALL Volunteers
+const getAllVolunteers = () => {
   const token = getToken(); // Get token from Redux state or other source
 
-  return httpClient.get("/course/get-courses", {
+  return httpClient.get("/volunteer/get-all", {
     headers: {
       "x-auth-token": token, // Pass the token in the headers correctly
     },
@@ -15,12 +15,12 @@ const getAllCourses = () => {
 };
 
 
-// CREATE NEW class
-const createNewClass = (data) => {
+// CREATE NEW Volunteer
+const createNewVolunteer = (data) => {
   const token = getToken(); // Get token from Redux state or other source
 
 
-  return httpClient.post("/course/create-course", data, {
+  return httpClient.post("/volunteer/", data, {
     headers: {
       "x-auth-token": token, // Pass the token in the headers
     },
@@ -29,8 +29,8 @@ const createNewClass = (data) => {
 
 
 const exportedObject = {
-    getAllCourses,
-    createNewClass
+    createNewVolunteer,
+    getAllVolunteers
 };
 
 

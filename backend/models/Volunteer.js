@@ -70,7 +70,6 @@ const volunteerSchema = new Schema({
             },
             previous_experience_detail: {
                 type: String,
-                required: true
             },
             first_aid_qualified: {
                 type: Boolean,

@@ -6,6 +6,7 @@ const { check } = require("express-validator");
 // Register Controller Function
 const { registerUser, loginUser } = require("../../controller/Auth/UserController");
 const adminAuth = require("../../middleware/adminAuth");
+const {getAllStudents} = require("../../controller/StudentController/StudentController"); 
 
 
 
@@ -27,6 +28,9 @@ router.post(
     adminAuth,
     registerUser // Use controller function for user registration
 );
+
+
+router.get("/getAllUsers/:role",adminAuth,getAllStudents)
 
 
 

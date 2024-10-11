@@ -44,9 +44,9 @@ export default function ShowClasses() {
     // .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
       if (sortOrder === 'a-z') {
-        return a.name.localeCompare(b.name);
+        // return a.name.localeCompare(b.name);
       } else {
-        return b.name.localeCompare(a.name);
+        // return b.name.localeCompare(a.name);
       }
     });
 
@@ -107,7 +107,7 @@ export default function ShowClasses() {
                 <tr key={classItem._id}>
                   <td>
                     {/* {classItem.course_name} */}
-                  ---
+                  {classItem.class_id.class_name}
                   </td>
                   <td>
                     

@@ -4,6 +4,7 @@ import '../../Classes/AddClass/AddClass.css'; // Ensure you have this CSS file f
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai"; // Import icons
 
 import ClassManager from "../.././../../../api/services/admin/class/classManager"
+import CourseManager from "../../../../../api/services/admin/course/courseManager"
 
 export default function AddClass() {
   const [selectedClass, setSelectedClass] = useState(''); // State for selected class
@@ -29,7 +30,7 @@ export default function AddClass() {
   useEffect(()=>{
     ClassManager.getAllClasses()
     .then((res)=>{
-      console.log(res.data)
+      // console.log(res.data)
       setClassData(res.data);
 
     })
@@ -43,13 +44,28 @@ export default function AddClass() {
     e.preventDefault();
 
     // Log selected class and subjects
-    console.log({ class_id:selectedClass,
-      course_name: subject
-      //  subjects: subjectInputs.map(input => input.name) 
-      });
+    // console.log({ class_id:selectedClass,
+    //   course_name: subject
+    //   //  subjects: subjectInputs.map(input => input.name) 
+    //   });
+      const data ={class_id:selectedClass,
+        course_name: subject}
+
+      CourseManager.createNewClass(data)
+      .then((res)=>{
+        // console.log(res.data)
+        alert("Subjects added successfully")
+      })
+      .catch((err)=>{
+        console.log(err.response.data.msg)
+        alert(err.response.data.msg)
+      })
+
+
 
     // Clear input fields
-    setSubjectInputs([{ id: Date.now(), name: '' }]); // Reset to one input
+    // setSubjectInputs([{ id: Date.now(), name: '' }]); // Reset to one input
+    setSubject(''); // Reset subject input
     setSelectedClass('');
   };
 
@@ -117,6 +133,8 @@ export default function AddClass() {
             {/* ))} */}
 
             {/* Inline Add More and Remove Button */}
+            {
+              /* 
             <div className='actionsSubject' style={{ display: 'flex', alignItems: 'center', justifyContent:'center' , margin: '5px', gap:"10px" }}>
               <button type="button" className='btn btn-secondary' onClick={handleAddSubject} style={{ display: 'flex', alignItems: 'center',  fontSize:'11px', padding:"2px 10px"}}>
                 <AiOutlinePlus style={{ marginRight: '5px' }} /> Add More
@@ -125,7 +143,8 @@ export default function AddClass() {
                 <AiOutlineMinus style={{ marginRight: '5px'}} /> Remove
               </button>
             </div>
-
+*/
+}
             <button type="submit" className='submit-button ' style={{marginTop:'20px,',backgroundColor:'#ffc674', fontWeight:'400', color:'black'}}>Assign Subjects</button>
           </form>
         </div>

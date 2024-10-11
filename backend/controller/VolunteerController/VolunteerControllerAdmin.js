@@ -28,7 +28,7 @@ const generateEmployeeId = async () => {
 
 // Create a new volunteer (employee)
 const createVolunteer = async (req, res) => {
-    const { volunteer_details } = req.body;
+    const { volunteer_details, already_teacher, interest_in_joining } = req.body; // Destructure these new fields from the request body
 
     try {
         const role = await Role.findOne({ name: 'volunteer' });
@@ -47,10 +47,13 @@ const createVolunteer = async (req, res) => {
         const password = generatePassword(); // Generate the password
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
 
+        // Create new volunteer object with the additional fields
         const newVolunteer = new Volunteer({
             employee_id,
             role: role._id,
             volunteer_details,
+            already_teacher, // Include the already_teacher field
+            interest_in_joining, // Include the interest_in_joining field
             password: hashedPassword
         });
 
@@ -62,6 +65,8 @@ const createVolunteer = async (req, res) => {
             volunteer: {
                 employee_id: newVolunteer.employee_id,
                 volunteer_details: newVolunteer.volunteer_details,
+                already_teacher: newVolunteer.already_teacher, // Return this field in the response
+                interest_in_joining: newVolunteer.interest_in_joining, // Return this field in the response
                 password // Returning the actual password as requested
             }
         });

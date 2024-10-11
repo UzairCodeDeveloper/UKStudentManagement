@@ -3,44 +3,55 @@ const Course = require('../../models/Course');
 // Create a new course
 const createCourse = async (req, res) => {
     const { course_name, course_description, class_id } = req.body;
-
+  
     try {
-        if (!course_name) {
-            return res.status(400).json({ msg: 'Course name is required' });
-        }
-        if(!class_id){
-            return res.status(400).json({ msg: 'Class ID is required' });
-        }
-        const course = Course.find({course_name})
-        if(course){
-            return res.status(400).json({msg:"Course already Exists"})
-        }
-        // Create a new course instance
-        const newCourse = new Course({
-            course_name,
-            course_description,
-            class_id
-        });
-
-        // Save the course to the database
-        await newCourse.save();
-        res.status(201).json({ msg: 'Course created successfully', course: newCourse });
+      // Validation checks
+      if (!course_name) {
+        return res.status(400).json({ msg: 'Course name is required' });
+      }
+      if (!class_id) {
+        return res.status(400).json({ msg: 'Class ID is required' });
+      }
+  
+      // Check if the course already exists for the class
+      const course = await Course.findOne({ course_name, class_id });
+      
+      if (course) {
+        return res.status(400).json({ msg: 'Course already exists' });
+      }
+  
+      // Create a new course instance
+      const newCourse = new Course({
+        course_name,
+        course_description,
+        class_id,
+      });
+  
+      // Save the course to the database
+      await newCourse.save();
+  
+      // Respond with success message
+      res.status(201).json({ msg: 'Course created successfully', course: newCourse });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ msg: 'Server Error' });
+      console.error(error.message);
+      res.status(500).json({ msg: 'Server Error' });
     }
-};
-
+  };
+  
 // Get all courses
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find().populate('class_id'); // Populate class details
+        const courses = await Course.find()
+            .populate('class_id') // Populate class details
+            .sort({ 'class_id.class_name': 1 }); // Sort by class_name (1 for ascending, -1 for descending)
+        
         res.status(200).json(courses);
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
 
 // Get a single course by ID
 const getCourseById = async (req, res) => {

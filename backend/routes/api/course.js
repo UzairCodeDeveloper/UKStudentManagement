@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const adminAuth = require('../../middleware/adminAuth')
 const { createCourse, getAllCourses, getCourseById, updateCourse, deleteCourse } = require('../../controller/CourseController/CourseController');
 
 // @route POST /api/courses
 // @desc Create a new course
 // @access Public or Admin (depending on your authorization setup)
-router.post('/', createCourse);
+router.post('/create-course',adminAuth, createCourse);
 
 // @route GET /api/courses
 // @desc Get all courses
 // @access Public or Admin (depending on your authorization setup)
-router.get('/get-courses', getAllCourses);
+router.get('/get-courses',adminAuth, getAllCourses);
 
 // @route GET /api/courses/:id
 // @desc Get a course by ID
