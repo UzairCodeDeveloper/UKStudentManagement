@@ -4,14 +4,14 @@ import { IoIosNotifications } from 'react-icons/io';
 import { FaUser, FaKey, FaSignOutAlt } from 'react-icons/fa';
 import logo from '../../assets/logo.png'; // Adjust logo path if necessary
 import './header.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 
 import { logoutUser } from '../../Redux/userSlice';
 import Loader from '../Loader/Loader';
 
 
 
-export default function Header({ toggleSidebar, UserForgetPassword, UserProfile }) {
+export default function Header({ toggleSidebar, UserProfile }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
 
@@ -37,7 +37,7 @@ export default function Header({ toggleSidebar, UserForgetPassword, UserProfile 
 
 
   }
-
+  const user = useSelector((state) => state.user.user);
   if (loading) {
     return <Loader />; // Show the loader if loading
   }
@@ -63,7 +63,7 @@ export default function Header({ toggleSidebar, UserForgetPassword, UserProfile 
             <div className="notificationItem">You have a new follower</div>
           </div>
         </div>
-        <div className="userName">John Doe</div>
+        <div className="userName">{user?.admin?.forename || ''}</div>
         <div className="Profile" onClick={toggleDropdown}>
           <img
             src="https://via.placeholder.com/40" // Placeholder for actual profile image
@@ -72,11 +72,9 @@ export default function Header({ toggleSidebar, UserForgetPassword, UserProfile 
           />
           <div className={`dropdownMenu ${dropdownOpen ? 'show' : ''}`}>
             <div className="dropdownItem" onClick={UserProfile}>
-              <FaUser className="dropdownIcon" /> Account
+              <FaUser className="dropdownIcon" /> Account Settings
             </div>
-            <div className="dropdownItem" onClick={UserForgetPassword}>
-              <FaKey className="dropdownIcon" /> Change Password
-            </div>
+
             <div className="dropdownItem" onClick={handleLogout}>
               <FaSignOutAlt className="dropdownIcon" /> Logout
             </div>

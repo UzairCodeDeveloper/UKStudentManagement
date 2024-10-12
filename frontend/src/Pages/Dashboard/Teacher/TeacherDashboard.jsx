@@ -10,12 +10,10 @@ import Timetable from './TimeTable/Timetable';
 import CoursesDashboard from './Courses/CoursesDashboard/CoursesDashboard';
 import TeachersAttendence from './TeachersAttendence/TeachersAttendence'
 import CourseRouting from './Courses/CourseRouting/CourseRouting';
-import UserForgetPassword from '../../../components/UserForgetPassword/UserForgetPassword';
 import UserProfile from '../../../components/UserProfile/UserProfile';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isForgertPasswordOpen, setIsForgetPasswordOpen] = useState(true);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(true);
   const handleSelect = (component) => {
     setSelectedComponent(component);
@@ -25,10 +23,7 @@ export default function AdminDashboard() {
     setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
   };
 
-  const handleForgetPassword = () => {
-    setIsForgetPasswordOpen(true); // You may set this true to ensure it opens
-    setSelectedComponent('forgetPassword'); // Always set this to navigate to the component
-  };
+  
 
   const handleUserProfile = () => {
     setIsUserProfileOpen(true); // You may set this true to ensure it opens
@@ -94,8 +89,7 @@ export default function AdminDashboard() {
         return <CourseRouting/>
      
 
-        case 'forgetPassword':
-          return <UserForgetPassword/>
+      
           case 'userProfile':
             return <UserProfile/>
 
@@ -113,7 +107,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Header toggleSidebar={toggleSidebar}  UserForgetPassword={handleForgetPassword} UserProfile={handleUserProfile}/>
+      <Header toggleSidebar={toggleSidebar} UserProfile={handleUserProfile}/>
       <div className="dashboard-layout">
         <Sidebar />
         <div className="content-area">

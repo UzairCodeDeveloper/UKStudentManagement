@@ -25,7 +25,6 @@ import UserProfile from '../../../components/UserProfile/UserProfile';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isForgetPasswordOpen, setIsForgetPasswordOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
   const handleSelect = (component) => {
     setSelectedComponent(component);
@@ -34,10 +33,7 @@ export default function AdminDashboard() {
     setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
   };
 
-  const handleForgetPassword = () => {
-    setIsForgetPasswordOpen(true); // You may set this true to ensure it opens
-    setSelectedComponent('forgetPassword'); // Always set this to navigate to the component
-  };
+  
 
   const handleUserProfile = () => {
     setIsUserProfileOpen(true); // You may set this true to ensure it opens
@@ -310,8 +306,7 @@ export default function AdminDashboard() {
         return <AllEmployee/>
       case 'addEmployee':
         return <AddEmployee/>
-        case 'forgetPassword':
-          return <UserForgetPassword/>;
+
           case 'userProfile':
             return <UserProfile/>;
       case 'fees':
@@ -323,7 +318,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Header toggleSidebar={toggleSidebar}  UserForgetPassword={handleForgetPassword} UserProfile={handleUserProfile}/>
+      <Header toggleSidebar={toggleSidebar}  UserProfile={handleUserProfile}/>
       <div className="dashboard-layout">
         <Sidebar />
         <div className="content-area">
