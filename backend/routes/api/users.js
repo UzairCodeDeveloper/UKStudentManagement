@@ -6,7 +6,7 @@ const { check } = require("express-validator");
 // Register Controller Function
 const { registerUser, loginUser } = require("../../controller/Auth/UserController");
 const adminAuth = require("../../middleware/adminAuth");
-const {getAllStudents} = require("../../controller/StudentController/StudentController"); 
+const {getAllStudents, deleteStudent} = require("../../controller/StudentController/StudentController"); 
 
 
 
@@ -31,6 +31,9 @@ router.post(
 
 
 router.get("/getAllUsers/:role",adminAuth,getAllStudents)
+
+
+router.delete("/deleteUser/:id",adminAuth,deleteStudent)
 
 
 

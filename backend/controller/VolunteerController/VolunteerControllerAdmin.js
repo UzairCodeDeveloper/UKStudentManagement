@@ -138,14 +138,22 @@ const loginVolunteer = async (req, res) => {
 // Get all volunteers
 const getVolunteers = async (req, res) => {
     try {
-        const volunteers = await Volunteer.find().populate('role');
+        // Find all volunteers where is_active is true and populate their 'role' details
+        const volunteers = await Volunteer.find({ 'volunteer_details.is_active': true })
+            .populate('role', 'name'); // Assuming 'name' is the field in Role schema
+
+        // If no active volunteers are found, return a 404
+        if (!volunteers || volunteers.length === 0) {
+            return res.status(404).json({ msg: 'No active volunteers found' });
+        }
+
+        // Return the active volunteers
         res.status(200).json(volunteers);
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ msg: 'Server Error' });
     }
 };
-
 
 // Get volunteer by ID
 const getVolunteerById = async (req, res) => {
@@ -195,18 +203,35 @@ const updateVolunteer = async (req, res) => {
 };
 
 
+const mongoose = require('mongoose');
+
 // Soft Delete (set is_active to false) for Volunteer by ID
 const deleteVolunteer = async (req, res) => {
     const { id } = req.params;
 
+    // Check if the ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ msg: 'Invalid volunteer ID format' });
+    }
+
     try {
+        // Find the volunteer by ID
         let volunteer = await Volunteer.findById(id);
         if (!volunteer) {
             return res.status(404).json({ msg: 'Volunteer not found' });
         }
 
-        // Soft delete
-        volunteer.volunteer_details.is_active = false; 
+        // Check if volunteer_details and is_active exist and update is_active
+        if (volunteer.volunteer_details && 'is_active' in volunteer.volunteer_details) {
+            volunteer.volunteer_details.is_active = false;
+
+            // Explicitly mark the nested path as modified if needed
+            volunteer.markModified('volunteer_details.is_active');
+        } else {
+            return res.status(400).json({ msg: 'Volunteer details or is_active field not found' });
+        }
+
+        // Save the updated volunteer object
         await volunteer.save();
 
         res.status(200).json({ msg: 'Volunteer deactivated successfully' });
@@ -215,6 +240,7 @@ const deleteVolunteer = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
 
 
 module.exports = {

@@ -25,6 +25,6 @@ router.get('/find-class/:id',adminAuth, getClassById);
 router.put('/update-class/:id',adminAuth, updateClass);
 
 // Route to mark a class as inactive (DELETE - soft delete)
-router.delete('/class/:id',adminAuth, deleteClass);
+router.delete('/deleteClass/:id',adminAuth, deleteClass);
 
 module.exports = router;

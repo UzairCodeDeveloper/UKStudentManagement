@@ -41,7 +41,7 @@ const createCourse = async (req, res) => {
 // Get all courses
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find()
+        const courses = await Course.find({is_active: true}) 
             .populate('class_id') // Populate class details
             .sort({ 'class_id.class_name': 1 }); // Sort by class_name (1 for ascending, -1 for descending)
         

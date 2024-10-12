@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const Class = require('../../models/Class');
 
 // Create a new class
@@ -10,7 +11,7 @@ const createClass = async (req, res) => {
             return res.status(400).json({ msg: 'Class name is required' });
         }
 
-        let existingClass = await Class.findOne({ class_name });
+        let existingClass = await Class.findOne({ class_name }).where({ is_active: true });
         if (existingClass) {
             return res.status(400).json({ msg: 'Class with this name already exists' });
         }
@@ -91,24 +92,35 @@ const updateClass = async (req, res) => {
 // Soft delete class by marking it inactive (is_active: false)
 const deleteClass = async (req, res) => {
     const { id } = req.params;
-
+  
     try {
-        const classObj = await Class.findById(id);
-
-        if (!classObj) {
-            return res.status(404).json({ msg: 'Class not found' });
-        }
-
-        // Mark the class as inactive instead of deleting it
-        classObj.is_active = false;
-
-        await classObj.save();
-        res.status(200).json({ msg: 'Class marked as inactive successfully', class: classObj });
+      // Check if ID is provided
+      if (!id) {
+        return res.status(400).json({ msg: 'Class ID is required' });
+      }
+  
+      // Check if the ID is a valid MongoDB ObjectId
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ msg: 'Invalid Class ID format' });
+      }
+  
+      const classObj = await Class.findById(id);
+  
+      // Check if the class with the given ID exists
+      if (!classObj) {
+        return res.status(404).json({ msg: 'Class not found' });
+      }
+  
+      // Mark the class as inactive instead of deleting it
+      classObj.is_active = false;
+      await classObj.save();
+  
+      res.status(200).json({ msg: 'Class marked as inactive successfully', class: classObj });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ msg: 'Server Error' });
+      console.error(error.message);
+      res.status(500).json({ msg: 'Server Error' });
     }
-};
+  };
 
 
 module.exports = {

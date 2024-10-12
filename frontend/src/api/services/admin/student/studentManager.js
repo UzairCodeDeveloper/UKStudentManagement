@@ -29,12 +29,26 @@ const createStudent = (studentData) => {
   };
 
 
+  
+// DELETE Student User
+const deleteStudent = (id) => {
+  const token = getToken(); // Get token from Redux state or other source
+
+  return httpClient.delete(`/users/deleteUser/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers
+      "Content-Type": "application/json", // Ensure JSON content type is set
+    },
+  });
+};
+
 
 
 
 const exportedObject = {
     createStudent,
-    getAllStudents
+    getAllStudents,
+    deleteStudent
 };
 
 

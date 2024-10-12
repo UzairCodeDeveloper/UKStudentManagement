@@ -28,9 +28,24 @@ const createNewVolunteer = (data) => {
 };
 
 
+// Delete Volunteer
+const deleteVolunteer = (id) => {
+  const token = getToken(); // Get token from Redux state or other source
+
+
+  return httpClient.delete(`/volunteer/delete/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+};
+
+
+
 const exportedObject = {
     createNewVolunteer,
-    getAllVolunteers
+    getAllVolunteers,
+    deleteVolunteer
 };
 
 

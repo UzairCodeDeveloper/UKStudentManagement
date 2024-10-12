@@ -10,6 +10,7 @@ export default function ShowStudents() {
   const [sortOrder, setSortOrder] = useState('a-z');
   const [loading, setLoading] = useState(true); // State to track loading
   const [students, setStudents] = useState([]); // State for students
+  const [refresh, setRefresh] = useState(false); 
 
   // useEffect(() => {
   //   // Simulate fetching data with a delay
@@ -37,7 +38,7 @@ export default function ShowStudents() {
     }
     )
 
-  },[])
+  },[refresh])
 
   // Filter and sort students based on search term and selected order
   const filteredStudents = students
@@ -49,6 +50,25 @@ export default function ShowStudents() {
         // return b.forename.localeCompare(a.forename);
       }
     });
+
+    function handleDelete(id) {
+      const isConfirmed = window.confirm("Are you sure you want to delete this student?");
+    
+      if (isConfirmed) {
+        StudentServices.deleteStudent(id)
+          .then((res) => {
+            console.log(res.data);
+            alert("Student Deleted Successfully");
+            setRefresh(!refresh); // Toggle refresh to trigger re-fetch
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err.response.data.msg);
+          });
+      } else {
+        console.log("Student deletion canceled by user");
+      }
+    }
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -108,7 +128,7 @@ export default function ShowStudents() {
                   <button className="btn btn-edit">
                     <AiOutlineEdit />
                   </button>
-                  <button className="btn btn-delete">
+                  <button className="btn btn-delete" onClick={() => handleDelete(student._id)}>
                     <AiOutlineDelete />
                   </button>
                 </td>
