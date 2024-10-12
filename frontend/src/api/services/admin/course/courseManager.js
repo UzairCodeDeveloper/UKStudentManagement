@@ -28,9 +28,24 @@ const createNewClass = (data) => {
 };
 
 
+// Delete Course
+const deleteCourse = (id) => {
+  const token = getToken(); // Get the token using the utility function
+
+  return httpClient.delete(`/course/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+};
+
+
+
+
 const exportedObject = {
     getAllCourses,
-    createNewClass
+    createNewClass,
+    deleteCourse
 };
 
 

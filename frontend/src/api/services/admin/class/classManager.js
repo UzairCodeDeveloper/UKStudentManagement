@@ -18,10 +18,22 @@ const createNewClass = (data) => {
   });
 };
 
+// Delete Class
+const deleteClass = (id) => {
+  const token = getToken(); // Get the token using the utility function
+
+  return httpClient.delete(`/class/deleteClass/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+};
+
 
 const exportedObject = {
     getAllClasses,
-    createNewClass
+    createNewClass,
+    deleteClass
 };
 
 

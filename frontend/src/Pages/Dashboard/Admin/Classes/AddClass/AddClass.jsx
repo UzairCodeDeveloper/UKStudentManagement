@@ -2,6 +2,8 @@ import  { useState, useEffect } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import './AddClass.css'; // Ensure you have this CSS file for styles
 
+import ClassManager from "../.././../../../api/services/admin/class/classManager"
+
 
 
 

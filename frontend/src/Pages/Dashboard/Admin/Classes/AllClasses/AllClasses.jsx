@@ -11,6 +11,7 @@ export default function ShowClasses() {
   const [sortOrder, setSortOrder] = useState('a-z');
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
+  const [refresh, setRefresh] = useState(false); // State to trigger refetch
 
   // useEffect(() => {
   //   // Simulate fetching data with a delay
@@ -25,20 +26,19 @@ export default function ShowClasses() {
   //   }, 2000); // Simulating a 2-second delay
   // }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(true);
     ClassManager.getAllClasses()
-    .then((res)=>{
-      console.log(res.data)
-      setClasses(res.data);
-      setLoading(false);
-
-    })
-    .catch((err)=>{
-      console.log(err)
-      setLoading(false);
-    })
-  },[])
+      .then((res) => {
+        console.log(res.data);
+        setClasses(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, [refresh]);
 
   // Filter and sort classes based on search term and selected order
   // const filteredClasses = classes
@@ -122,7 +122,7 @@ export default function ShowClasses() {
                   <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
                     <AiOutlineEdit />
                   </button>
-                  <button className="btn btn-delete" onClick={() => handleDelete(classItem.id)}>
+                  <button className="btn btn-delete" onClick={() => handleDelete(classItem._id)}>
                     <AiOutlineDelete />
                   </button>
                 </td>
@@ -142,7 +142,23 @@ export default function ShowClasses() {
   }
 
   function handleDelete(id) {
-    console.log(`Delete class with ID: ${id}`);
-    // Implement delete functionality here
+    const isConfirmed = window.confirm("Are you sure you want to delete this class?");
+  
+    if (isConfirmed) {
+      ClassManager.deleteClass(id)
+        .then((res) => {
+          console.log(res.data);
+          alert("Class Deleted Successfully");
+          setRefresh(!refresh); // Toggle refresh to trigger re-fetch
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err.response.data.msg);
+        });
+    } else {
+      console.log("Class deletion canceled by user");
+    }
   }
+
+
 }
