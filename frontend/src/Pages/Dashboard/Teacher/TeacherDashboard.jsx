@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../../../components/Header/Header';
-import { CiHome } from "react-icons/ci";
 import { TiHomeOutline } from "react-icons/ti";
 import { GiNotebook } from "react-icons/gi";
 import { CiViewTimeline } from "react-icons/ci";
 import { BsPersonCheckFill } from "react-icons/bs";
 import '../Admin/Admin.css'; // Ensure you have this CSS file for styles
 import AdminHomeDashbboard from './TeacherHomeDashboard/TeacherHomeDashboard';
-import Timetable from '../Admin/TimeTable/Timetable';
+import Timetable from './TimeTable/Timetable';
 import CoursesDashboard from './Courses/CoursesDashboard/CoursesDashboard';
+import TeachersAttendence from './TeachersAttendence/TeachersAttendence'
+import CourseRouting from './Courses/CourseRouting/CourseRouting';
+import UserForgetPassword from '../../../components/UserForgetPassword/UserForgetPassword';
+import UserProfile from '../../../components/UserProfile/UserProfile';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isForgertPasswordOpen, setIsForgetPasswordOpen] = useState(true);
+  const [isUserProfileOpen, setIsUserProfileOpen] = useState(true);
   const handleSelect = (component) => {
     setSelectedComponent(component);
   };
@@ -20,14 +25,22 @@ export default function AdminDashboard() {
     setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
   };
 
+  const handleForgetPassword = () => {
+    setIsForgetPasswordOpen(true); // You may set this true to ensure it opens
+    setSelectedComponent('forgetPassword'); // Always set this to navigate to the component
+  };
+
+  const handleUserProfile = () => {
+    setIsUserProfileOpen(true); // You may set this true to ensure it opens
+    setSelectedComponent('userProfile'); // Always set this to navigate to the component
+  };
+
   const Sidebar = () => {
 
 
     
 
-    useEffect(()=>{
-      console.log("hello world")
-    },[])
+    
     
 
     return (
@@ -77,10 +90,17 @@ export default function AdminDashboard() {
       case 'dashboard':
         return <AdminHomeDashbboard />;
       case 'Courses':
-        return <CoursesDashboard/>
+        // return <CoursesDashboard/>
+        return <CourseRouting/>
      
+
+        case 'forgetPassword':
+          return <UserForgetPassword/>
+          case 'userProfile':
+            return <UserProfile/>
+
       case 'attendence':
-        return ""; // Add Classes content
+        return <TeachersAttendence/>
       
 
       case 'timetable':
@@ -93,7 +113,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Header toggleSidebar={toggleSidebar} />
+      <Header toggleSidebar={toggleSidebar}  UserForgetPassword={handleForgetPassword} UserProfile={handleUserProfile}/>
       <div className="dashboard-layout">
         <Sidebar />
         <div className="content-area">

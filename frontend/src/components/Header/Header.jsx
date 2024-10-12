@@ -10,7 +10,8 @@ import { logoutUser } from '../../Redux/userSlice';
 import Loader from '../Loader/Loader';
 
 
-export default function Header({ toggleSidebar }) {
+
+export default function Header({ toggleSidebar, UserForgetPassword, UserProfile }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
 
@@ -70,10 +71,10 @@ export default function Header({ toggleSidebar }) {
             className="profileImage"
           />
           <div className={`dropdownMenu ${dropdownOpen ? 'show' : ''}`}>
-            <div className="dropdownItem">
+            <div className="dropdownItem" onClick={UserProfile}>
               <FaUser className="dropdownIcon" /> Account
             </div>
-            <div className="dropdownItem">
+            <div className="dropdownItem" onClick={UserForgetPassword}>
               <FaKey className="dropdownIcon" /> Change Password
             </div>
             <div className="dropdownItem" onClick={handleLogout}>

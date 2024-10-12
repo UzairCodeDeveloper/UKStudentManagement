@@ -20,16 +20,30 @@ import StudentAttendence from './Attendence/Student/StudentAttendence';
 import EmployeeAttendence from './Attendence/Employee/EmployeeAttendence';
 import AllEmployee from './Employee/AllEmployee/AllEmployee';
 import AddEmployee from './Employee/AddEmployee/AddEmployee';
+import UserForgetPassword from '../../../components/UserForgetPassword/UserForgetPassword';
+import UserProfile from '../../../components/UserProfile/UserProfile';
 export default function AdminDashboard() {
   const [selectedComponent, setSelectedComponent] = useState('dashboard'); // Set default to 'dashboard'
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isForgetPasswordOpen, setIsForgetPasswordOpen] = useState(false);
+  const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
   const handleSelect = (component) => {
     setSelectedComponent(component);
   };
   const toggleSidebar = () => {
-    console.log('hwllo');
     setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
   };
+
+  const handleForgetPassword = () => {
+    setIsForgetPasswordOpen(true); // You may set this true to ensure it opens
+    setSelectedComponent('forgetPassword'); // Always set this to navigate to the component
+  };
+
+  const handleUserProfile = () => {
+    setIsUserProfileOpen(true); // You may set this true to ensure it opens
+    setSelectedComponent('userProfile'); // Always set this to navigate to the component
+  };
+
 
   const Sidebar = () => {
     const [isStudentOpen, setIsStudentOpen] = useState(false);
@@ -37,7 +51,7 @@ export default function AdminDashboard() {
     const [isClassOpen, setIsClassOpen] = useState(false); // New state for Classes
     const [isSubjectOpen, setIsSubjectOpen] = useState(false);
     const [isAttendenceOpen, setIsAttendenceOpen] = useState(false);
-   
+    
     const handleToggleStudents = () => {
       setIsStudentOpen(!isStudentOpen);
     };
@@ -56,9 +70,8 @@ export default function AdminDashboard() {
       setIsAttendenceOpen(!isAttendenceOpen); // Toggle for Classes
     };
 
-    useEffect(()=>{
-      console.log("hello world")
-    },[])
+    
+    
     
 
     return (
@@ -297,6 +310,10 @@ export default function AdminDashboard() {
         return <AllEmployee/>
       case 'addEmployee':
         return <AddEmployee/>
+        case 'forgetPassword':
+          return <UserForgetPassword/>;
+          case 'userProfile':
+            return <UserProfile/>;
       case 'fees':
         return <div className="content">Fees Management Content</div>;
       default:
@@ -306,7 +323,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Header toggleSidebar={toggleSidebar} />
+      <Header toggleSidebar={toggleSidebar}  UserForgetPassword={handleForgetPassword} UserProfile={handleUserProfile}/>
       <div className="dashboard-layout">
         <Sidebar />
         <div className="content-area">
