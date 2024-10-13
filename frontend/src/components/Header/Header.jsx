@@ -43,6 +43,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
   }
 
 
+
   return (
     <div className="container-fluid headerContainer">
       <div className="headerLeft">

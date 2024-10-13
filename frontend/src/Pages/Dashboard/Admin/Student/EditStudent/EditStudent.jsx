@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import './AddStudent.css';
+import '../AddStudent/AddStudent.css';
 import { AiOutlineHome } from "react-icons/ai";
 
 import ClassManager from "../../../../../api/services/admin/class/classManager"
 
 import StudentServices from "../../../../../api/services/admin/student/studentManager";
 import Loader from '../../../../../components/Loader/Loader';
+import { useParams } from 'react-router-dom';
 
 export default function AddStudent() {
+
+    
+    const { id } = useParams();
+    console.log(id)
   // State variables for each input
   const [forename, setForename] = useState('');
   const [surname, setSurname] = useState('');
@@ -56,6 +61,10 @@ export default function AddStudent() {
 
   const [loading, setLoading] = useState(true); // State to track loading
   // Handle form submission
+
+  
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -103,20 +112,22 @@ export default function AddStudent() {
           fitForActivity,
       }
   };
+
+  console.log(studentData)
   
   // Example output to check
   // console.log('Student Data:', studentData);
-  StudentServices.createStudent(studentData)
-  .then((res)=>{
-    setLoading(false);
-    console.log(res.data)
-    alert("Student added successfully")
-  })
-  .catch((err)=>{
-    console.log(err.response.data.msg)
-    alert(err.response.data.msg)
-    setLoading(false);
-  })
+//   StudentServices.createStudent(studentData)
+//   .then((res)=>{
+//     setLoading(false);
+//     console.log(res.data)
+//     alert("Student added successfully")
+//   })
+//   .catch((err)=>{
+//     console.log(err.response.data.msg)
+//     alert(err.response.data.msg)
+//     setLoading(false);
+//   })
 
 
     // Reset the form after submission (optional)
@@ -206,7 +217,7 @@ export default function AddStudent() {
 
   return (
     <div className="add-student-container">
-      <div style={{ backgroundColor: 'white', padding: '10px', marginBottom: '10px', borderRadius: '30px', boxShadow: '0px 0px 1px 0px gray' }}><h6 >Students <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Add Students</span></h6></div>
+      <div style={{ backgroundColor: 'white', padding: '10px', marginBottom: '10px', borderRadius: '30px', boxShadow: '0px 0px 1px 0px gray' }}><h6 >Students <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Update Students</span></h6></div>
       <div className="container-fluid admission-header text-center " style={{ marginTop: '30px' }}>
         <h1>Admission Form</h1>
         <div className="form-indicators">
@@ -751,7 +762,7 @@ export default function AddStudent() {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="submit-button btn btn-primary">Submit</button>
+        <button type="submit" className="submit-button btn btn-primary">update</button>
         <div className="form-group">
 
         </div>

@@ -1,8 +1,20 @@
 import  { useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import ClassManager from "../.././../../../api/services/admin/volunteer/volunteerManager"
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddStudent() {
+
+    const navigate=useNavigate();
+ 
+    const {id} =useParams();
+    if(id !==null){
+
+        console.log(id)
+    }else{
+        navigate('/employees')
+    }
+    
     // State variables for each input
     const [FullName, setFullName] = useState('');
     const [ContactNumber, setContactNumber] = useState('');

@@ -4,6 +4,7 @@ import Loader from "../../../../../components/Loader/Loader"; // Import the Load
 import "../../Student/ShowStudents/ShowStudents.css"; // Import the CSS file
 
 import EmployeeServices from "../../../../../api/services/admin/volunteer/volunteerManager";
+import { useNavigate } from "react-router-dom";
 
 export default function ShowStudents() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +26,13 @@ export default function ShowStudents() {
   //   }, 2000); // Simulating a 2-second delay
   // }, []);
 
+
+  const navigate=useNavigate();
+  const handleEdit=(id)=>{
+    
+    navigate(`/employees/edit/${id}`)
+
+  }
   useEffect(() => {
     setLoading(true);
     EmployeeServices.getAllVolunteers()
@@ -145,7 +153,7 @@ export default function ShowStudents() {
                   <td>{student.volunteer_details.working_commitment}</td>
                   <td>{student.volunteer_details.contact_number}</td>
                   <td className="status-buttons">
-                    <button className="btn btn-edit">
+                    <button className="btn btn-edit" onClick={()=>{handleEdit(student._id)}}>
                       <AiOutlineEdit />
                     </button>
                     <button className="btn btn-delete" onClick={() => handleDelete(student._id)}>

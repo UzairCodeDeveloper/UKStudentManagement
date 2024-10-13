@@ -4,6 +4,7 @@ import Loader from '../../../../../components/Loader/Loader'; // Import the Load
 import './ShowStudents.css'; // Import the CSS file
 
 import StudentServices from "../../../../../api/services/admin/student/studentManager";
+import { useNavigate } from 'react-router-dom';
 
 export default function ShowStudents() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +13,12 @@ export default function ShowStudents() {
   const [students, setStudents] = useState([]); // State for students
   const [refresh, setRefresh] = useState(false); 
 
+  const navigate=useNavigate()
+  const handleEdit=(id)=>{
+    
+    navigate(`/students/edit/${id}`)
+
+  }
   // useEffect(() => {
   //   // Simulate fetching data with a delay
   //   setTimeout(() => {
@@ -39,6 +46,7 @@ export default function ShowStudents() {
     )
 
   },[refresh])
+  
 
   // Filter and sort students based on search term and selected order
   const filteredStudents = students
@@ -125,7 +133,7 @@ export default function ShowStudents() {
                 <td>{student.studentData.surname}</td>
                 <td>{student.studentData.guardianDetails.primaryContactNumber}</td>
                 <td className="status-buttons">
-                  <button className="btn btn-edit">
+                  <button className="btn btn-edit" onClick={()=>{handleEdit(student._id)}}>
                     <AiOutlineEdit />
                   </button>
                   <button className="btn btn-delete" onClick={() => handleDelete(student._id)}>

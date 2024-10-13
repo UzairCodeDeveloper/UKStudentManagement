@@ -17,6 +17,7 @@
     color: #2c3e50; /* Dark text color for contrast */
     box-shadow: 2px 0 2.94px 0.06px rgba(4, 26, 55, 0.16);
     transition: background-color 0.3s, transform 0.3s ease-in-out; /* Updated transition */
+    /* overflow: auto; */
 }
 
 .sidebar.open {
@@ -35,6 +36,8 @@
     transition: background-color 0.3s, transform 0.2s; /* Add transform for effect */
     display: flex; /* Make items flexible */
     align-items: center; /* Center items vertically */
+    text-decoration: none;
+    color: #2c3e50;
 }
 
 /* Specific styles for sidebar items with submenus */
@@ -69,6 +72,7 @@
     align-items: center; /* Align items vertically */
     justify-content: center; /* Center items horizontally */
     width: 100%; /* Full width to ensure centering */
+    text-decoration: none;
 }
 
 .sub-menu-item:hover {
@@ -95,6 +99,12 @@
 
 /* Active state for the selected dashboard item */ 
 .sidebar-item.active {
+    background-color: #3498db; 
+    color: white; 
+    font-weight: 500;
+}
+
+.sub-menu-item.active {
     background-color: #3498db; 
     color: white; 
     font-weight: 500;
