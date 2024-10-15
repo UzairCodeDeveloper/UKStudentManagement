@@ -1,6 +1,7 @@
 // Importing MODEL(s)
 const User = require("../../models/User");
 const Role = require("../../models/Role");
+const Enrollment = require("../../models/Enrolment");
 
 const getAllStudents = async (req, res) => {
   try {
@@ -63,6 +64,113 @@ const deleteStudent = async (req, res) => {
 };
 
 
+// get student by id
+const getStudentById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Validate that the ID is a valid MongoDB ObjectId
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ errors: [{ msg: "Invalid Student ID format" }] });
+    }
+
+    // Get the role object for 'student'
+    const studentRole = await Role.findOne({ name: "student" });
+    if (!studentRole) {
+      return res.status(400).json({ errors: [{ msg: "Student role does not exist" }] });
+    }
+
+    // Find the student by ID and role
+    const student = await User.findOne({ _id: id, role: studentRole._id }).select("-password");
+
+    if (!student) {
+      return res.status(404).json({ errors: [{ msg: "Student not found" }] });
+    }
+
+    // Find the student's enrollment and populate the class
+    const enrollment = await Enrollment.findOne({ student_id: id }).populate('class_id'); // Populate class details
+
+    if (!enrollment) {
+      return res.status(404).json({ errors: [{ msg: "Enrollment not found for the student" }] });
+    }
+
+    // Combine student and class data
+    const studentData = {
+      ...student._doc,
+      enrollment: {
+        fee_payment_method: enrollment.fee_payment_method,
+        due_date: enrollment.due_date,
+        status: enrollment.status,
+        enrollment_date: enrollment.enrollment_date,
+        class: enrollment.class_id, // This contains the populated class details
+      }
+    };
+
+    return res.status(200).json(studentData);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ errors: [{ msg: "Server Error" }] });
+  }
+};
+
+const updateStudent = async (req, res) => {
+  const { id } = req.params;
+
+  // Log the incoming request body for debugging
+  console.log(req.body);
+
+  // Check if student_details is present
+  if (!req.body.student_details) {
+    return res.status(400).json({ errors: [{ msg: "student_details is required" }] });
+  }
+
+  const { 
+    forename, 
+    surname, 
+    gender, 
+    dob, 
+    doctorDetails, 
+    guardianDetails, 
+    interests 
+  } = req.body.student_details;
+
+  try {
+    // Validate that the ID is a valid MongoDB ObjectId
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ errors: [{ msg: "Invalid Student ID format" }] });
+    }
+
+    // Get the role object for 'student'
+    const studentRole = await Role.findOne({ name: "student" });
+    if (!studentRole) {
+      return res.status(400).json({ errors: [{ msg: "Student role does not exist" }] });
+    }
+
+    // Find the student by ID and role
+    let student = await User.findOne({ _id: id, role: studentRole._id });
+    if (!student) {
+      return res.status(404).json({ errors: [{ msg: "Student not found" }] });
+    }
+
+    // Update the student's studentData fields
+    student.studentData.forename = forename || student.studentData.forename;
+    student.studentData.surname = surname || student.studentData.surname;
+    student.studentData.gender = gender || student.studentData.gender;
+    student.studentData.dob = dob || student.studentData.dob;
+    student.studentData.doctorDetails = doctorDetails || student.studentData.doctorDetails;
+    student.studentData.guardianDetails = guardianDetails || student.studentData.guardianDetails;
+    student.studentData.interests = interests || student.studentData.interests;
+
+    // Save the updated student
+    await student.save();
+
+    return res.status(200).json({ msg: "Student updated successfully", student });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ errors: [{ msg: "Server Error" }] });
+  }
+};
 
 
-module.exports = { getAllStudents,deleteStudent };
+
+module.exports = { getAllStudents,deleteStudent,getStudentById,updateStudent };

@@ -41,11 +41,35 @@ const deleteVolunteer = (id) => {
 };
 
 
+// Edit Volunteer
+const editVolunteer = (id,data) => {
+  const token = getToken(); // Get token from Redux state or other source
+  return httpClient.put(`/volunteer/${id}`,data, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+};
+
+
+const getVolunteerById = (id) => {
+  const token = getToken(); // Get token from Redux state or other source
+
+  return httpClient.get(`/volunteer/get/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers correctly
+    },
+  });
+};
+
+
 
 const exportedObject = {
     createNewVolunteer,
     getAllVolunteers,
-    deleteVolunteer
+    deleteVolunteer,
+    editVolunteer,
+    getVolunteerById
 };
 
 

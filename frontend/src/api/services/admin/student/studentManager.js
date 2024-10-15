@@ -42,13 +42,37 @@ const deleteStudent = (id) => {
   });
 };
 
+// Edit Volunteer
+const editStudent = (id,data) => {
+  const token = getToken(); // Get token from Redux state or other source
+  return httpClient.put(`/users/update/${id}`,data, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+};
+
+
+const geStudentById = (id) => {
+  const token = getToken(); // Get token from Redux state or other source
+
+  return httpClient.get(`/users/get/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers correctly
+    },
+  });
+};
+
+
 
 
 
 const exportedObject = {
     createStudent,
     getAllStudents,
-    deleteStudent
+    deleteStudent,
+    editStudent,
+    geStudentById
 };
 
 

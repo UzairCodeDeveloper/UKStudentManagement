@@ -24,7 +24,7 @@ import AllEmployee from './Employee/AllEmployee/AllEmployee';
 import AddEmployee from './Employee/AddEmployee/AddEmployee';
 import UserProfile from '../../../components/UserProfile/UserProfile';
 import { ImProfile } from "react-icons/im";
-import EditStudent from './Student/EditStudent/EditStudent'
+import EditStudent from './Student/EditStudent/EditStudent';
 import EditEmployee from './Employee/EditEmployee/EditEmployee';
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
