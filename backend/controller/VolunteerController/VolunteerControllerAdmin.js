@@ -193,6 +193,7 @@ const updateVolunteer = async (req, res) => {
         // Update fields
         volunteer.role = role || volunteer.role;
         volunteer.volunteer_details = volunteer_details || volunteer.volunteer_details;
+        volunteer.volunteer_details.is_active = true;
 
         await volunteer.save();
         res.status(200).json({ msg: 'Volunteer updated successfully', volunteer });
