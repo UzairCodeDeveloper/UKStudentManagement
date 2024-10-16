@@ -13,7 +13,7 @@ export default function AddStudent() {
   const [surname, setSurname] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
-  const [msuExamCertificate, setMsuExamCertificate] = useState('none');
+  const [msuExamCertificate, setMsuExamCertificate] = useState([]);
   const [classes, setClasses] = useState('');
   // Doctor details
   const [doctorName, setDoctorName] = useState('');
@@ -120,7 +120,7 @@ export default function AddStudent() {
 
 
     // Reset the form after submission (optional)
-    resetForm();
+    // resetForm();
   };
 
   const resetForm = () => {
@@ -153,7 +153,7 @@ export default function AddStudent() {
       setLearningDifficultyDetail(''),
       setConcernAwareDetail(''),
       setError(''); // Clear any existing errors
-    setSelectedCertificates(''),
+    setSelectedCertificates([]),
     setSignature(''),
     setPhotoConsent('')
 
@@ -317,7 +317,7 @@ export default function AddStudent() {
                   type="checkbox"
                   id={certificate.id}
                   value={certificate.id}
-                  checked={selectedCertificates.includes(certificate.id)}
+                  checked={selectedCertificates.includes(certificate.certificateName)}
                   onChange={handleCheckboxChange}
                   className="btn-check"
                   autoComplete="off"
