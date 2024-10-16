@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import './AddStudent.css';
 import { AiOutlineHome } from "react-icons/ai";
 
@@ -13,7 +13,7 @@ export default function AddStudent() {
   const [surname, setSurname] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
-  const [msuExamCertificate, setMsuExamCertificate] = useState([]);
+  // const [msuExamCertificate, setMsuExamCertificate] = useState([]);
   const [classes, setClasses] = useState('');
   // Doctor details
   const [doctorName, setDoctorName] = useState('');
@@ -28,6 +28,8 @@ export default function AddStudent() {
   const [TakeMedicineDetail, setTakeMedicineDetail] = useState('')
   const [LearningDifficultyDetail, setLearningDifficultyDetail] = useState('')
   const [concernAwareDetail, setConcernAwareDetail] = useState('')
+  
+  const [selectedCertificates, setSelectedCertificates] = useState([]);
 
   // Guardian details
   const [guardianName, setGuardianName] = useState('');
@@ -72,10 +74,12 @@ export default function AddStudent() {
       gender,
       dob, // Ensure this is in "YYYY-MM-DD" format
       class_id: classes, // Assuming 'classes' holds the class ID value
-      msuExamCertificate: selectedCertificates.map((certificate) => ({
-          certificateName: certificate.name,
-          certificateDate: certificate.date,
-      })),
+      msuExamCertificate: selectedCertificates.length > 0 
+      ? selectedCertificates.map((certificate) => ({
+          certificateName: certificate.id,
+          // certificateDate: certificate.date,
+        }))
+      : [],
       doctorDetails: {
           doctorName,
           doctorAddress,
@@ -105,7 +109,8 @@ export default function AddStudent() {
   };
   
   // Example output to check
-  console.log('Student Data:', studentData);
+  console.log(studentData);
+  console.log(selectedCertificates)
   StudentServices.createStudent(studentData)
   .then((res)=>{
     setLoading(false);
@@ -128,7 +133,7 @@ export default function AddStudent() {
     setSurname('');
     setGender('');
     setDob('');
-    setMsuExamCertificate('none');
+    // setMsuExamCertificate([]);
     setClasses('');
     setDoctorName('');
     setDoctorAddress('');
@@ -159,28 +164,29 @@ export default function AddStudent() {
 
   };
 
-  const [selectedCertificates, setSelectedCertificates] = useState([]);
 
   const certificates = [
     { id: 'None', label: 'None' },
-    { id: 'book1', label: 'Book 1' },
-    { id: 'book2', label: 'Book 2' },
-    { id: 'book3', label: 'Book 3' },
-    { id: 'book4', label: 'Book 4' },
-    { id: 'book5', label: 'Book 5' },
-    { id: 'book6', label: 'Book 6' },
-    { id: 'book7', label: 'Book 7' },
+    { id: 'Book 1', label: 'Book 1' },
+    { id: 'Book 2', label: 'Book 2' },
+    { id: 'Book 3', label: 'Book 3' },
+    { id: 'Book 4', label: 'Book 4' },
+    { id: 'Book 5', label: 'Book 5' },
+    { id: 'Book 6', label: 'Book 6' },
+    { id: 'Book 7', label: 'Book 7' },
   ];
 
-  const handleCheckboxChange = (event) => {
-    const { id, checked } = event.target;
+  const handleCheckboxChange = (event, certificate) => {
+    const { checked } = event.target;
 
     if (checked) {
-      // Add the selected certificate to the array
-      setSelectedCertificates([...selectedCertificates, id]);
+      // Add the certificate to selectedCertificates if checked
+      setSelectedCertificates((prev) => [...prev, certificate]);
     } else {
-      // Remove the certificate from the array if unchecked
-      setSelectedCertificates(selectedCertificates.filter(certificate => certificate !== id));
+      // Remove the certificate if unchecked
+      setSelectedCertificates((prev) =>
+        prev.filter((item) => item.id !== certificate.id)
+      );
     }
   };
 
@@ -305,34 +311,30 @@ export default function AddStudent() {
         </div>
         {/* MSU EXAM Certificate */}
         <div className="certificate-section">
-          <h4 style={{ fontWeight: "bold", fontSize: '15px', borderBottom: '1px solid black', paddingBottom: '10px' }}>
-            <span className='section-number'>2</span> MSU Certificates
-          </h4>
-          <label className="certificate-label required-bg" style={{ fontSize: '12px' }}>MSU EXAM Certificate</label>
+        <h4 style={{ fontWeight: 'bold', fontSize: '15px', borderBottom: '1px solid black', paddingBottom: '10px' }}>
+          <span className='section-number'>2</span> MSU Certificates
+        </h4>
+        <label className="certificate-label required-bg" style={{ fontSize: '12px' }}>MSU EXAM Certificate</label>
 
-          <div className="checkbox-list btn-group" role="group" aria-label="MSU Certificate Toggle Button Group">
-            {certificates.map((certificate) => (
-              <div key={certificate.id} className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id={certificate.id}
-                  value={certificate.id}
-                  checked={selectedCertificates.includes(certificate.certificateName)}
-                  onChange={handleCheckboxChange}
-                  className="btn-check"
-                  autoComplete="off"
-                  
-                />
-                <label htmlFor={certificate.id} className="btn btn-outline-primary">
-                  {certificate.label}
-                </label>
-              </div>
-            ))}
-          </div>
-
-
+        <div className="checkbox-list btn-group" role="group" aria-label="MSU Certificate Toggle Button Group">
+          {certificates.map((certificate) => (
+            <div key={certificate.id} className="checkbox-item">
+              <input
+                type="checkbox"
+                id={certificate.id}
+                value={certificate.id}
+                checked={selectedCertificates.some((selected) => selected.id === certificate.id)}
+                onChange={(event) => handleCheckboxChange(event, certificate)}
+                className="btn-check"
+                autoComplete="off"
+              />
+              <label htmlFor={certificate.id} className="btn btn-outline-primary">
+                {certificate.label}
+              </label>
+            </div>
+          ))}
         </div>
-
+        </div>
 
         {/* Doctor Details Section */}
         <div className="form-section">

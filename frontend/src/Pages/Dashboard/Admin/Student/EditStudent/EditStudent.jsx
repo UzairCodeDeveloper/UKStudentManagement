@@ -16,7 +16,7 @@ export default function EditStudent() {
   const [surname, setSurname] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
-  const [msuExamCertificate, setMsuExamCertificate] = useState("none");
+  // const [msuExamCertificate, setMsuExamCertificate] = useState("none");
   const [classes, setClasses] = useState("");
   // Doctor details
   const [doctorName, setDoctorName] = useState("");
@@ -88,10 +88,12 @@ export default function EditStudent() {
         surname,
         gender,
         dob, // Ensure this is in "YYYY-MM-DD" format
-        msuExamCertificate: selectedCertificates.map((certificate) => ({
-          certificateName: certificate.name,
-          certificateDate: certificate.date,
-        })),
+        msuExamCertificate: selectedCertificates.length > 0 
+        ? selectedCertificates.map((certificate) => ({
+            certificateName: certificate.id,
+            // certificateDate: certificate.date,
+          }))
+        : [],
         doctorDetails: {
           doctorName,
           doctorAddress,
