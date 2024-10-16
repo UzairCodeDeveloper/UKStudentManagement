@@ -105,7 +105,7 @@ export default function AddStudent() {
   };
   
   // Example output to check
-  // console.log('Student Data:', studentData);
+  console.log('Student Data:', studentData);
   StudentServices.createStudent(studentData)
   .then((res)=>{
     setLoading(false);

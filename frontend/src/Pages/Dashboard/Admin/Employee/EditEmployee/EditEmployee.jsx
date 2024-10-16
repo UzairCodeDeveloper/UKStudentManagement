@@ -7,7 +7,7 @@ import EmployeeServices from "../../../../../api/services/admin/volunteer/volunt
 
 export default function EditEmployee() {
   const navigate = useNavigate();
-
+  const [DaystoCommit, setDaystoCommit] = useState([]);
   const { id } = useParams();
   if (id !== null) {
     console.log(id);
@@ -157,7 +157,7 @@ export default function EditEmployee() {
   };
 
   const [selectedCertificates, setSelectedCertificates] = useState([]);
-  const [DaystoCommit, setDaystoCommit] = useState([]);
+  
   const [Areasofworking, setAreasofworking] = useState([]);
   const [AgeGroup, setAgeGroup] = useState([]);
 
@@ -206,18 +206,20 @@ export default function EditEmployee() {
   };
 
   const handleCheckboxDaystoCommitChange = (event) => {
-    const { id, checked } = event.target;
-
+    const { id, checked } = event.target; // Destructure id and checked from event.target
+   
+    
     if (checked) {
-      // Add the selected certificate to the array
+      // Add the selected day to the array
       setDaystoCommit([...DaystoCommit, id]);
     } else {
-      // Remove the certificate from the array if unchecked
-      setDaystoCommit(DaystoCommit.filter((certificate) => certificate !== id));
+      // Remove the day from the array if unchecked
+      setDaystoCommit(DaystoCommit.filter((day) => day !== id));
     }
   };
-
+  
   const handleCheckboxAreasChange = (event) => {
+    console.log('hell')
     const { id, checked } = event.target;
 
     if (checked) {
@@ -439,41 +441,40 @@ export default function EditEmployee() {
             )} */}
           </div>
           <div style={{ marginTop: "20px" }}>
-            <label
-              className="certificate-label required-bg"
-              style={{ fontSize: "12px" }}
-            >
-              Days To Commit
-            </label>
+  <label
+    className="certificate-label required-bg"
+    style={{ fontSize: "12px" }}
+  >
+    Days To Commit
+  </label>
 
-            <div
-              className="checkbox-list btn-group"
-              role="group"
-              aria-label="MSU Certificate Toggle Button Group"
-            >
-              {DaystoCommitSchedule.map((certificate) => (
-                <div key={certificate.id} className="checkbox-item">
-                  <input
-                    type="checkbox"
-                    id={certificate.id}
-                    value={certificate.id}
-                    checked={DaystoCommit.includes(certificate.id)} // Check if the id exists in DaystoCommit array
-                    onChange={() =>
-                      handleCheckboxDaystoCommitChange(certificate.id)
-                    } // Pass the id to handle change
-                    className="btn-check"
-                    autoComplete="off"
-                  />
-                  <label
-                    htmlFor={certificate.id}
-                    className="btn btn-outline-primary"
-                  >
-                    {certificate.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
+  <div
+    className="checkbox-list btn-group"
+    role="group"
+    aria-label="MSU Certificate Toggle Button Group"
+  >
+    {DaystoCommitSchedule.map((certificates) => (
+      <div key={certificates.id} className="checkbox-item">
+        <input
+          type="checkbox"
+          id={certificates.id}
+          value={certificates.id}
+          checked={DaystoCommit.includes(certificates.id)} // Check if the id exists in DaystoCommit array
+          onChange={handleCheckboxDaystoCommitChange} // Pass the event to handle change
+          className="btn-check"
+          autoComplete="off"
+        />
+        <label
+          htmlFor={certificates.id}
+          className="btn btn-outline-primary"
+        >
+          {certificates.label}
+        </label>
+      </div>
+    ))}
+  </div>
+</div>
+
 
           <div style={{ marginTop: "20px" }}>
             <label

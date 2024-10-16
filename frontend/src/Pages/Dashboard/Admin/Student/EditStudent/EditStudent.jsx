@@ -74,8 +74,8 @@ export default function EditStudent() {
       !guardianName ||
       !relationToChild ||
       !guardianAddress ||
-      !primaryContactNumber ||
-      !secondaryContactNumber // Fixed typo (previously duplicated)
+      !primaryContactNumber 
+       // Fixed typo (previously duplicated)
     ) {
       setError("Please fill in all required fields.");
       return;
@@ -223,7 +223,7 @@ useEffect(() => {
   StudentServices.geStudentById(id)
   .then((response) => {
     const studentData = response.data.studentData;
-
+    console.log(studentData)
     // Mapping the response data to state variables
     setForename(studentData.forename || '');
     setSurname(studentData.surname || '');

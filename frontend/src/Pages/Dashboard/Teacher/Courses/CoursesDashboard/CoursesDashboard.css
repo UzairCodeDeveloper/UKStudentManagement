@@ -1,0 +1,198 @@
+/* General container styling */
+.courses-dashboard {
+    padding: 20px;
+    margin: 0 auto;
+}
+
+h3 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Filters section */
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filters select,
+.filters input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Courses container */
+.courses-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Default card layout */
+.courses-container.card {
+    flex-direction: row;
+}
+
+/* Course card styling (card view) */
+.course-card.card {
+    flex: 1 1 calc(30% - 20px); /* Adjust card width for spacing */
+    max-width: 500px; /* Set max width to ensure consistency */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    min-width: 250px;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* Align text in the center for better card view */
+}
+
+.course-card.card:hover {
+    transform: translateY(-10px);
+}
+
+/* Badge styling */
+.course-badge {
+    background-color: #0044cc;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* Course image styling */
+.course-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* Course content styling */
+.course-content {
+    text-align: left;
+    width: 100%;
+}
+
+.course-content h4 {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+/* Completion bar */
+.completion-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    height: 5px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #00cc00;
+}
+
+/* List layout styling */
+.courses-container.list {
+    flex-direction: column;
+}
+
+/* Course card styling (list view) */
+.course-card.list {
+    display: flex;
+    width: 100%; /* Full width for list view */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease;
+    align-items: center;
+    margin-bottom: 20px; /* Add margin between cards in list view */
+}
+
+.course-card.list:hover {
+    transform: translateY(-5px);
+}
+
+/* Course image styling for list view */
+.course-card.list .course-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.course-content.list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: calc(100% - 180px); /* Adjust width to account for the image */
+}
+
+/* Completion bar in list view */
+.course-card.list .completion-bar {
+    margin-top: 10px;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .course-card.card {
+        flex: 1 1 100%;
+        width: 100%; /* Ensure cards take full width on smaller screens */
+    }
+
+    .course-card.list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .course-card.list .course-image {
+        width: 100%; /* Full width for images in list view on small screens */
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .course-content.list {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 1024px) {
+    .course-card.card {
+        flex: 1 1 calc(50% - 20px); /* Adjust card width on medium screens */
+        max-width: none; /* Remove max width on medium screens */
+    }
+}
+@media (max-width: 600px) {
+    .filters select,
+.filters input {
+    width: 100%;
+}
+}
+
+/* Adding smooth transition for layout switching */
+.courses-container {
+    transition: all 0.3s ease;
+}
+
+.course-card {
+    transition: all 0.3s ease;
+}
