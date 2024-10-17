@@ -41,15 +41,19 @@ export default function ShowClasses() {
   }, [refresh]);
 
   // Filter and sort classes based on search term and selected order
-  // const filteredClasses = classes
-  //   .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  //   .sort((a, b) => {
-  //     if (sortOrder === 'a-z') {
-  //       return a.name.localeCompare(b.name);
-  //     } else {
-  //       return b.name.localeCompare(a.name);
-  //     }
-  //   });
+  const filteredClasses = classes
+  .filter(classItem => classItem.class_name?.toLowerCase().includes(searchTerm.toLowerCase()))
+  .sort((a, b) => {
+    const nameA = a.class_name || '';  // Fallback to empty string if class_name is undefined
+    const nameB = b.class_name || '';
+    
+    if (sortOrder === 'a-z') {
+      return nameA.localeCompare(nameB);
+    } else {
+      return nameB.localeCompare(nameA);
+    }
+  });
+
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -106,28 +110,27 @@ export default function ShowClasses() {
             </tr>
           </thead>
           <tbody>
-            {classes.map((classItem, index) => (
-              <tr key={classItem.id}>
-                <td>{index + 1}</td> {/* Dynamic row number */}
-                <td>{classItem.class_name}</td>
-                <td>
-                  ---
-                  {/* {classItem.teachers.join(', ')} */}
-                  </td>
-                <td>
-                  {/* {classItem.subjects.join(', ')} */}
-                  ---
-                  </td>
-                <td className="status-buttons">
-                  <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
-                    <AiOutlineEdit />
-                  </button>
-                  <button className="btn btn-delete" onClick={() => handleDelete(classItem._id)}>
-                    <AiOutlineDelete />
-                  </button>
-                </td>
-              </tr>
-            ))}
+          {filteredClasses.map((classItem, index) => (
+  <tr key={classItem.id}>
+    <td>{index + 1}</td> {/* Dynamic row number */}
+    <td>{classItem.class_name}</td> {/* Class Name */}
+    <td>
+      {classItem.teachers?.join(', ') || '---'} {/* Teachers */}
+    </td>
+    <td>
+      {classItem.subjects?.join(', ') || '---'} {/* Subjects */}
+    </td>
+    <td className="status-buttons">
+      <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
+        <AiOutlineEdit />
+      </button>
+      <button className="btn btn-delete" onClick={() => handleDelete(classItem.id)}>
+        <AiOutlineDelete />
+      </button>
+    </td>
+  </tr>
+))}
+
           </tbody>
         </table>
       </div>

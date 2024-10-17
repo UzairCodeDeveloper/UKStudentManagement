@@ -50,14 +50,18 @@ export default function ShowStudents() {
 
   // Filter and sort students based on search term and selected order
   const filteredStudents = students
-    // .filter(student => student.forename.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => {
-      if (sortOrder === 'a-z') {
-        // return a.forename.localeCompare(b.forename);
-      } else {
-        // return b.forename.localeCompare(a.forename);
-      }
-    });
+  .filter(student => student?.studentData?.forename?.toLowerCase().includes(searchTerm.toLowerCase()))
+  .sort((a, b) => {
+    const forenameA = a.studentData?.forename || '';
+    const forenameB = b.studentData?.forename || '';
+    
+    if (sortOrder === 'a-z') {
+      return forenameA.localeCompare(forenameB);
+    } else {
+      return forenameB.localeCompare(forenameA);
+    }
+  });
+
 
     function handleDelete(id) {
       const isConfirmed = window.confirm("Are you sure you want to delete this student?");

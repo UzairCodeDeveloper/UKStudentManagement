@@ -69,14 +69,20 @@ export default function ShowStudents() {
 
   // Filter and sort students based on search term and selected order
   const filteredStudents = students
-    // .filter(student => student.forename.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => {
-      if (sortOrder === "a-z") {
-        // return a.forename.localeCompare(b.forename);
-      } else {
-        // return b.forename.localeCompare(a.forename);
-      }
-    });
+  .filter(student => 
+    student.volunteer_details?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  .sort((a, b) => {
+    const fullNameA = a.volunteer_details?.full_name || '';
+    const fullNameB = b.volunteer_details?.full_name || '';
+    
+    if (sortOrder === "a-z") {
+      return fullNameA.localeCompare(fullNameB);
+    } else {
+      return fullNameB.localeCompare(fullNameA);
+    }
+  });
+
 
   if (loading) {
     return <Loader />; // Show the loader if loading

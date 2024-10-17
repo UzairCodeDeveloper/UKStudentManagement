@@ -42,14 +42,21 @@ export default function ShowClasses() {
 
   // Filter and sort classes based on search term and selected order
   const filteredClasses = classes
-    // .filter(classItem => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => {
-      if (sortOrder === 'a-z') {
-        // return a.name.localeCompare(b.name);
-      } else {
-        // return b.name.localeCompare(a.name);
-      }
-    });
+  // Filter by course name instead of subjects if subjects field is not present
+  .filter(classItem => 
+    classItem.course_name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  .sort((a, b) => {
+    const classNameA = a.class_id?.class_name || '';  // Ensure fallback to empty string
+    const classNameB = b.class_id?.class_name || '';  // Same fallback
+
+    if (sortOrder === 'a-z') {
+      return classNameA.localeCompare(classNameB);  // Compare class names alphabetically
+    } else {
+      return classNameB.localeCompare(classNameA);  // Reverse alphabetical
+    }
+  });
+
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -60,7 +67,7 @@ export default function ShowClasses() {
       <div className="classes-container">
         <div className="header">
           <h6>
-            Classes <span className="sub-header"><AiOutlineHome className="sidebar-icon" />- All Subjects</span>
+            Subjects <span className="sub-header"><AiOutlineHome className="sidebar-icon" />- All Subjects</span>
           </h6>
         </div>
 
@@ -73,7 +80,7 @@ export default function ShowClasses() {
             <span style={{ fontWeight: '600', marginRight: '20px' }}>Search </span>
             <input
               type="text"
-              placeholder="Search by Class Name"
+              placeholder="Search by Subject Name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
