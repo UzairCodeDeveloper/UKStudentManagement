@@ -67,10 +67,12 @@ const userSchema = new mongoose.Schema({
         dob: {
             type: Date
         },
-        msuExamCertificate: [{
-            certificateName: { type: String },
-            certificateDate: { type: Date }
-        }],
+        
+        msuExamCertificate: [
+            {
+                type:String
+            }
+        ],
         doctorDetails: {
             doctorName: {
                 type: String

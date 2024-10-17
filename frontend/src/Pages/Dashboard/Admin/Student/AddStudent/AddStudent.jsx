@@ -13,7 +13,6 @@ export default function AddStudent() {
   const [surname, setSurname] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
-  // const [msuExamCertificate, setMsuExamCertificate] = useState([]);
   const [classes, setClasses] = useState('');
   // Doctor details
   const [doctorName, setDoctorName] = useState('');
@@ -73,13 +72,8 @@ export default function AddStudent() {
       surname,
       gender,
       dob, // Ensure this is in "YYYY-MM-DD" format
-      class_id: classes, // Assuming 'classes' holds the class ID value
-      msuExamCertificate: selectedCertificates.length > 0 
-      ? selectedCertificates.map((certificate) => ({
-          certificateName: certificate.id,
-          // certificateDate: certificate.date,
-        }))
-      : [],
+      class_id: classes, 
+      msuExamCertificate: selectedCertificates,
       doctorDetails: {
           doctorName,
           doctorAddress,
@@ -110,7 +104,8 @@ export default function AddStudent() {
   
   // Example output to check
   console.log(studentData);
-  console.log(selectedCertificates)
+  console.log(classes)
+  // console.log(selectedCertificates)
   StudentServices.createStudent(studentData)
   .then((res)=>{
     setLoading(false);
@@ -176,17 +171,16 @@ export default function AddStudent() {
     { id: 'Book 7', label: 'Book 7' },
   ];
 
-  const handleCheckboxChange = (event, certificate) => {
-    const { checked } = event.target;
+  const handleCheckboxChange = (event) => {
 
+    const { id, checked } = event.target;
+    console.log(event.target)
     if (checked) {
-      // Add the certificate to selectedCertificates if checked
-      setSelectedCertificates((prev) => [...prev, certificate]);
+      // Add the selected certificate to the array
+      setSelectedCertificates([...selectedCertificates, id]);
     } else {
-      // Remove the certificate if unchecked
-      setSelectedCertificates((prev) =>
-        prev.filter((item) => item.id !== certificate.id)
-      );
+      // Remove the certificate from the array if unchecked
+      setSelectedCertificates(selectedCertificates.filter(certificate => certificate !== id));
     }
   };
 
@@ -320,14 +314,15 @@ export default function AddStudent() {
           {certificates.map((certificate) => (
             <div key={certificate.id} className="checkbox-item">
               <input
-                type="checkbox"
-                id={certificate.id}
-                value={certificate.id}
-                checked={selectedCertificates.some((selected) => selected.id === certificate.id)}
-                onChange={(event) => handleCheckboxChange(event, certificate)}
-                className="btn-check"
-                autoComplete="off"
-              />
+                  type="checkbox"
+                  id={certificate.id}
+                  value={certificate.id}
+                  checked={selectedCertificates.includes(certificate.id)}
+                  onChange={handleCheckboxChange}
+                  className="btn-check"
+                  autoComplete="off"
+                  
+                />
               <label htmlFor={certificate.id} className="btn btn-outline-primary">
                 {certificate.label}
               </label>
