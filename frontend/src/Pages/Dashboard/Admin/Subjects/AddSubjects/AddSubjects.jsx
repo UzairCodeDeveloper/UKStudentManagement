@@ -5,26 +5,20 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai"; // Import icons
 
 import ClassManager from "../.././../../../api/services/admin/class/classManager"
 import CourseManager from "../../../../../api/services/admin/course/courseManager"
-
+import volunteerManager from '../../../../../api/services/admin/volunteer/volunteerManager'
 export default function AddClass() {
   const [selectedClass, setSelectedClass] = useState(''); // State for selected class
   const [subjectInputs, setSubjectInputs] = useState([{ id: Date.now(), name: '' }]); // State for dynamic subject inputs
   const [subject,setSubject] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedTeacher, setSelectedTeacher] = useState(''); 
 
   // Dummy data for classes
   // const classes = ['Class 1', 'Class 2', 'Class 3'];
   const [classes, setClassData] = useState([]);
+  const [Teachers, setTeacherData] = useState([]);
 
-  useEffect(() => {
-    const fetchTeachers = () => {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    };
-
-    fetchTeachers();
-  }, []);
+  
 
   
   useEffect(()=>{
@@ -32,6 +26,16 @@ export default function AddClass() {
     .then((res)=>{
       // console.log(res.data)
       setClassData(res.data);
+
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+
+    volunteerManager.getAllVolunteers()
+    .then((res)=>{
+      console.log(res.data)
+      setTeacherData(res.data);
 
     })
     .catch((err)=>{
@@ -106,6 +110,23 @@ export default function AddClass() {
                   <option value="">Select a class</option>
                   {classes.map((cls, index) => (
                     <option key={index} value={cls._id}>{cls.class_name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className='form-group' style={{marginTop:'20px'}}>
+              <label htmlFor="selectClass" className="field-label required-bg">Select Teacher*</label>
+              <div className="input-wrapper">
+                <select
+                  id="selectClass"
+                  className="form-input"
+                  value={selectedTeacher}
+                  onChange={(e) => setSelectedTeacher(e.target.value)}
+                  required // Mark as required
+                >
+                  <option value="">Select Teacher</option>
+                  {Teachers.map((cls, index) => (
+                    <option key={index} value={cls._id}>{cls.volunteer_details.full_name}</option>
                   ))}
                 </select>
               </div>
