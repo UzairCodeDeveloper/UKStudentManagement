@@ -21,11 +21,11 @@ router.get('/:id', getCourseById);
 // @route PUT /api/courses/:id
 // @desc Update a course by ID
 // @access Admin
-router.put('/:id', updateCourse);
+router.put('/:id',adminAuth, updateCourse);
 
 // @route DELETE /api/courses/:id
 // @desc Delete a course by ID
 // @access Admin
-router.delete('/:id', deleteCourse);
+router.delete('/:id',adminAuth, deleteCourse);
 
 module.exports = router;

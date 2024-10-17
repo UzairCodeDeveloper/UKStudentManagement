@@ -1,8 +1,9 @@
 const Course = require('../../models/Course');
-
+const Class = require('../../models/Class');
+const Volunteer = require('../../models/Volunteer');
 // Create a new course
 const createCourse = async (req, res) => {
-    const { course_name, course_description, class_id } = req.body;
+    const { course_name, course_description, class_id, volunteer_id } = req.body;
   
     try {
       // Validation checks
@@ -12,6 +13,10 @@ const createCourse = async (req, res) => {
       if (!class_id) {
         return res.status(400).json({ msg: 'Class ID is required' });
       }
+      if (!volunteer_id) {
+        return res.status(400).json({ msg: 'Instructor ID is required' });
+      }
+
   
       // Check if the course already exists for the class
       const course = await Course.findOne({ course_name, class_id });
@@ -19,12 +24,31 @@ const createCourse = async (req, res) => {
       if (course) {
         return res.status(400).json({ msg: 'Course already exists' });
       }
+
+      const classDetails = await Class.findById(class_id);
+
+        if (!classDetails) {
+            return res.status(404).json({ msg: 'Class not found' });
+        }
+
+        const instructor = await Volunteer.findById(volunteer_id);
+
+        if (!instructor) {
+            return res.status(404).json({ msg: 'Instructor not found' });
+        }
+
+        const volunteer = await Volunteer.findById(volunteer_id);
+
+        if (!volunteer) {
+            return res.status(404).json({ msg: 'Instructor not found' });
+        }
   
       // Create a new course instance
       const newCourse = new Course({
         course_name,
         course_description,
         class_id,
+        instructor: volunteer_id,
       });
   
       // Save the course to the database
@@ -41,10 +65,14 @@ const createCourse = async (req, res) => {
 // Get all courses
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find({is_active: true}) 
+        const courses = await Course.find({ is_active: true })
             .populate('class_id') // Populate class details
+            .populate({
+                path: 'instructor',
+                select: 'volunteer_details.full_name' // Only select the full_name field from the instructor
+            })
             .sort({ 'class_id.class_name': 1 }); // Sort by class_name (1 for ascending, -1 for descending)
-        
+
         res.status(200).json(courses);
     } catch (error) {
         console.error(error.message);
@@ -52,25 +80,36 @@ const getAllCourses = async (req, res) => {
     }
 };
 
-
 // Get a single course by ID
 const getCourseById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        if(!id){
-            return res.status(400).json({ msg: 'Course ID is required' });
-        }
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        // Validate if the ID is a valid MongoDB ObjectID
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ msg: 'Invalid course ID' });
         }
-        const course = await Course.findById(id).populate('class_id'); // Populate class details
+
+        // Fetch the course by ID and populate relevant fields
+        const course = await Course.findById(id)
+            .populate('class_id')  // Populate class details
+            .populate({
+                path: 'instructor', 
+                select: 'volunteer_details.full_name'  // Only fetch the full_name from the volunteer details
+            })
+            .lean();  // Use lean to get a plain JavaScript object for better performance
+        
+        // Check if course exists
         if (!course) {
             return res.status(404).json({ msg: 'Course not found' });
         }
+
+        // Return the course details
         res.status(200).json(course);
     } catch (error) {
-        console.error(error.message);
+        // Log the error for debugging
+        console.error('Error fetching course by ID:', error.message);
+        // Return a server error response
         res.status(500).json({ msg: 'Server Error' });
     }
 };
@@ -78,31 +117,68 @@ const getCourseById = async (req, res) => {
 // Update a course by ID
 const updateCourse = async (req, res) => {
     const { id } = req.params;
-    const { course_name, course_description, class_id } = req.body;
+    const { course_name, course_description, class_id, volunteer_id } = req.body;
 
     try {
-        if(!id){
-            return res.status(400).json({ msg: 'Course ID is required' });
+        // Validate Course ID
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ msg: 'Invalid course ID' });
         }
-        let course = await Course.findById(id);
 
-        if (!course) {
+        // Validate input fields
+        if (!course_name && !course_description && !class_id && !volunteer_id) {
+            return res.status(400).json({ msg: 'At least one field must be provided for update' });
+        }
+
+        // Check if volunteer exists (if provided)
+        let volunteerExists = null;
+        if (volunteer_id) {
+            if (!volunteer_id.match(/^[0-9a-fA-F]{24}$/)) {
+                return res.status(400).json({ msg: 'Invalid volunteer ID' });
+            }
+
+            volunteerExists = await Volunteer.findById(volunteer_id);
+            if (!volunteerExists) {
+                return res.status(404).json({ msg: 'Volunteer (Instructor) not found' });
+            }
+        }
+
+        // Find and update the course
+        const updatedCourse = await Course.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    course_name: course_name || undefined,
+                    course_description: course_description || undefined,
+                    class_id: class_id || undefined,
+                    instructor_id: volunteer_id || undefined,  // Update instructor if volunteer exists
+                },
+            },
+            { new: true, runValidators: true }  // Return updated course and apply validators
+        ).populate('class_id')
+        .populate({
+            path: 'instructor', 
+            select: 'volunteer_details.full_name'  // Only fetch the full_name from the volunteer details
+        })
+        .lean(); // Populate class and instructor details
+
+        // Check if the course exists
+        if (!updatedCourse) {
             return res.status(404).json({ msg: 'Course not found' });
         }
 
-        // Update course fields
-        course.course_name = course_name || course.course_name;
-        course.course_description = course_description || course.course_description;
-        course.class_id = class_id || course.class_id;
-
-        // Save the updated course
-        await course.save();
-        res.status(200).json({ msg: 'Course updated successfully', course });
+        // Return success response
+        res.status(200).json({
+            msg: 'Course updated successfully',
+            course: updatedCourse,
+        });
     } catch (error) {
-        console.error(error.message);
+        // Log and return a server error response
+        console.error('Error updating course:', error.message);
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
 
 // Delete a course (soft delete or permanent deletion based on your needs)
 const deleteCourse = async (req, res) => {
@@ -125,7 +201,7 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-
+  
 module.exports = {
     createCourse,
     getAllCourses,

@@ -19,6 +19,11 @@ const courseSchema = new Schema({
         ref: 'Class', // Reference to the Class model
         required: true,
     },
+    instructor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Volunteer', // Reference to the Volunteer model
+        required: true,
+    },
 }, { timestamps: true });
 
 const Course = mongoose.model('Course', courseSchema);
