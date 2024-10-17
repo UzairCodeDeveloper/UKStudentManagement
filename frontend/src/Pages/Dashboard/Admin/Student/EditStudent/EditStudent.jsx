@@ -18,6 +18,8 @@ export default function EditStudent() {
   const [dob, setDob] = useState("");
   // const [msuExamCertificate, setMsuExamCertificate] = useState("none");
   const [classes, setClasses] = useState("");
+  
+  const [selectedCertificates, setSelectedCertificates] = useState([]);
   // Doctor details
   const [doctorName, setDoctorName] = useState("");
   const [doctorAddress, setDoctorAddress] = useState("");
@@ -88,12 +90,9 @@ export default function EditStudent() {
         surname,
         gender,
         dob, // Ensure this is in "YYYY-MM-DD" format
-        msuExamCertificate: selectedCertificates.length > 0 
-        ? selectedCertificates.map((certificate) => ({
-            certificateName: certificate.id,
-            // certificateDate: certificate.date,
-          }))
-        : [],
+        msuExamCertificate: 
+          selectedCertificates
+        ,
         doctorDetails: {
           doctorName,
           doctorAddress,
@@ -178,10 +177,10 @@ export default function EditStudent() {
       setLearningDifficultyDetail(""),
       setConcernAwareDetail(""),
       setError(""); // Clear any existing errors
-    setSelectedCertificates(""), setSignature(""), setPhotoConsent("");
+    setSelectedCertificates(""), 
+    setSignature(""), setPhotoConsent("");
   };
 
-  const [selectedCertificates, setSelectedCertificates] = useState([]);
 
   const certificates = [
     { id: "None", label: "None" },
@@ -197,16 +196,16 @@ export default function EditStudent() {
   const handleCheckboxChange = (event) => {
     const { id, checked } = event.target;
 
-    if (checked) {
-      // Add the selected certificate to the array
-      setSelectedCertificates([...selectedCertificates, id]);
-    } else {
-      // Remove the certificate from the array if unchecked
-      setSelectedCertificates(
-        selectedCertificates.filter((certificate) => certificate !== id)
-      );
-    }
+    setSelectedCertificates((prevCertificates) => {
+      if (checked) {
+        return [...prevCertificates, id];
+      } else {
+        return prevCertificates.filter((certificate) => certificate !== id);
+      }
+    });
   };
+
+  
 useEffect(() => {
   setLoading(true);
   
@@ -440,14 +439,14 @@ useEffect(() => {
             {certificates.map((certificate) => (
               <div key={certificate.id} className="checkbox-item">
                 <input
-                  type="checkbox"
-                  id={certificate.id}
-                  value={certificate.id}
-                  checked={selectedCertificates.includes(certificate.id)}
-                  onChange={handleCheckboxChange}
-                  className="btn-check"
-                  autoComplete="off"
-                />
+                type="checkbox"
+                id={certificate.id}
+                value={certificate.id}
+                checked={selectedCertificates.includes(certificate.id)}
+                onChange={handleCheckboxChange}
+                className="btn-check"
+                autoComplete="off"
+              />
                 <label
                   htmlFor={certificate.id}
                   className="btn btn-outline-primary"
