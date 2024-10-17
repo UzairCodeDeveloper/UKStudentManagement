@@ -116,7 +116,6 @@ const getStudentById = async (req, res) => {
 const updateStudent = async (req, res) => {
   const { id } = req.params;
 
-  // Log the incoming request body for debugging
   console.log(req.body);
 
   // Check if student_details is present
@@ -131,7 +130,8 @@ const updateStudent = async (req, res) => {
     dob, 
     doctorDetails, 
     guardianDetails, 
-    interests 
+    interests,
+    msuExamCertificate // Extract msuExamCertificate from the request
   } = req.body.student_details;
 
   try {
@@ -161,6 +161,9 @@ const updateStudent = async (req, res) => {
     student.studentData.guardianDetails = guardianDetails || student.studentData.guardianDetails;
     student.studentData.interests = interests || student.studentData.interests;
 
+    // Update msuExamCertificate
+    student.studentData.msuExamCertificate = msuExamCertificate || student.studentData.msuExamCertificate;
+
     // Save the updated student
     await student.save();
 
@@ -170,6 +173,7 @@ const updateStudent = async (req, res) => {
     return res.status(500).json({ errors: [{ msg: "Server Error" }] });
   }
 };
+
 
 
 
