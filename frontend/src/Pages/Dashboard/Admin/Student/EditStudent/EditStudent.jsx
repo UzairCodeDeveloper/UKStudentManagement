@@ -185,13 +185,13 @@ export default function EditStudent() {
 
   const certificates = [
     { id: "None", label: "None" },
-    { id: "book1", label: "Book 1" },
-    { id: "book2", label: "Book 2" },
-    { id: "book3", label: "Book 3" },
-    { id: "book4", label: "Book 4" },
-    { id: "book5", label: "Book 5" },
-    { id: "book6", label: "Book 6" },
-    { id: "book7", label: "Book 7" },
+    { id: "Book 1", label: "Book 1" },
+    { id: "Book 2", label: "Book 2" },
+    { id: "Book 3", label: "Book 3" },
+    { id: "Book 4", label: "Book 4" },
+    { id: "Book 5", label: "Book 5" },
+    { id: "Book 6", label: "Book 6" },
+    { id: "Book 7", label: "Book 7" },
   ];
 
   const handleCheckboxChange = (event) => {
@@ -231,10 +231,12 @@ useEffect(() => {
     setSurname(studentData.surname || '');
     setGender(studentData.gender || '');
     setDob(studentData.dob ? new Date(studentData.dob).toISOString().split('T')[0] : '');
-    setMsuExamCertificate(studentData.msuExamCertificate || []);
-
+    // setMsuExamCertificate(studentData.msuExamCertificate || []);
+    console.log(studentData.msuExamCertificate)
+    setSelectedCertificates(studentData.msuExamCertificate)
     // Doctor Details
     const { doctorDetails } = studentData;
+    // console.log(doctorDetails.doctorName)
     setDoctorName(doctorDetails.doctorName || '');
     setDoctorAddress(doctorDetails.doctorAddress || '');
     setGpSurgeryContact(doctorDetails.gpSurgeryContact || '');
