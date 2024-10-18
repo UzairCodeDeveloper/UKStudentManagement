@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from "../../../../../components/Loader/Loader"; // Import the Loader component
 import "../../Student/ShowStudents/ShowStudents.css"; // Import the CSS file
-
+import Swal from 'sweetalert2'
 import EmployeeServices from "../../../../../api/services/admin/volunteer/volunteerManager";
 import { useNavigate } from "react-router-dom";
 
@@ -27,9 +27,9 @@ export default function ShowStudents() {
   // }, []);
 
 
-  const navigate=useNavigate();
-  const handleEdit=(id)=>{
-    
+  const navigate = useNavigate();
+  const handleEdit = (id) => {
+
     navigate(`/employees/edit/${id}`)
 
   }
@@ -46,42 +46,69 @@ export default function ShowStudents() {
       });
   }, [refresh]);
 
-  
+
+
   function handleDelete(id) {
-    const isConfirmed = window.confirm("Are you sure you want to delete this employee?");
-  
-    if (isConfirmed) {
-      EmployeeServices.deleteVolunteer(id)
-        .then((res) => {
-          console.log(res.data);
-          alert("Employee Deleted Successfully");
-          setRefresh(!refresh); // Toggle refresh to trigger re-fetch
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err.response.data.msg);
-        });
-    } else {
-      console.log("Employee deletion canceled by user");
-    }
+    // Show confirmation dialog with SweetAlert2
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      // If user confirms the action
+      if (result.isConfirmed) {
+        // Call the delete API
+        EmployeeServices.deleteVolunteer(id)
+          .then((res) => {
+            console.log(res.data);
+            // Show success notification using SweetAlert2
+            Swal.fire({
+              title: "Deleted!",
+              text: "Employee has been deleted successfully.",
+              icon: "success",
+              confirmButtonColor: "#3085d6"
+            });
+            // Trigger re-fetch by toggling refresh state
+            setRefresh(!refresh);
+          })
+          .catch((err) => {
+            console.error(err);
+            // Show error notification using SweetAlert2
+            Swal.fire({
+              title: "Error!",
+              text: err.response?.data?.msg || "Something went wrong while deleting the employee.",
+              icon: "error",
+              confirmButtonColor: "#d33"
+            });
+          });
+      } else {
+        // Optional: Log or handle cancel action
+        console.log("Employee deletion canceled by user");
+      }
+    });
   }
+
 
 
   // Filter and sort students based on search term and selected order
   const filteredStudents = students
-  .filter(student => 
-    student.volunteer_details?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-  .sort((a, b) => {
-    const fullNameA = a.volunteer_details?.full_name || '';
-    const fullNameB = b.volunteer_details?.full_name || '';
-    
-    if (sortOrder === "a-z") {
-      return fullNameA.localeCompare(fullNameB);
-    } else {
-      return fullNameB.localeCompare(fullNameA);
-    }
-  });
+    .filter(student =>
+      student.volunteer_details?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      const fullNameA = a.volunteer_details?.full_name || '';
+      const fullNameB = b.volunteer_details?.full_name || '';
+
+      if (sortOrder === "a-z") {
+        return fullNameA.localeCompare(fullNameB);
+      } else {
+        return fullNameB.localeCompare(fullNameA);
+      }
+    });
 
 
   if (loading) {
@@ -156,10 +183,16 @@ export default function ShowStudents() {
                 <tr key={student._id}>
                   <td>{student.employee_id}</td>
                   <td>{student.volunteer_details.full_name}</td>
-                  <td>{student.volunteer_details.working_commitment}</td>
+                  <td>
+                    {student.volunteer_details.working_commitment === "No"
+                      ? `${student.volunteer_details.schedule}  ${student.volunteer_details.schedule_detail} Hours`
+                      : `Weekly ${student.volunteer_details.working_commitment}`}
+                  </td>
+
+
                   <td>{student.volunteer_details.contact_number}</td>
                   <td className="status-buttons">
-                    <button className="btn btn-edit" onClick={()=>{handleEdit(student._id)}}>
+                    <button className="btn btn-edit" onClick={() => { handleEdit(student._id) }}>
                       <AiOutlineEdit />
                     </button>
                     <button className="btn btn-delete" onClick={() => handleDelete(student._id)}>

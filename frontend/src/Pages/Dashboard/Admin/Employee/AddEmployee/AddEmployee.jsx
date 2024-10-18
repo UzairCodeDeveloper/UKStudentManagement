@@ -9,7 +9,7 @@ export default function AddStudent() {
     const [gender, setGender] = useState('');
     const [dob, setDob] = useState('');
     const [FullAddress, setFullAddress] = useState('')
-    
+    const [MonthlyCommit,setMonthlyCommit]=useState(false)
     const [PostCode, setPostCode] = useState('')
     
     // Voluntering  details
@@ -51,6 +51,7 @@ export default function AddStudent() {
                 postal_code: PostCode,
                 working_commitment: WorkingCommit,
                 schedule: Schedule,
+                schedule_detail:ScheduleDetail,
                 days_to_commit: DaystoCommit,
                 areas_of_working: Areasofworking,
                 age_group: AgeGroup,
@@ -104,7 +105,7 @@ export default function AddStudent() {
         setPreviousTeachingExperience('');
         setFirstAid('');
         setBriefExperienceDetail('');
-
+        setMonthlyCommit(false)
     };
     
 
@@ -115,11 +116,11 @@ export default function AddStudent() {
     
 
     const DaystoCommitSchedule = [
-        { id: 'MondayEvening', label: 'Monday Evening' },
-        { id: 'TuesdayEvening', label: 'Tuesday Evening' },
-        { id: 'WednesdayEvening', label: 'Wednesday Evening' },
-        { id: 'ThursdayEvening', label: 'Thursday Evening' },
-        { id: 'FridayEvening', label: 'Friday Evening' },
+        { id: 'Monday Evening', label: 'Monday Evening' },
+        { id: 'Tuesday Evening', label: 'Tuesday Evening' },
+        { id: 'Wednesday Evening', label: 'Wednesday Evening' },
+        { id: 'Thursday Evening', label: 'Thursday Evening' },
+        { id: 'Friday Evening', label: 'Friday Evening' },
         { id: 'Saturday', label: 'Saturday' },
         { id: 'Sunday', label: 'Sunday' },
 
@@ -196,6 +197,15 @@ export default function AddStudent() {
         }
     };
 
+    const weeklycommitments=(e)=>{
+        if(e.target.value==="No"){
+            setWorkingCommit(e.target.value)
+            setMonthlyCommit(true)
+        }
+        else{
+            setWorkingCommit(e.target.value)
+        }
+    }
     return (
         <div className="add-student-container">
             <div style={{ backgroundColor: 'white', padding: '10px', marginBottom: '10px', borderRadius: '30px', boxShadow: '0px 0px 1px 0px gray' }}><h6 >Employees <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Add Employee</span></h6></div>
@@ -319,38 +329,41 @@ export default function AddStudent() {
                                 <select
                                     className="form-input"
                                     value={WorkingCommit}
-                                    onChange={(e) => setWorkingCommit(e.target.value)}
+                                    onChange={weeklycommitments}
                                     required
                                 >
                                     <option value="">Select Hours</option>
-                                    <option value="2Hours">2 Hours</option>
-                                    <option value="Upto4hours">Upto to 4 Hours</option>
-                                    <option value="Upto6hours">Upto to 6 Hours</option>
-                                    <option value="Upto8hours">Upto to 8 Hours</option>
+                                    <option value="2 Hours">2 Hours</option>
+                                    <option value="Upto 4 Hours">Upto to 4 Hours</option>
+                                    <option value="Upto 6 Hours">Upto to 6 Hours</option>
+                                    <option value="Upto 8 Hours">Upto to 8 Hours</option>
+                                    <option value="No">No</option>
                                 </select>
                             </div>
                         </div>
 
 
 
+                        {MonthlyCommit && (
+    <div className="form-group">
+        <label className="field-label required-bg">Schedule*</label>
+        <div className="input-wrapper">
+            <select
+                className="form-input"
+                value={Schedule}
+                onChange={(e) => setSchedule(e.target.value)}
+                required
+            >
+                <option value="">Select</option>
+                <option value="Fortnightly">Fortnightly</option>
+                <option value="Monthly">Monthly</option>
+            </select>
+        </div>
+    </div>
+)}
 
 
-                        {/* Child Allergic */}
-                        <div className="form-group">
-                            <label className="field-label required-bg">Schedule*</label>
-                            <div className="input-wrapper">
-                                <select
-                                    className="form-input"
-                                    value={Schedule}
-                                    onChange={(e) => setSchedule(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Select</option>
-                                    <option value="Fortnightly">Fortnightly</option>
-                                    <option value="Monthly">Monthly</option>
-                                </select>
-                            </div>
-                        </div>
+                       
 
                         {(Schedule === "Fortnightly" || Schedule === "Monthly") && (
                             <div className="form-group">

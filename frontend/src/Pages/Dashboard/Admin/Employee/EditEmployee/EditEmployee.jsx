@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,7 +16,7 @@ export default function EditEmployee() {
   } else {
     navigate("/employees");
   }
-
+ 
   useEffect(() => {
     setLoading(true);
     EmployeeServices.getVolunteerById(id)
@@ -29,11 +31,19 @@ export default function EditEmployee() {
         setContactNumber(volunteerDetails.contact_number);
         setPostCode(volunteerDetails.postal_code);
         setWorkingCommit(volunteerDetails.working_commitment);
-        setSchedule(volunteerDetails.schedule);
+        
         setDaystoCommit(volunteerDetails.days_to_commit); // Array
         setAreasofworking(volunteerDetails.areas_of_working); // Array
+        
         setAgeGroup(volunteerDetails.age_group); // Array
-
+        if(volunteerDetails.schedule!==''){
+          setMonthlyCommit(true)
+        setSchedule(volunteerDetails.schedule);
+        
+        setScheduleDetail(volunteerDetails.schedule_detail);
+        
+        }
+        
         // Mapping qualification fields to state
         setPreviousExperienceDetail(
           volunteerDetails.qualification.previous_experience_detail
@@ -61,7 +71,7 @@ export default function EditEmployee() {
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
   const [FullAddress, setFullAddress] = useState("");
-
+  const [MonthlyCommit,setMonthlyCommit]=useState(false)
   const [PostCode, setPostCode] = useState("");
 
   // Voluntering  details
@@ -73,7 +83,7 @@ export default function EditEmployee() {
   const [PreviousTeachingExperience, setPreviousTeachingExperience] =
     useState(false);
 
-//   const [ScheduleDetail, setScheduleDetail] = useState("");
+  const [ScheduleDetail, setScheduleDetail] = useState("");
   const [PreviousExperienceDetail, setPreviousExperienceDetail] = useState("");
   const [BriefExperienceDetail, setBriefExperienceDetail] = useState("");
   const [firstAidCertificate, setFirstAidCertificate] = useState(false);
@@ -104,6 +114,7 @@ export default function EditEmployee() {
         postal_code: PostCode,
         working_commitment: WorkingCommit,
         schedule: Schedule,
+        schedule_detail:ScheduleDetail,
         days_to_commit: DaystoCommit, // Array of days like ["Monday Evening", "Wednesday"]
         areas_of_working: Areasofworking, // Array of areas like ["Quran", "Community Cohesion"]
         age_group: AgeGroup, // Array of age groups like ["9 to 12 years", "12 or over"],
@@ -119,20 +130,25 @@ export default function EditEmployee() {
       interest_in_joining: interestInJoining,
     };
   
-    console.log(volunteerData); // Debugging - log the request data before sending
+    
   
     // Make the API request to update volunteer
     EmployeeServices.editVolunteer(id, volunteerData)
-      .then((res) => {
-        console.log(res.data);
-        alert("Volunteer Updated successfully");
-      })
-      .catch((err) => {
-        console.log(err.response?.data?.msg || "Error occurred");
-        alert(err.response?.data?.msg || "Error occurred");
-        setError(err.response?.data?.msg || "Error occurred");
+    .then((res) => {
+      toast.success("Volunteer updated successfully", {
+        position: "top-center"  // Use string instead of toast.POSITION.TOP_RIGHT
       });
-  
+      navigate("/employees")
+    })
+    .catch((err) => {
+      const errorMsg = err.response?.data?.msg || "Error occurred";
+      console.error(errorMsg);
+      // Show error toast notification
+      toast.error(errorMsg, {
+        position: "top-center"  // Use string instead of toast.POSITION.TOP_RIGHT
+      });
+      setError(errorMsg);
+    });
     // Reset the form if needed
   };
   
@@ -244,6 +260,21 @@ export default function EditEmployee() {
       setAgeGroup(AgeGroup.filter((certificate) => certificate !== id));
     }
   };
+
+
+  const weeklycommitments=(e)=>{
+    if(e.target.value==="No"){
+        setWorkingCommit(e.target.value)
+        setMonthlyCommit(true)
+    }
+    else{
+        setSchedule('')
+        setScheduleDetail('')
+        setMonthlyCommit(false)
+        setWorkingCommit(e.target.value)
+        
+    }
+}
 
   return (
     <div className="add-student-container">
@@ -395,36 +426,37 @@ export default function EditEmployee() {
                 <select
                   className="form-input"
                   value={WorkingCommit}
-                  onChange={(e) => setWorkingCommit(e.target.value)}
+                  onChange={weeklycommitments}
                   required
                 >
                   <option value="">Select Hours</option>
                   <option value="2 Hours">2 Hours</option>
                   <option value="Upto 4 Hours">Upto 4 Hours</option>
-                  <option value="Up to 6 Hours">Upto 6 Hours</option>
-                  <option value="Upto 8 Hours">Upto 8 Hours</option>     
+                  <option value="Upto 6 Hours">Upto 6 Hours</option>
+                  <option value="Upto 8 Hours">Upto 8 Hours</option> 
+                  <option value="No">No</option>     
                 </select>
               </div>
             </div>
+            {MonthlyCommit && (
+    <div className="form-group">
+        <label className="field-label required-bg">Schedule*</label>
+        <div className="input-wrapper">
+            <select
+                className="form-input"
+                value={Schedule}
+                onChange={(e) => setSchedule(e.target.value)}
+                required
+            >
+                <option value="">Select</option>
+                <option value="Fortnightly">Fortnightly</option>
+                <option value="Monthly">Monthly</option>
+            </select>
+        </div>
+    </div>
+)}
 
-            {/* Child Allergic */}
-            <div className="form-group">
-              <label className="field-label required-bg">Schedule*</label>
-              <div className="input-wrapper">
-                <select
-                  className="form-input"
-                  value={Schedule}
-                  onChange={(e) => setSchedule(e.target.value)}
-                  required
-                >
-                  <option value="">Select</option>
-                  <option value="Fortnightly">Fortnightly</option>
-                  <option value="Monthly">Monthly</option>
-                </select>
-              </div>
-            </div>
-
-            {/* {(Schedule === "Fortnightly" || Schedule === "Monthly") && (
+            {(Schedule === "Fortnightly" || Schedule === "Monthly") && (
               <div className="form-group">
                 <label className="field-label required-bg">Enter Hours*</label>
                 <div className="input-wrapper">
@@ -438,7 +470,7 @@ export default function EditEmployee() {
                   />
                 </div>
               </div>
-            )} */}
+            )}
           </div>
           <div style={{ marginTop: "20px" }}>
   <label

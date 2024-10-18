@@ -49,7 +49,10 @@ const volunteerSchema = new Schema({
         },
         schedule: {
             type: String,
-            required: true
+            
+        },
+        schedule_detail:{
+            type:String
         },
         days_to_commit: [{
             type: String, 

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../AddStudent/AddStudent.css";
 import { AiOutlineHome } from "react-icons/ai";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ClassManager from "../../../../../api/services/admin/class/classManager";
 
 import StudentServices from "../../../../../api/services/admin/student/studentManager";
 import Loader from "../../../../../components/Loader/Loader";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditStudent() {
   const { id } = useParams();
@@ -58,7 +59,7 @@ export default function EditStudent() {
   // Error messages
   const [error, setError] = useState("");
   const [classData, setClassData] = useState([]);
-
+  const navigate=useNavigate();
   const [loading, setLoading] = useState(true); // State to track loading
   // Handle form submission
   const handleSubmit = (e) => {
@@ -122,13 +123,31 @@ export default function EditStudent() {
   
     console.log(studentData);
 
-    StudentServices.editStudent(id,studentData)
-    .then((res)=>{
-      alert("updated sucessfully")
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
+    StudentServices.editStudent(id, studentData)
+  .then((res) => {
+    // Show success toast notification
+    toast.success("Student updated successfully", {
+      position: "top-center",  // Position set as a string
+    });
+
+    // Navigate to the students page after success
+    navigate("/students");
+  })
+  .catch((err) => {
+    const errorMsg = err.response?.data?.msg || "Error occurred";
+
+    // Log the error message to the console
+    console.error(errorMsg);
+
+    // Show error toast notification
+    toast.error(errorMsg, {
+      position: "top-center",  // Position set as a string
+    });
+
+    // Set error in state (if needed)
+    setError(errorMsg);
+  });
+    
     // Example output to check
     // console.log('Student Data:', studentData);
     //   StudentServices.createStudent(studentData)

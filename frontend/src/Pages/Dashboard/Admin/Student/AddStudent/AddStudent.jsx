@@ -1,7 +1,8 @@
 import  { useEffect, useState } from 'react';
 import './AddStudent.css';
 import { AiOutlineHome } from "react-icons/ai";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ClassManager from "../../../../../api/services/admin/class/classManager"
 
 import StudentServices from "../../../../../api/services/admin/student/studentManager";
@@ -102,21 +103,37 @@ export default function AddStudent() {
       }
   };
   
-  // Example output to check
-  console.log(studentData);
-  console.log(classes)
+  
   // console.log(selectedCertificates)
-  StudentServices.createStudent(studentData)
-  .then((res)=>{
+  
+
+StudentServices.createStudent(studentData)
+  .then((res) => {
+    // Stop loading spinner or indicator
     setLoading(false);
-    console.log(res.data)
-    alert("Student added successfully")
+
+    
+
+    // Show success toast notification
+    toast.success("Student added successfully", {
+      position: "top-center",  // Position set as a string
+    });
+    resetForm();
   })
-  .catch((err)=>{
-    console.log(err.response.data.msg)
-    alert(err.response.data.msg)
+  .catch((err) => {
+    // Stop loading spinner or indicator
     setLoading(false);
-  })
+
+    // Log error message
+    const errorMsg = err.response?.data?.msg || "Error occurred";
+    
+
+    // Show error toast notification
+    toast.error(errorMsg, {
+      position: "top-center",  // Position set as a string
+    });
+  });
+
 
 
     // Reset the form after submission (optional)

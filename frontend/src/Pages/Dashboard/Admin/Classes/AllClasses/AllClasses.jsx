@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
-
+import Swal from 'sweetalert2'; // Ensure you have SweetAlert2 installed and imported
 
 import ClassManager from "../.././../../../api/services/admin/class/classManager"
 
@@ -30,7 +30,7 @@ export default function ShowClasses() {
     setLoading(true);
     ClassManager.getAllClasses()
       .then((res) => {
-        console.log(res.data);
+        
         setClasses(res.data);
         setLoading(false);
       })
@@ -140,28 +140,52 @@ export default function ShowClasses() {
 
   // Add your edit and delete functions
   function handleEdit(id) {
-    console.log(`Edit class with ID: ${id}`);
-    // Implement edit functionality here
   }
 
-  function handleDelete(id) {
-    const isConfirmed = window.confirm("Are you sure you want to delete this class?");
   
-    if (isConfirmed) {
+
+function handleDelete(id) {
+  // Show confirmation dialog with SweetAlert2
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!"
+  }).then((result) => {
+    // If user confirms the action
+    if (result.isConfirmed) {
+      // Call the delete API
       ClassManager.deleteClass(id)
         .then((res) => {
           console.log(res.data);
-          alert("Class Deleted Successfully");
-          setRefresh(!refresh); // Toggle refresh to trigger re-fetch
+          // Show success notification using SweetAlert2
+          Swal.fire({
+            title: "Deleted!",
+            text: "Class has been deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#3085d6"
+          });
+          // Trigger re-fetch by toggling refresh state
+          setRefresh(!refresh);
         })
         .catch((err) => {
-          console.log(err);
-          alert(err.response.data.msg);
+          console.error(err);
+          // Show error notification using SweetAlert2
+          Swal.fire({
+            title: "Error!",
+            text: err.response?.data?.msg || "Something went wrong while deleting the class.",
+            icon: "error",
+            confirmButtonColor: "#d33"
+          });
         });
     } else {
-      console.log("Class deletion canceled by user");
+      
     }
-  }
+  });
+}
 
 
 }

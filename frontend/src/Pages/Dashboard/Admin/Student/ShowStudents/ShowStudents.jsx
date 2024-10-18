@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
 import './ShowStudents.css'; // Import the CSS file
-
+import Swal from 'sweetalert2';
 import StudentServices from "../../../../../api/services/admin/student/studentManager";
 import { useNavigate } from 'react-router-dom';
 
@@ -19,18 +19,7 @@ export default function ShowStudents() {
     navigate(`/students/edit/${id}`)
 
   }
-  // useEffect(() => {
-  //   // Simulate fetching data with a delay
-  //   setTimeout(() => {
-  //     // Replace this with your actual data fetching logic
-  //     setStudents([
-  //       { id: 1, forename: 'Mark', surname: 'Otto', contact: '(123) 456-7890' },
-  //       { id: 2, forename: 'Jacob', surname: 'Thornton', contact: '(987) 654-3210' },
-  //       { id: 3, forename: 'Larry', surname: 'Bird', contact: '(555) 123-4567' },
-  //     ]);
-  //     setLoading(false); // Set loading to false after data is fetched
-  //   }, 2000); // Simulating a 2-second delay
-  // }, []);
+  
 
   useEffect(()=>{
     setLoading(true);
@@ -63,24 +52,51 @@ export default function ShowStudents() {
   });
 
 
-    function handleDelete(id) {
-      const isConfirmed = window.confirm("Are you sure you want to delete this student?");
-    
-      if (isConfirmed) {
+ 
+
+  function handleDelete(id) {
+    // Show confirmation dialog with SweetAlert2
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Call the delete API if user confirms the action
         StudentServices.deleteStudent(id)
           .then((res) => {
             console.log(res.data);
-            alert("Student Deleted Successfully");
-            setRefresh(!refresh); // Toggle refresh to trigger re-fetch
+            // Show success notification using SweetAlert2
+            Swal.fire({
+              title: "Deleted!",
+              text: "Student has been deleted successfully.",
+              icon: "success",
+              confirmButtonColor: "#3085d6"
+            });
+            // Toggle refresh to trigger re-fetch
+            setRefresh(!refresh);
           })
           .catch((err) => {
-            console.log(err);
-            alert(err.response.data.msg);
+            console.error(err);
+            // Show error notification using SweetAlert2
+            Swal.fire({
+              title: "Error!",
+              text: err.response?.data?.msg || "Something went wrong while deleting the student.",
+              icon: "error",
+              confirmButtonColor: "#d33"
+            });
           });
       } else {
+        // Log or handle cancel action if needed
         console.log("Student deletion canceled by user");
       }
-    }
+    });
+  }
+  
 
   if (loading) {
     return <Loader />; // Show the loader if loading
