@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
 import Swal from 'sweetalert2'; // Ensure you have SweetAlert2 installed and imported
-import CourseManager from "../.././../../../api/services/admin/course/courseManager"
+import CourseManager from "../../../../../api/services/admin/course/courseManager.js"
 
 export default function ShowClasses() {
   const [searchTerm, setSearchTerm] = useState('');
