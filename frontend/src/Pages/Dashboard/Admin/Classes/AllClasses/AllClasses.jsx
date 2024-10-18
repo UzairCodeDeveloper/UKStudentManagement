@@ -121,10 +121,10 @@ export default function ShowClasses() {
       {classItem.subjects?.join(', ') || '---'} {/* Subjects */}
     </td>
     <td className="status-buttons">
-      <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
+      <button className="btn btn-edit" onClick={() => handleEdit(classItem._id)}>
         <AiOutlineEdit />
       </button>
-      <button className="btn btn-delete" onClick={() => handleDelete(classItem.id)}>
+      <button className="btn btn-delete" onClick={() => handleDelete(classItem._id)}>
         <AiOutlineDelete />
       </button>
     </td>

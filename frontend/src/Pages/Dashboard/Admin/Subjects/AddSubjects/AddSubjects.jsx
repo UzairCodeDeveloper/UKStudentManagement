@@ -8,7 +8,7 @@ import CourseManager from "../../../../../api/services/admin/course/courseManage
 import volunteerManager from '../../../../../api/services/admin/volunteer/volunteerManager'
 export default function AddClass() {
   const [selectedClass, setSelectedClass] = useState(''); // State for selected class
-  const [subjectInputs, setSubjectInputs] = useState([{ id: Date.now(), name: '' }]); // State for dynamic subject inputs
+  // const [subjectInputs, setSubjectInputs] = useState([{ id: Date.now(), name: '' }]); // State for dynamic subject inputs
   const [subject,setSubject] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTeacher, setSelectedTeacher] = useState(''); 
@@ -53,39 +53,37 @@ export default function AddClass() {
     //   //  subjects: subjectInputs.map(input => input.name) 
     //   });
       const data ={class_id:selectedClass,
-        course_name: subject}
+        course_name: subject,
+        volunteer_id:selectedTeacher
+      }
 
       CourseManager.createNewClass(data)
       .then((res)=>{
         // console.log(res.data)
         alert("Subjects added successfully")
+        setSubject(''); 
+        setSelectedClass('');
+        setSelectedTeacher('');
       })
       .catch((err)=>{
         console.log(err.response.data.msg)
         alert(err.response.data.msg)
       })
-
-
-
-    // Clear input fields
-    // setSubjectInputs([{ id: Date.now(), name: '' }]); // Reset to one input
-    setSubject(''); // Reset subject input
-    setSelectedClass('');
   };
 
-  const handleAddSubject = () => {
-    setSubjectInputs([...subjectInputs, { id: Date.now(), name: '' }]); // Add new subject input
-  };
+  // const handleAddSubject = () => {
+  //   setSubjectInputs([...subjectInputs, { id: Date.now(), name: '' }]); // Add new subject input
+  // };
 
-  const handleRemoveSubject = (id) => {
-    if (subjectInputs.length > 1) {
-      setSubjectInputs(subjectInputs.filter(input => input.id !== id)); // Remove specific subject input
-    }
-  };
+  // const handleRemoveSubject = (id) => {
+  //   if (subjectInputs.length > 1) {
+  //     setSubjectInputs(subjectInputs.filter(input => input.id !== id)); // Remove specific subject input
+  //   }
+  // };
 
-  const handleSubjectChange = (id, value) => {
-    setSubjectInputs(subjectInputs.map(input => (input.id === id ? { ...input, name: value } : input)));
-  };
+  // const handleSubjectChange = (id, value) => {
+  //   setSubjectInputs(subjectInputs.map(input => (input.id === id ? { ...input, name: value } : input)));
+  // };
 
   return (
     <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
@@ -125,8 +123,8 @@ export default function AddClass() {
                   required // Mark as required
                 >
                   <option value="">Select Teacher</option>
-                  {Teachers.map((cls, index) => (
-                    <option key={index} value={cls._id}>{cls.volunteer_details.full_name}</option>
+                  {Teachers.map((cls) => (
+                    <option key={cls._id} value={cls._id}>{cls.volunteer_details.full_name}</option>
                   ))}
                 </select>
               </div>

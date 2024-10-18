@@ -107,6 +107,7 @@ export default function ShowClasses() {
               <tr>
                 <th>Class Name</th>
                 <th>Subjects</th>
+                <th>Instructor</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -121,6 +122,11 @@ export default function ShowClasses() {
                     
                     {/* {classItem.subjects.join(', ')} */}
                     {classItem.course_name}
+                    </td>
+                    <td>
+                    
+                    {/* {classItem.subjects.join(', ')} */}
+                    {classItem?.instructor?.volunteer_details?.full_name}
                     </td>
                   <td className="status-buttons">
                     <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
