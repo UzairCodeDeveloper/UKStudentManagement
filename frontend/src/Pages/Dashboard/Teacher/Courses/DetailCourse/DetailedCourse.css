@@ -1,0 +1,20 @@
+.accordion-button:not(.collapsed) {
+    background-color: none !important; /* Remove background color */
+    color: inherit; /* Optional: to keep the text color */
+    border: none;
+  }
+  
+  .accordion-button {
+    border: none; /* Optional: to remove the border */
+  }
+  
+  .accordion-button {
+    background-color: transparent !important; /* Set a transparent background by default */
+    border: none; /* Remove the border */
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: transparent !important; /* Override active background color */
+    color: inherit; /* Keep the text color */
+    box-shadow: none; /* Remove any box shadow */
+}

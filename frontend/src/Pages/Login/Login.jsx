@@ -14,21 +14,53 @@ export default function Login() {
   const dispatch = useDispatch();
   
   const onSubmit = (data) => {
+    const { username, password } = data; // Destructure the data for easier access
     
-    // console.log(JSON.stringify(data)); 
-    AdminUserServices.signInAdmin(data)
-    .then(response => {
-      console.log(response.data)
-      // Loading Element should be added here
-      dispatch(setAdminUser(response.data));
-    })
-    .catch(error => {
-      console.log(error)
-      alert(error.response.data.errors[0].msg)
-    })
-
-    
+    // Regular expressions to check the format of user ID
+    const isStudentID = /^\d{4}-\d{3}$/.test(username); // Format: 2024-102
+    const isVolunteerID = /^\d{4}$/.test(username); // Format: 0003
+    const isAdminID = /^[a-zA-Z]+$/.test(username); // Format: superAdmin
+  
+    if (isAdminID) {
+      // Call Admin API
+      AdminUserServices.signInAdmin(data)
+        .then(response => {
+          console.log(response.data);
+          dispatch(setAdminUser(response.data));
+        })
+        .catch(error => {
+          console.log(error);
+          alert(error.response.data.errors[0].msg);
+        });
+    } else if (isStudentID) {
+      // Call Student API
+      console.log('Calling Student API'); // Replace with actual API call
+      // Example:
+      // StudentUserServices.signInStudent(data)
+      //   .then(response => {
+      //     console.log(response.data);
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     alert(error.response.data.errors[0].msg);
+      //   });
+    } else if (isVolunteerID) {
+      // Call Volunteer API
+      console.log('Calling Volunteer API'); // Replace with actual API call
+      // Example:
+      // VolunteerUserServices.signInVolunteer(data)
+      //   .then(response => {
+      //     console.log(response.data);
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     alert(error.response.data.errors[0].msg);
+      //   });
+    } else {
+      alert('Invalid User ID format. Please enter a valid ID.');
+    }
   };
+  
 
   return (
     <div className='container-fluid loginContainer'>

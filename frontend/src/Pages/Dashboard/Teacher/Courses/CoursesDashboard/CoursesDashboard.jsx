@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './CoursesDashboard.css';
-
+import {useNavigate} from 'react-router-dom'
 const courses = [
   {
     id: 1,
@@ -37,6 +37,8 @@ const courses = [
   
 ];
 
+
+
 export default function CoursesDashboard() {
   // State for managing search term and layout
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,6 +49,8 @@ export default function CoursesDashboard() {
     course.courseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     course.courseCode.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const navigate=useNavigate();
 
   return (
     <div className="courses-dashboard">
@@ -69,7 +73,7 @@ export default function CoursesDashboard() {
         <div className={`courses-container ${layout}`} style={{border:'none'}}>
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course) => (
-              <div key={course.id} className={`course-card ${layout}`} >
+              <div key={course.id} className={`course-card ${layout}`} style={{cursor:"pointer"}} onClick={()=>{navigate('/DetailedCourse')}} >
                 <img src={course.image} alt={course.courseName} className="course-image" />
                 <div className="course-content">
                   <p>{course.courseCode}</p>
