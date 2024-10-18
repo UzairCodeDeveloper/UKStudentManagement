@@ -6,6 +6,8 @@ const userslice = createSlice({
   initialState: {
     loggedIn: false,
     adminLogin: false,
+    teacherLogin: false,
+    studentLogin: false,
     user: null, // Use "user" consistently
     token: null,
   },
@@ -18,19 +20,32 @@ const userslice = createSlice({
       state.user = action.payload;
       state.loggedIn = true;
       state.adminLogin = true;
+      state.teacherLogin = false;
+      state.studentLogin = false;
     },
-    setUser: (state, action) => {
-        state.user = action.payload;
-        state.loggedIn = true;
-        state.adminLogin = true;
-      },
+    setTeacherUser: (state, action) => {
+      state.user = action.payload;
+      state.loggedIn = true;
+      state.teacherLogin = true;
+      state.adminLogin = false;
+      state.studentLogin = false;
+    },
+    setStudentUser: (state, action) => {
+      state.user = action.payload;
+      state.loggedIn = true;
+      state.studentLogin = true;
+      state.teacherLogin = false;
+      state.adminLogin = false;
+    },
     logoutUser: (state) => {
       state.user = null;
       state.loggedIn = false;
       state.adminLogin = false;
+      state.teacherLogin = false;
+      state.studentLogin = false;
     },
   },
 });
 
-export const { getuser, setUser, logoutUser , setAdminUser} = userslice.actions;
+export const { getuser, setUser, logoutUser, setAdminUser ,setStudentUser,setTeacherUser} = userslice.actions;
 export default userslice.reducer;

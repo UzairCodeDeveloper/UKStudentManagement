@@ -201,11 +201,37 @@ const deleteCourse = async (req, res) => {
     }
 };
 
+const getAllTeacherCourses = async (req, res) => {
+    const { id } = req.user; // Get instructor's ID from the middleware
+
+    try {
+        
+        const courses = await Course.find({ instructor: id })
+            .populate('class_id', 'class_name') 
+            .select('course_name class_id');   
+
+        
+        if (!courses.length) {
+            return res.status(404).json({ msg: 'No courses found for this instructor' });
+        }
+
+        
+        return res.status(200).json(courses);
+
+    } catch (error) {
+        
+        console.error('Error fetching courses:', error.message);
+        
+        res.status(500).json({ msg: 'Server Error' });
+    }
+};
+
   
 module.exports = {
     createCourse,
     getAllCourses,
     getCourseById,
     updateCourse,
-    deleteCourse
+    deleteCourse,
+    getAllTeacherCourses
 };

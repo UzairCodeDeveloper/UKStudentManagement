@@ -4,8 +4,9 @@ import logo from '../../assets/logo.webp';
 import animation from './loginAnimation.json';
 import Lottie from 'lottie-react';
 import AdminUserServices from "../../api/services/admin/adminUser"
+import VolunteerServices from "../../api/services/admin/volunteer/volunteerManager"
 import { useDispatch } from 'react-redux';
-import { setAdminUser } from '../../Redux/userSlice';
+import { setAdminUser,setTeacherUser } from '../../Redux/userSlice';
 
 export default function Login() {
 
@@ -35,6 +36,7 @@ export default function Login() {
     } else if (isStudentID) {
       // Call Student API
       console.log('Calling Student API'); // Replace with actual API call
+      alert("Student is yet to be integrated")
       // Example:
       // StudentUserServices.signInStudent(data)
       //   .then(response => {
@@ -45,17 +47,17 @@ export default function Login() {
       //     alert(error.response.data.errors[0].msg);
       //   });
     } else if (isVolunteerID) {
-      // Call Volunteer API
-      console.log('Calling Volunteer API'); // Replace with actual API call
-      // Example:
-      // VolunteerUserServices.signInVolunteer(data)
-      //   .then(response => {
-      //     console.log(response.data);
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //     alert(error.response.data.errors[0].msg);
-      //   });
+      const data = {employee_id:username, password};
+      // console.log('Calling Volunteer API'); // Replace with actual API call
+      VolunteerServices.loginVolunteer(data)
+        .then(response => {
+          // console.log(response.data);
+          dispatch(setTeacherUser(response.data));
+        })
+        .catch(error => {
+          console.log(error);
+          alert(error.response.data.errors[0].msg);
+        });
     } else {
       alert('Invalid User ID format. Please enter a valid ID.');
     }

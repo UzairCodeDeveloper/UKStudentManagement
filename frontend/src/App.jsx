@@ -7,7 +7,7 @@ import TeacherDashboard from './Pages/Dashboard/Teacher/TeacherDashboard';
 
 
 export default function App() {
-  const { adminLogin } = useSelector((state) => state.user);
+  const { adminLogin,teacherLogin } = useSelector((state) => state.user);
 
 
   return (
@@ -15,12 +15,15 @@ export default function App() {
       {adminLogin ? (
         // Render AdminDashboard if the user is logged in
         <AdminDashboard />
-      ) : (
+      ) :teacherLogin?(
+        // Render TeacherDashboard if the user is logged in
+        <TeacherDashboard/>
+      ) :(
         // Render Login if the user is not logged in
         <Login />
       )}
 
-      <TeacherDashboard/>
+
     </>
   );
 }

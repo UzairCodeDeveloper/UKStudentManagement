@@ -1,6 +1,7 @@
 const Volunteer = require('../../models/Volunteer');
 const Role = require('../../models/Role');
 
+const mongoose = require('mongoose');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
@@ -160,24 +161,33 @@ const getVolunteerById = async (req, res) => {
     const { id } = req.params;
 
     try {
-
-        if(!id){
+        // Check if ID is provided
+        if (!id) {
             return res.status(400).json({ msg: 'Volunteer ID is required' });
         }
+
+        // Validate if ID is a valid MongoDB ObjectID
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ msg: 'Invalid volunteer ID' });
         }
 
-        const volunteer = await Volunteer.findById(id).populate('role', 'name');
+        // Fetch the volunteer by ID and populate the 'role' field
+        const volunteer = await Volunteer.findById(id);
+        
+        // Check if the volunteer exists
         if (!volunteer) {
             return res.status(404).json({ msg: 'Volunteer not found' });
         }
-        res.status(200).json(volunteer);
+
+        // Return the volunteer object, which should include _id by default
+        return res.status(200).json(volunteer);
+
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ msg: 'Server Error', error });
+        return res.status(500).json({ msg: 'Server Error', error });
     }
 };
+
 
 // Update volunteer by ID
 const updateVolunteer = async (req, res) => {
@@ -204,7 +214,6 @@ const updateVolunteer = async (req, res) => {
 };
 
 
-const mongoose = require('mongoose');
 
 // Soft Delete (set is_active to false) for Volunteer by ID
 const deleteVolunteer = async (req, res) => {
@@ -241,6 +250,9 @@ const deleteVolunteer = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
+
+
 
 
 

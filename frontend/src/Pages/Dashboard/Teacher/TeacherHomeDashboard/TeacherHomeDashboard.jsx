@@ -1,4 +1,3 @@
-import React from 'react';
 import { Pie } from 'react-chartjs-2';
 import img from './person.png';
 import img2 from './imge.png'
@@ -11,6 +10,11 @@ import {
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import calendar styles
 import './TeacherHomeDashboard.css';
+
+import VolunteerServices from "../../../../api/services/admin/volunteer/volunteerManager"
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 
 // Register the necessary chart components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -36,13 +40,34 @@ const events = [
     { id: 3, title: "Field Trip to Museum", date: "2024-10-15", description: "A fun educational trip for all classes." },
 ];
 export default function TeacherHomeDashboard() {
+    // const data = useSelector((state) => state.user.user.volunteer.volunteer_details);
+    // console.log(data)
+
+    const [volunteerData] = useState(useSelector((state) => state.user.user.volunteer.volunteer_details));
+    console.log(volunteerData)
+
+    // useEffect(() => {
+    //     // Call the API to get the volunteer data
+    //     VolunteerServices.getVolunteerById(1)  
+    //         .then((response) => {
+    //             console.log(response.data);
+    //             // Set the volunteer data in the state
+    //             setVolunteerData(response.data);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    // }, []);   
+
+
+
     return (
         <div className="dashboard-container">
             {/* Left Side: Profile Section */}
             <div className="left-section">
                 <div className="profile-image">
                     <img src={img} alt="Profile" />
-                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>UZAIR</h2>
+                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>{volunteerData.full_name}</h2>
                 </div>
                 <div className="profile-details">
                     
@@ -51,21 +76,21 @@ export default function TeacherHomeDashboard() {
                         <span>Teacher</span>
                     </div>
                     
-                    <div className="profile-detail-item">
+                    {/* <div className="profile-detail-item">
                         <strong>Father / Husband Name:</strong>
                         <span>John Doe</span>
-                    </div>
+                    </div> */}
                     <div className="profile-detail-item">
                         <strong>Mobile No:</strong>
-                        <span>123456789</span>
+                        <span>{volunteerData.contact_number}</span>
                     </div>
-                    <div className="profile-detail-item">
+                    {/* <div className="profile-detail-item">
                         <strong>Email Address:</strong>
                         <span>uzair@example.com</span>
-                    </div>
+                    </div> */}
                     <div className="profile-detail-item">
                         <strong>Home Address:</strong>
-                        <span>123 Main St</span>
+                        <span>{volunteerData.address}</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>National ID:</strong>
@@ -73,11 +98,11 @@ export default function TeacherHomeDashboard() {
                     </div>
                     <div className="profile-detail-item">
                         <strong>Education:</strong>
-                        <span>Master of Science</span>
+                        <span>// Master of Science</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>Gender:</strong>
-                        <span>Male</span>
+                        <span>{volunteerData.gender}</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>Religion:</strong>

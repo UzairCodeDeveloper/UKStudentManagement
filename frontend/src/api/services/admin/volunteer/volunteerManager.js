@@ -63,13 +63,20 @@ const getVolunteerById = (id) => {
 };
 
 
+// Login Volunteer
+const loginVolunteer = (data) => {
+  return httpClient.post("/volunteer/login", data);
+};
+
+
 
 const exportedObject = {
     createNewVolunteer,
     getAllVolunteers,
     deleteVolunteer,
     editVolunteer,
-    getVolunteerById
+    getVolunteerById,
+    loginVolunteer
 };
 
 
