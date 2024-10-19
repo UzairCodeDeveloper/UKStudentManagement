@@ -3,13 +3,17 @@ import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker'; // Ensure react-datepicker is installed
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
 import './DetailedCourse.css'
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { SlPeople } from "react-icons/sl";
+import { GrResources } from "react-icons/gr";
+import { useNavigate } from 'react-router-dom';
 export default function DetailCourse() {
   // State to manage course start date selected via DatePicker
   const [startDate, setStartDate] = useState(null);
 
   // Course duration constants
   const courseDurationMonths = 14;
-
+  const navigate=useNavigate();
   // Function to generate weeks based on start date and 13-month duration
   const generateWeeks = (startDate) => {
     const weeks = [];
@@ -94,7 +98,7 @@ export default function DetailCourse() {
 
       {startDate && (
         <div className="course-overview" style={{ backgroundColor: 'white', padding: '30px', borderRadius: '20px' }}>
-          <p><strong>End Date:</strong> {endDate.format('D MMM YYYY')}</p>
+          
 
           <div className="accordion" id="accordionExample">
             {/* Accordion for Welcome to Course */}
@@ -107,7 +111,7 @@ export default function DetailCourse() {
                   data-bs-target="#collapseOne" 
                   aria-expanded="true" 
                   aria-controls="collapseOne"
-                  style={{ fontWeight: '500', fontSize: '22px', backgroundColor: 'none !important' }}
+                  style={{ fontWeight: '600', fontSize: '22px', backgroundColor: 'none !important'}}
                   onClick={handleAccordionToggle}
                 >
                   Welcome to Course
@@ -121,11 +125,15 @@ export default function DetailCourse() {
                 onTransitionEnd={handleAccordionToggle}
               >
                 <div className="accordion-body">
-                  <ul>
-                    <li><a href="#">Syllabus</a></li>
-                    <li><a href="#">Course Schedule</a></li>
-                    <li><a href="#">Lecture Notes</a></li>
-                  </ul>
+                <div className='accordionBox' style={{border:'1px solid #dee2e6',padding:'20px',borderRadius:'10px', }}>
+                    <GrResources style={{backgroundColor:'#f7634d', color:'white', fontSize:'3rem',padding:'5px', borderRadius:'5px'}}/>
+                    <span style={{fontSize:'1.2rem', marginLeft:'20px'}}><a href='' style={{cursor:'pointer'}} onClick={()=>{navigate('/courseResources')}}>Resources</a></span>
+                  </div>
+                  <div className='accordionBox' style={{border:'1px solid #dee2e6',padding:'20px',borderRadius:'10px', marginTop:'10px'}}>
+                    <MdOutlinePeopleAlt style={{backgroundColor:'#5d63f6', color:'white', fontSize:'3rem',padding:'5px', borderRadius:'5px'}}/>
+                    <span style={{fontSize:'1.2rem', marginLeft:'20px'}}><a href='' style={{cursor:'pointer'}} onClick={()=>{navigate('/courseattendance')}}>Attendance</a></span>
+                  </div>
+                  
                 </div>
               </div>
             </div>
