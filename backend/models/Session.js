@@ -5,8 +5,7 @@ const sessionSchema = new Schema({
     session_year: {
         type: String,
         required: true,
-        unique:true,
-        // unique: true // Ensure class names are unique
+        unique: true,
     },
     is_active: {
         type: Boolean,
@@ -17,16 +16,13 @@ const sessionSchema = new Schema({
         enum: ['active', 'completed', 'cancelled'], // Add more statuses as needed
         default: 'active'
     },
-    start_date:{
-        type:Date,
-        // required: true,
+    start_date: {
+        type: Date,
     },
-    end_date:{
-        type:Date,
-        // required: true,
+    end_date: {
+        type: Date,
     }
-
-});
+}, { timestamps: true });
 
 const Session = mongoose.model('Session', sessionSchema);
 module.exports = Session;

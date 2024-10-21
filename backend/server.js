@@ -59,6 +59,9 @@ app.use('/api/course', require('./routes/api/course'))
 // Volunteer APIs
 app.use('/api/volunteer', require('./routes/api/volunteer'))
 
+// Student APIs
+app.use('/api/session', require('./routes/api/session'))
+
 
 // for production
 // Serve static assets in production

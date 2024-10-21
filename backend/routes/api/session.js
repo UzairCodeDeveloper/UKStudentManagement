@@ -1,30 +1,29 @@
 const express = require('express');
 const router = express.Router();
-// const {
-//     createClass,
-//     getAllClasses,
-//     getClassById,
-//     updateClass,
-//     deleteClass
-// } = require('../../controller/ClassController/ClassController');
+const adminAuth = require('../../middleware/adminAuth')
 
-const adminAuth = require("../../middleware/adminAuth")
 
-// Route to create a new class (POST)
-// router.post('/create-class',adminAuth, createClass);
+const {
+    createSession,
+    getAllSessions,
+    getSessionById,
+    updateSession,
+    deleteSession
+} = require('../../controller/SessionController/SessionController');
 
-// // Route to get all classes (GET)
-// router.get('/all-classes',
-//     // adminAuth,
-//      getAllClasses);
+// POST: Create a new session
+router.post('/',adminAuth, createSession);
 
-// // Route to get a class by ID (GET)
-// router.get('/find-class/:id',adminAuth, getClassById);
+// GET: Fetch all sessions
+router.get('/get-sessions',adminAuth, getAllSessions);
 
-// // Route to update a class by ID (PUT)
-// router.put('/update-class/:id',adminAuth, updateClass);
+// GET: Fetch a session by ID
+router.get('/get-session/:id',adminAuth, getSessionById);
 
-// // Route to mark a class as inactive (DELETE - soft delete)
-// router.delete('/deleteClass/:id',adminAuth, deleteClass);
+// PUT: Update a session by ID
+router.put('/edit-session/:id',adminAuth, updateSession);
 
-// module.exports = router;
+// DELETE: Delete a session by ID
+router.delete('/delete/:id',adminAuth, deleteSession);
+
+module.exports = router;

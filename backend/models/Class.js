@@ -11,7 +11,7 @@ const classSchema = new Schema({
         type: Boolean,
         default: true
     },
-    status: {
+    status: {  
         type: String,
         enum: ['active', 'completed', 'cancelled'], // Add more statuses as needed
         default: 'active'
