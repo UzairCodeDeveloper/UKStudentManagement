@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const classSchema = new Schema({
-    class_name: {
+const sessionSchema = new Schema({
+    session_year: {
         type: String,
         required: true,
+        unique:true,
         // unique: true // Ensure class names are unique
     },
     is_active: {
@@ -16,13 +17,16 @@ const classSchema = new Schema({
         enum: ['active', 'completed', 'cancelled'], // Add more statuses as needed
         default: 'active'
     },
-    
-    session: {
-        type: Schema.Types.ObjectId,
-        ref: 'Session', // Reference to the Class model
-        required: true,
+    start_date:{
+        type:Date,
+        // required: true,
+    },
+    end_date:{
+        type:Date,
+        // required: true,
     }
+
 });
 
-const Class = mongoose.model('Class', classSchema);
-module.exports = Class;
+const Session = mongoose.model('Session', sessionSchema);
+module.exports = Session;

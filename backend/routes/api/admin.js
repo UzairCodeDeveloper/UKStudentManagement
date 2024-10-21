@@ -29,7 +29,7 @@ router.post(
 // @access      SHould be private and add admin middleware
 router.post(
     "/register",
-    adminAuth,
+    // adminAuth,
     [
         check("username", "Username is required").not().isEmpty(),
         check(
