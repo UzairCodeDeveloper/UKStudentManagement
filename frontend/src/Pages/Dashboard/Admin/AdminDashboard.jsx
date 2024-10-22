@@ -7,6 +7,7 @@ import { CiHome } from "react-icons/ci";
 import { BiBriefcase } from "react-icons/bi";
 import { GiNotebook } from "react-icons/gi";
 import { CiViewTimeline } from "react-icons/ci";
+import { MdOutlineTimer } from "react-icons/md";
 import { TfiHandStop } from "react-icons/tfi";
 import { useNavigate } from 'react-router-dom';
 import './Admin.css';
@@ -26,6 +27,9 @@ import UserProfile from '../../../components/UserProfile/UserProfile';
 import { ImProfile } from "react-icons/im";
 import EditStudent from './Student/EditStudent/EditStudent';
 import EditEmployee from './Employee/EditEmployee/EditEmployee';
+import AddSession from './Session/AddSession';
+import AllSession from './Session/AllSession/AllSession'
+import EditSession from './Session/EditSession/EditSession'
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -45,6 +49,7 @@ export default function AdminDashboard() {
     const [isSubjectOpen, setIsSubjectOpen] = useState(false);
     const [isAttendenceOpen, setIsAttendenceOpen] = useState(false);
     const [activeLink, setActiveLink] = useState('/');
+    const [isSessionOpen, setIsSessionOpen] = useState(false);
     
     
      // State for active link
@@ -57,11 +62,7 @@ export default function AdminDashboard() {
               <CiHome className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Dashboard</span>
             </Link>
           </li>
-          <Link to="/user-profile" className={`sidebar-item ${activeLink === '/user-profile' ? 'active' : ''}`}
           
-              onClick={() => setActiveLink('/user-profile')}>
-              <ImProfile className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Profile</span>
-            </Link>
           <li
             className={`sidebar-item sidebar-item-with-submenu`}
             onClick={() => setIsStudentOpen(!isStudentOpen)}
@@ -162,13 +163,46 @@ export default function AdminDashboard() {
               </Link>
             </li>
           </ul>
+
+          <li
+            className={`sidebar-item sidebar-item-with-submenu`}
+            onClick={() => setIsSessionOpen(!isSessionOpen)}
+          >
+            <div>
+              <MdOutlineTimer className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Sessions</span>
+            </div>
+            <span className="sidebar-toggle">
+              {isSessionOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
+            </span>
+          </li>
+          <ul className={`sub-menu ${isSessionOpen ? 'open' : ''}`}>
+            <li>
+              <Link to="/sessions" className={`sub-menu-item ${activeLink === '/students' ? 'active' : ''}`} 
+                onClick={() => setActiveLink('/sessions')}>
+                All Sessions
+              </Link>
+            </li>
+            <li>
+              <Link to="/add-session" className={`sub-menu-item ${activeLink === '/add-session' ? 'active' : ''}`} 
+                onClick={() => setActiveLink('/add-session')}>
+                Add Session
+              </Link>
+            </li>
+          </ul>
+
+
+
+
+
+
+
           <li>
             <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/timetable')}>
               <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Timetable</span>
             </Link>
           </li>
-          <li
+          {/* <li
             className={`sidebar-item sidebar-item-with-submenu`}
             onClick={() => setIsAttendenceOpen(!isAttendenceOpen)}
           >
@@ -199,7 +233,7 @@ export default function AdminDashboard() {
 
 
             
-          </li>
+          </li> */}
         </ul>
       </div>
     );
@@ -223,6 +257,9 @@ export default function AdminDashboard() {
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/students/edit/:id" element={<EditStudent/>} />
         <Route path="/employees/edit/:id" element={<EditEmployee/>} />
+        <Route path="/add-session" element={<AddSession />} />
+        <Route path="/sessions" element={<AllSession />} />
+        <Route path="/sessions/edit/:id" element={<EditSession />} />
         <Route path="/fees" element={<div className="content">Fees Management Content</div>} />
         <Route path="*" element={<div className="content">Select an option from the sidebar</div>} />
       </Routes>

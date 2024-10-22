@@ -138,6 +138,7 @@ export default function EditEmployee() {
       toast.success("Volunteer updated successfully", {
         position: "top-center"  // Use string instead of toast.POSITION.TOP_RIGHT
       });
+      
       navigate("/employees")
     })
     .catch((err) => {

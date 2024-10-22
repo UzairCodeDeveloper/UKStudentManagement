@@ -104,8 +104,8 @@ export default function ShowClasses() {
             <tr>
               <th>#</th>
               <th>Class Name</th>
-              <th>Teachers</th>
-              <th>Subjects</th>
+              <th>Session</th>
+              
               <th>Actions</th>
             </tr>
           </thead>
@@ -115,11 +115,9 @@ export default function ShowClasses() {
     <td>{index + 1}</td> {/* Dynamic row number */}
     <td>{classItem.class_name}</td> {/* Class Name */}
     <td>
-      {classItem.teachers?.join(', ') || '---'} {/* Teachers */}
+      {classItem.session} {/* Teachers */}
     </td>
-    <td>
-      {classItem.subjects?.join(', ') || '---'} {/* Subjects */}
-    </td>
+    
     <td className="status-buttons">
       <button className="btn btn-edit" onClick={() => handleEdit(classItem._id)}>
         <AiOutlineEdit />

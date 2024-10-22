@@ -1,76 +1,45 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import './AddClass.css'; // Ensure you have this CSS file for styles
 
-import ClassManager from "../.././../../../api/services/admin/class/classManager"
-
-
-
+import ClassManager from "../.././../../../api/services/admin/class/classManager";
+import SessionManager from '../../../../../api/services/admin/session/sessionManager';
 
 export default function AddClass() {
   const [className, setClassName] = useState('');
-  const [selectedTeachers, setSelectedTeachers] = useState([]);
+  const [selectedSession, setSelectedSession] = useState('');
+  const [sessions, setSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Dummy teacher data
-  const teachers = [
-    { id: '1', name: 'John Doe' },
-    { id: '2', name: 'Mickel' },
-    { id: '3', name: 'Fiza' },
-    { id: '4', name: 'Hafsa' },
-  ];
-
   useEffect(() => {
-    const fetchTeachers = () => {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    };
-
-    fetchTeachers();
+    // Fetching sessions data
+    SessionManager.getAllSessions()
+      .then((res) => {
+        setSessions(res.data); // Save sessions data to state
+        setIsLoading(false); // Stop loading
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
-
-
-  const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-    const teacher = teachers.find(t => t.id === value);
-
-    if (checked) {
-      setSelectedTeachers([...selectedTeachers, teacher.name]);
-    } else {
-      setSelectedTeachers(selectedTeachers.filter(name => name !== teacher.name));
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if at least one teacher is selected
-    // if (selectedTeachers.length === 0) {
-    //   alert("Please select at least one teacher.");
-    //   return;
-    // }
+    // Log class name and selected session
+    console.log({ className, selectedSession });
 
-    // Log class name and selected teachers
-    // console.log({ className });
-
-    ClassManager.createNewClass({class_name: className })
-    .then((res)=>{
-      // console.log(res.data)
-          setClassName('');
-          // console.log(first)
-          alert(res.data.msg)
-    }
-    )
-    .catch((err)=>{
-      console.log(err)
-      alert(err.response.data.msg)
-    }
-    )
-    
-    // Clear input fields
-
-    // setSelectedTeachers([]);
+    // Example API call (adjust based on your API structure)
+    ClassManager.createNewClass({ class_name: className, session: selectedSession })
+      .then((res) => {
+        setClassName('');
+        setSelectedSession(''); // Reset selected session
+        alert(res.data.msg);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err.response.data.msg);
+      });
   };
 
   return (
@@ -82,6 +51,7 @@ export default function AddClass() {
         <div className='classBox'>
           <h5>Add New Class</h5>
           <form onSubmit={handleSubmit}>
+            {/* Class Name */}
             <div className='form-group AddClassFormGroup'>
               <label htmlFor="className" className="field-label required-bg">Class Name*</label>
               <div className="input-wrapper">
@@ -97,29 +67,28 @@ export default function AddClass() {
               </div>
             </div>
 
-            {/* <div className="certificate-section">
-              <label className="certificate-label required-bg" style={{ fontSize: '12px' }}>Select Teachers*</label>
-              
-              <div className="checkbox-list btn-group" role="group" aria-label="Teacher Selection Toggle Button Group" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                {teachers.map((teacher) => (
-                  <div key={teacher.id} className="checkbox-item" style={{ margin: '10px' }}>
-                    <input
-                      type="checkbox"
-                      id={teacher.id}
-                      value={teacher.id}
-                      checked={selectedTeachers.includes(teacher.name)}
-                      onChange={handleCheckboxChange}
-                      className="btn-check"
-                      autoComplete="off"
-                    />
-                    <label htmlFor={teacher.id} className="btn btn-outline-primary">
-                      {teacher.name}
-                    </label>
-                  </div>
-                ))}
+            {/* Session Dropdown */}
+            <div className='form-group AddClassFormGroup'>
+              <label htmlFor="session" className="field-label required-bg">Select Session*</label>
+              <div className="input-wrapper">
+                <select
+                  id="session"
+                  className="form-input"
+                  value={selectedSession}
+                  onChange={(e) => setSelectedSession(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>Select session</option>
+                  {sessions.map((session) => (
+                    <option key={session._id} value={session._id}>
+                      {session.session_year} 
+                    </option>
+                  ))}
+                </select>
               </div>
-            </div> */}
+            </div>
 
+            {/* Submit Button */}
             <button type="submit" className='submit-button'>Add Class</button>
           </form>
         </div>

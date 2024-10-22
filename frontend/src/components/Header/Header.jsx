@@ -5,7 +5,7 @@ import { FaUser, FaKey, FaSignOutAlt } from 'react-icons/fa';
 import logo from '../../assets/logo.png'; // Adjust logo path if necessary
 import './header.css';
 import { useDispatch,useSelector } from 'react-redux';
-
+import {useNavigate} from 'react-router-dom'
 import { logoutUser } from '../../Redux/userSlice';
 import Loader from '../Loader/Loader';
 
@@ -34,7 +34,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
       dispatch(logoutUser());
     },3000)
     await setLoading(false)
-
+    
 
   }
   const user = useSelector((state) => state.user.user);
@@ -42,7 +42,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
     return <Loader />; // Show the loader if loading
   }
 
-
+ const navigate = useNavigate();
 
   return (
     <div className="container-fluid headerContainer">
