@@ -500,6 +500,7 @@ export default function EditEmployee() {
         <label
           htmlFor={certificates.id}
           className="btn btn-outline-primary"
+          style={{border:'2px solid #7b5fed'}}
         >
           {certificates.label}
         </label>
@@ -536,6 +537,7 @@ export default function EditEmployee() {
                   <label
                     htmlFor={certificate.id}
                     className="btn btn-outline-primary"
+                    style={{border:'2px solid #7b5fed'}}
                   >
                     {certificate.label}
                   </label>
@@ -571,6 +573,7 @@ export default function EditEmployee() {
                   <label
                     htmlFor={certificate.id}
                     className="btn btn-outline-primary"
+                    style={{border:'2px solid #7b5fed'}}
                   >
                     {certificate.label}
                   </label>

@@ -387,7 +387,7 @@ export default function AddStudent() {
 
                         <div className="checkbox-list btn-group" role="group" aria-label="MSU Certificate Toggle Button Group">
                             {DaystoCommitSchedule.map((certificate) => (
-                                <div key={certificate.id} className="checkbox-item">
+                                <div key={certificate.id} className="checkbox-item" >
                                     <input
                                         type="checkbox"
                                         id={certificate.id}
@@ -396,9 +396,10 @@ export default function AddStudent() {
                                         onChange={handleCheckboxDaystoCommitChange}
                                         className="btn-check"
                                         autoComplete="off"
+                                        
 
                                     />
-                                    <label htmlFor={certificate.id} className="btn btn-outline-primary">
+                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
                                         {certificate.label}
                                     </label>
                                 </div>
@@ -424,7 +425,7 @@ export default function AddStudent() {
                                         autoComplete="off"
 
                                     />
-                                    <label htmlFor={certificate.id} className="btn btn-outline-primary">
+                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
                                         {certificate.label}
                                     </label>
                                 </div>
@@ -451,7 +452,7 @@ export default function AddStudent() {
                                         autoComplete="off"
 
                                     />
-                                    <label htmlFor={certificate.id} className="btn btn-outline-primary">
+                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
                                         {certificate.label}
                                     </label>
                                 </div>

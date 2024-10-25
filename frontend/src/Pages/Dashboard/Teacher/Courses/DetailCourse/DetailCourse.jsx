@@ -105,7 +105,7 @@ export default function DetailCourse() {
       <h3>{courseData?.course?.course_name}</h3>
       
       {/* DatePicker to select course start date */}
-      <div className="date-picker-container" style={{ marginBottom: '20px' }}>
+      <div className="date-picker-container" style={{ marginBottom: '20px', display:'none' }}>
         <label>
           {/* Select  */}
           Course Start Date: </label>
@@ -150,7 +150,7 @@ export default function DetailCourse() {
                 <div className="accordion-body">
                 <div className='accordionBox' style={{border:'1px solid #dee2e6',padding:'20px',borderRadius:'10px', }}>
                     <GrResources style={{backgroundColor:'#f7634d', color:'white', fontSize:'3rem',padding:'5px', borderRadius:'5px'}}/>
-                    <span style={{fontSize:'1.2rem', marginLeft:'20px'}}><a href='' style={{cursor:'pointer'}} onClick={()=>{navigate('/courseResources')}}>Resources</a></span>
+                    <span style={{fontSize:'1.2rem', marginLeft:'20px'}}><a href='' style={{cursor:'pointer'}} onClick={()=>{navigate(`/courseResources/${id}`)}}>Resources</a></span>
                   </div>
                   <div className='accordionBox' style={{border:'1px solid #dee2e6',padding:'20px',borderRadius:'10px', marginTop:'10px'}}>
                     <MdOutlinePeopleAlt style={{backgroundColor:'#5d63f6', color:'white', fontSize:'3rem',padding:'5px', borderRadius:'5px'}}/>

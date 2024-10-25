@@ -16,6 +16,7 @@ import DetailCourse from './Courses/DetailCourse/DetailCourse';
 import CourseResources from './Courses/CourseResources/CourseResources'
 import AddResource from './Courses/CourseResources/AddResource/AddResource'
 import CourseAttendance from './Courses/Course Attendance/CourseAttendance';
+import EditResource from './Courses/CourseResources/EditResource/EditResource';
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -158,8 +159,9 @@ export default function AdminDashboard() {
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
-        <Route path="/courseResources" element={<CourseResources/>} />
-        <Route path="/addresource" element={<AddResource/>} />
+        <Route path="/courseResources/:id" element={<CourseResources/>} />
+        <Route path="/addresource/:id" element={<AddResource/>} />
+        <Route path="/courseResources/edit/:id" element={<EditResource/>} />
         <Route path="/courseattendance" element={<CourseAttendance/>} />
         <Route path="*" element={<div className="content">Select an option from the sidebar</div>} />
       </Routes>

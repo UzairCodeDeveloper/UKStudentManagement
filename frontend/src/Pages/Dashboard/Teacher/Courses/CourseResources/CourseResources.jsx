@@ -3,20 +3,41 @@ import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
 import './CourseResources.css';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AiOutlinePlus } from "react-icons/ai"; // Import icons
+import CourseManager from '../../../../../api/services/teacher/course/courseManager'
 export default function ShowStudents() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('a-z');
   const [loading, setLoading] = useState(true); // State to track loading
   const [students, setStudents] = useState([]); // State for students
   const [refresh, setRefresh] = useState(false); 
-
+  
+  const [resourceData,setResourceData]=useState([])
   const navigate = useNavigate();
-
+  const params = useParams();
+  const id = params.id
   const handleEdit = (id) => {
-    navigate(`/students/edit/${id}`);
+    navigate(`/courseResources/edit/${id}`);
   };
+
+
+  useEffect(() => {
+    setLoading(true);
+    CourseManager.getResourcesByCourse(id)
+      .then((res) => {
+        setResourceData(res.data.data);
+        console.log(resourceData)
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, [refresh]);
+
+
+
 
   // Use dummy data for students
   useEffect(() => {
@@ -35,52 +56,57 @@ export default function ShowStudents() {
   }, [refresh]);
 
   // Filter and sort students based on search term and selected order
-  const filteredStudents = students
-    .filter(student => student?.studentData?.forename?.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredResources = resourceData
+    .filter(resource =>
+      resource.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     .sort((a, b) => {
-      const forenameA = a.studentData?.forename || '';
-      const forenameB = b.studentData?.forename || '';
-      
-      if (sortOrder === 'a-z') {
-        return forenameA.localeCompare(forenameB);
-      } else {
-        return forenameB.localeCompare(forenameA);
-      }
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      return sortOrder === 'a-z' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA);
     });
    
 
-  function handleDelete(id) {
-    // Show confirmation dialog with SweetAlert2
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // For dummy data, just remove the student locally
-        const updatedStudents = students.filter(student => student._id !== id);
-        setStudents(updatedStudents);
-        
-        // Show success notification using SweetAlert2
-        Swal.fire({
-          title: "Deleted!",
-          text: "Student has been deleted successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6"
-        });
-
-        // Optionally trigger refresh if needed
-        setRefresh(!refresh);
-      } else {
-        // Log or handle cancel action if needed
-        console.log("Student deletion canceled by user");
-      }
-    });
-  }
+    function handleDelete(id) {
+      // Show confirmation dialog with SweetAlert2
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        // If user confirms the action
+        if (result.isConfirmed) {
+          // Call the delete API
+          CourseManager.deleteResource(id)
+            .then((res) => {
+              console.log(res.data);
+              // Show success notification using SweetAlert2
+              Swal.fire({
+                title: "Deleted!",
+                text: "Resource been deleted successfully.",
+                icon: "success",
+                confirmButtonColor: "#3085d6"
+              });
+              // Trigger re-fetch by toggling refresh state
+              setRefresh(!refresh);
+            })
+            .catch((err) => {
+              console.error(err);
+              // Show error notification using SweetAlert2
+              Swal.fire({
+                title: "Error!",
+                text: err.response?.data?.msg || "Something went wrong while deleting the session.",
+                icon: "error",
+                confirmButtonColor: "#d33"
+              });
+            });
+        }
+      });
+    }
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -119,7 +145,7 @@ export default function ShowStudents() {
           <div style={{display:'flex', justifyContent:'center', flexWrap:'wrap'} }>
 
          
-          <button type="button" className='btn btn-primary'  style={{ display: 'flex', alignItems: 'center',  fontSize:'15px', padding:"5px 10px"}} onClick={()=>{navigate('/addresource')}}>
+          <button type="button" className='btn btn-primary'  style={{ display: 'flex', alignItems: 'center',  fontSize:'15px', padding:"5px 10px"}} onClick={()=>{navigate(`/addresource/${id}`)}}>
                 <AiOutlinePlus style={{ marginRight: '5px' }} /> Add Resources
               </button>
               </div>
@@ -133,11 +159,11 @@ export default function ShowStudents() {
               </tr>
             </thead>
             <tbody>
-              {filteredStudents.map((student) => (
+              {filteredResources.map((student,key) => (
                 <tr key={student._id}>
-                  <td>{student.user_id}</td>
-                  <td>{student.studentData.forename}</td>
-                  <td>{student.studentData.surname}</td>
+                  <td>{key}</td>
+                  <td><a href={student.resource_url} target='_blank'>{student.title}</a></td>
+                  <td>{new Date(student.createdAt).toLocaleDateString()}</td>
                   <td className="status-buttons">
                     <button className="btn btn-edit" onClick={() => handleEdit(student._id)}>
                       <AiOutlineEdit />

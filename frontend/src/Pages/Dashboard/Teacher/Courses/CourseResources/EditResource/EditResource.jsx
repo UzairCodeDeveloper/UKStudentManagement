@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import { useDropzone } from 'react-dropzone';
 import { AiOutlineFileAdd, AiFillFilePdf } from "react-icons/ai";
@@ -16,7 +16,19 @@ export default function AddResource() {
 
   const resources = ['Book', 'Assignment', 'Syllabus', 'HomeWork', 'Other resourceTitle'];
   const params = useParams();
-  const id = params.id
+  const ids = params.id
+  
+
+
+  useEffect(()=>{
+    CourseManager.getResourcebyId(ids)
+    .then((res)=>{
+        console.log(res.data)
+    })
+    .catch((e)=>{
+        console.log(e)
+    })
+  },[])
   const handleSubmit = (e) => {
     e.preventDefault();
   
@@ -105,11 +117,11 @@ export default function AddResource() {
   return (
     <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
       <div style={{ backgroundColor: 'white', padding: '10px', marginBottom: '10px', borderRadius: '30px', boxShadow: '0px 0px 1px 0px gray' }}>
-        <h6>Resource <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Add Resource</span></h6>
+        <h6>Resource <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Update Resource</span></h6>
       </div>
       <div className='classContainer'>
         <div className='classBox'>
-          <h5 style={{ marginBottom: '20px' }}>Add New Resource</h5>
+          <h5 style={{ marginBottom: '20px' }}>Update Resource</h5>
           <form onSubmit={handleSubmit}>
             {/* Select Resource Dropdown */}
             <div className='form-group'>
