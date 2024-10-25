@@ -1,16 +1,79 @@
-const express = require('express');
-const router = express.Router();
-const { uploadResource, getResourcesByCourse, deleteResource } = require('../../controller/TeacherControllers/ResourceController');
-const { pdfUpload } = require('../../config/multerConfigPdf'); // Correctly destructure pdfUpload
-const volunteerAuth = require('../../middleware/volunteerAuth'); // Assuming you use an auth middleware
+import httpClient from "../../../http-commons";
+import { getToken } from '../../../../util/adminUtil';
 
-// Upload a resource
-router.post('/upload', volunteerAuth, pdfUpload.single('pdf'), uploadResource); // Use pdfUpload directly
+// GET ALL Teacher Courses
+const getAllTeacherCourses = () => {
+  const token = getToken();  
 
-// Get all resources for a specific course
-router.get('/:course_id', volunteerAuth, getResourcesByCourse);
+  return httpClient.get("/course/my-courses/getALL", {
+    headers: {
+      "x-auth-token": token,   correctly
+    },
+  });
+};
 
-// Delete a resource by ID
-router.delete('/:id', volunteerAuth, deleteResource);
+// GET a course by ID for the instructor
+const getCourseByIdInstructor = (id) => {
+  const token = getToken(); // Get token from Redux state or other source
 
-module.exports = router;
+  return httpClient.get(`/course/my-courses/${id}`, {
+    headers: {
+      "x-auth-token": token,  
+    },
+  });
+};
+
+// UPLOAD a new resource
+const uploadResource = (resourceData) => {
+  const token = getToken();  
+
+  // Use FormData for file uploads
+  const formData = new FormData();
+  formData.append("title", resourceData.title);
+  formData.append("description", resourceData.description);
+  formData.append("resource_type", resourceData.resource_type);
+  formData.append("course_id", resourceData.course_id);
+
+  if (resourceData.pdf) {
+    formData.append("pdf", resourceData.pdf); // Attach the file if it exists
+  }
+
+  return httpClient.post("/resources/upload", formData, {
+    headers: {
+      "x-auth-token": token,  
+      "Content-Type": "multipart/form-data", // Use multipart for file upload
+    },
+  });
+};
+
+// GET all resources by course
+const getResourcesByCourse = (course_id) => {
+  const token = getToken();  
+
+  return httpClient.get(`/resources/${course_id}`, {
+    headers: {
+      "x-auth-token": token,  
+    },
+  });
+};
+
+// DELETE a resource by ID
+const deleteResource = (resource_id) => {
+  const token = getToken();  
+
+  return httpClient.delete(`/resources/${resource_id}`, {
+    headers: {
+      "x-auth-token": token,  
+    },
+  });
+};
+
+const exportedObject = {
+  getAllTeacherCourses,
+  getCourseByIdInstructor,
+  uploadResource,       
+  getResourcesByCourse,
+  deleteResource,       
+};
+
+export default exportedObject;
