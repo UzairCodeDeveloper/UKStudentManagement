@@ -157,7 +157,7 @@ export default function AdminDashboard() {
         <Route path="/attendence" element={<TeachersAttendence/>} />
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/DetailedCourse" element={<DetailCourse />} />
+        <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
         <Route path="/courseResources" element={<CourseResources/>} />
         <Route path="/addresource" element={<AddResource/>} />
         <Route path="/courseattendance" element={<CourseAttendance/>} />

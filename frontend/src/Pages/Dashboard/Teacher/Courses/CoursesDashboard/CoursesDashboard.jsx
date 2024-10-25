@@ -87,7 +87,7 @@ export default function CoursesDashboard() {
         <div className={`courses-container ${layout}`} style={{border:'none'}}>
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course) => (
-              <div key={course.id} className={`course-card ${layout}`} style={{cursor:"pointer"}} onClick={()=>{navigate('/DetailedCourse')}} >
+              <div key={course.id} className={`course-card ${layout}`} style={{cursor:"pointer"}} onClick={()=>{navigate(`/DetailedCourse/${course._id}`)}} >
                 <img src="https://cdn.vectorstock.com/i/500p/19/76/blue-triangle-abstract-background-vector-1581976.jpg" alt={course.course_name} className="course-image" />
                 <div className="course-content">
                   <p>{course.courseCode}</p>

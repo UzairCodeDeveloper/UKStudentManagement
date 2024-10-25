@@ -54,6 +54,10 @@ const createClass = async (req, res) => {
 const getAllClasses = async (req, res) => {
     try {
         const classes = await Class.find({ is_active: true })
+        .populate({
+            path:"session",
+            select:"session_year start_date end_date"
+        })
         // .populate('courses');
         res.status(200).json(classes);
     } catch (error) {

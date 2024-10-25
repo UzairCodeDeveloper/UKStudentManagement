@@ -97,6 +97,7 @@ const getCourseById = async (req, res) => {
                 path: 'instructor', 
                 select: 'volunteer_details.full_name'  // Only fetch the full_name from the volunteer details
             })
+            // .populate('session', 'session_year start_date end_date status')
             .lean();  // Use lean to get a plain JavaScript object for better performance
         
         // Check if course exists
@@ -104,8 +105,11 @@ const getCourseById = async (req, res) => {
             return res.status(404).json({ msg: 'Course not found' });
         }
 
+        const classDetails = await Class.findById(course.class_id._id).populate('session', 'session_year start_date end_date status').lean();
+        // console.log(classDetails);
+
         // Return the course details
-        res.status(200).json(course);
+        res.status(200).json({course, classDetails});
     } catch (error) {
         // Log the error for debugging
         console.error('Error fetching course by ID:', error.message);
@@ -226,6 +230,65 @@ const getAllTeacherCourses = async (req, res) => {
     }
 };
 
+const getCourseDetails = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const course = await Course.findById(id)
+            .populate('class_id', 'class_name')
+            .populate('instructor', 'volunteer_details.full_name')
+            .populate('session', 'session_year start_date end_date status')
+            .lean();
+
+        if (!course) {
+            return res.status(404).json({ msg: 'Course not found' });
+        }
+
+        res.status(200).json(course);
+    } catch (error) {
+        console.error('Error fetching course details:', error.message);
+        res.status(500).json({ msg: 'Server Error' });
+    }
+};
+
+// Get a single course by ID
+const getCourseByIdInstructor = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    try {
+        // Validate if the ID is a valid MongoDB ObjectID
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ msg: 'Invalid course ID' });
+        }
+
+        // Fetch the course by ID and populate relevant fields
+        const course = await Course.findById({_id:id, instructor: userId})
+            .populate('class_id')  // Populate class details
+            .populate({
+                path: 'instructor', 
+                select: 'volunteer_details.full_name'  // Only fetch the full_name from the volunteer details
+            })
+            // .populate('session', 'session_year start_date end_date status')
+            .lean();  // Use lean to get a plain JavaScript object for better performance
+        
+        // Check if course exists
+        if (!course) {
+            return res.status(404).json({ msg: 'Course not found' });
+        }
+
+        const classDetails = await Class.findById(course.class_id._id).populate('session', 'session_year start_date end_date status').lean();
+        // console.log(classDetails);
+
+        // Return the course details
+        res.status(200).json({course, classDetails});
+    } catch (error) {
+        // Log the error for debugging
+        console.error('Error fetching course by ID:', error.message);
+        // Return a server error response
+        res.status(500).json({ msg: 'Server Error' });
+    }
+};
   
 module.exports = {
     createCourse,
@@ -233,5 +296,8 @@ module.exports = {
     getCourseById,
     updateCourse,
     deleteCourse,
-    getAllTeacherCourses
+
+    // For Instructors
+    getAllTeacherCourses,
+    getCourseByIdInstructor
 };

@@ -8,11 +8,11 @@ const createSession = async (req, res) => {
 
         
 
-        if (!session_year || !start_date || !end_date) {
+        if (!session_year || !start_date ) {
             return res.status(400).json({ msg: 'Please enter all fields' });
         }
 
-        const existingSession = await Session.findOne({ session_year });
+        const existingSession = await Session.findOne({ session_year,is_active:true });
         if (existingSession) {
             return res.status(400).json({ msg: `Session: ${session_year} already exists` });
         }
@@ -32,10 +32,11 @@ const createSession = async (req, res) => {
     }
 };
 
+
 // Fetch all sessions
 const getAllSessions = async (req, res) => {
     try {
-        const sessions = await Session.find();
+        const sessions = await Session.find({is_active:true});
         res.status(200).json(sessions);
     } catch (error) {
         console.error('Error fetching sessions:', error.message);

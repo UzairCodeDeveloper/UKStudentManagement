@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import DatePicker from 'react-datepicker'; // Ensure react-datepicker is installed
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
@@ -6,10 +6,12 @@ import './DetailedCourse.css'
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { SlPeople } from "react-icons/sl";
 import { GrResources } from "react-icons/gr";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import CourseManager from "../../../../../api/services/teacher/course/courseManager";
 export default function DetailCourse() {
   // State to manage course start date selected via DatePicker
   const [startDate, setStartDate] = useState(null);
+  const [courseData, setCourseData] = useState({});
 
   // Course duration constants
   const courseDurationMonths = 14;
@@ -79,20 +81,41 @@ export default function DetailCourse() {
     setIsAnyAccordionOpen(prevState => !prevState);
   };
 
+  const params = useParams();
+  const id = params.id
+
+  useEffect(()=>{
+    CourseManager.getCourseByIdInstructor(id)
+    .then(res=>{
+      console.log(res.data.classDetails.session.start_date)
+      setStartDate(new Date(res.data.classDetails.session.start_date))
+      setCourseData(res.data)
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+
+
+    // console.log(id)
+  },[])
+
   return (
     
     <div className="courses-dashboard">
-      <h3>Parallel Distributed Computing</h3>
+      <h3>{courseData?.course?.course_name}</h3>
       
       {/* DatePicker to select course start date */}
       <div className="date-picker-container" style={{ marginBottom: '20px' }}>
-        <label>Select Course Start Date: </label>
+        <label>
+          {/* Select  */}
+          Course Start Date: </label>
         <DatePicker
           selected={startDate}
           onChange={date => setStartDate(date)}
           dateFormat="dd/MM/yyyy"
           placeholderText="Select a start date"
           isClearable
+          disabled={true}
         />
       </div>
 

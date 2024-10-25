@@ -5,7 +5,7 @@ const sessionSchema = new Schema({
     session_year: {
         type: String,
         required: true,
-        unique: true,
+
     },
     is_active: {
         type: Boolean,
