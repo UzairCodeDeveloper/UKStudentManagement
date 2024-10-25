@@ -82,13 +82,24 @@ const getResourcebyId = (id) => {
   });
 };
 
+const updateResource = (id,data) => {
+  const token = getToken(); // Get token from Redux state or other source
+  console.log(data)
+  return httpClient.put(`/resources/update/${id}`,data, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers correctly
+    },
+  });
+};
+
 const exportedObject = {
   getAllTeacherCourses,
   getCourseByIdInstructor,
   uploadResource,       
   getResourcesByCourse,
   deleteResource,
-  getResourcebyId       
+  getResourcebyId   
+  ,updateResource    
 };
 
 export default exportedObject;

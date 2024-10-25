@@ -7,11 +7,12 @@ import AdminUserServices from "../../api/services/admin/adminUser"
 import VolunteerServices from "../../api/services/admin/volunteer/volunteerManager"
 import { useDispatch } from 'react-redux';
 import { setAdminUser,setTeacherUser } from '../../Redux/userSlice';
+import { useState } from 'react';
 
 export default function Login() {
 
   const { register, handleSubmit, formState: { errors } } = useForm(); // Initialize useForm
-
+  const [errorResponse,setErrorResponse]=useState()
   const dispatch = useDispatch();
   
   const onSubmit = (data) => {
@@ -31,11 +32,12 @@ export default function Login() {
         })
         .catch(error => {
           console.log(error);
-          alert(error.response.data.errors[0].msg);
+          // alert(error.response.data.errors[0].msg);
+          setErrorResponse('Invalid Credentials')
         });
     } else if (isStudentID) {
       // Call Student API
-      console.log('Calling Student API'); // Replace with actual API call
+      // console.log('Calling Student API'); 
       alert("Student is yet to be integrated")
       // Example:
       // StudentUserServices.signInStudent(data)
@@ -56,7 +58,8 @@ export default function Login() {
         })
         .catch(error => {
           console.log(error);
-          alert(error.response.data.errors[0].msg);
+          // alert(error.response.data.msg);
+          setErrorResponse('Invalid Credentials')
         });
     } else {
       alert('Invalid User ID format. Please enter a valid ID.');
@@ -71,7 +74,7 @@ export default function Login() {
           <img src={logo} alt='companyLogo' className='loginLogo' />
           <h4>Welcome Back</h4>
           
-         
+          <h6 style={{fontWeight:'400', fontSize:'12px', color:'red'}}>{errorResponse}</h6>
           <form className='loginForm' onSubmit={handleSubmit(onSubmit)}>
             <div className='form-group'>
               <label htmlFor='username'>ID</label>

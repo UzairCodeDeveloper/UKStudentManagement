@@ -22,7 +22,8 @@ export default function Header({ toggleSidebar, UserProfile }) {
   const toggleNotificationDropdown = () => {
     setNotificationDropdownOpen(!notificationDropdownOpen);
   };
-
+  const navigate = useNavigate();
+  
   const [loading, setLoading] = useState(false); // State to track loading
 
   const dispatch = useDispatch();
@@ -30,11 +31,12 @@ export default function Header({ toggleSidebar, UserProfile }) {
   const handleLogout = async() =>{
     // console.log("first")
     await setLoading(true)
-    await setTimeout(()=>{
-      dispatch(logoutUser());
-    },3000)
-    await setLoading(false)
     
+    await dispatch(logoutUser());
+    
+    await setLoading(false)
+    // navigate('/')
+    window.location.reload()
 
   }
   const user = useSelector((state) => state.user.user);
@@ -42,7 +44,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
     return <Loader />; // Show the loader if loading
   }
 
- const navigate = useNavigate();
+ 
 
   return (
     <div className="container-fluid headerContainer">

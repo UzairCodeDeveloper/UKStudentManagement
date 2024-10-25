@@ -111,17 +111,17 @@ export default function ShowClasses() {
           </thead>
           <tbody>
           {filteredClasses.map((classItem, index) => (
-  <tr key={classItem.id}>
+  <tr key={classItem?._id}>
     <td>{index + 1}</td> {/* Dynamic row number */}
-    <td>{classItem.class_name}</td> {/* Class Name */}
+    <td>{classItem?.class_name}</td> {/* Class Name */}
     <td>
-      {classItem.session} {/* Teachers */}
+      {classItem?.session?.session_year} {/* Teachers */}
     </td>
     
     <td className="status-buttons">
-      <button className="btn btn-edit" onClick={() => handleEdit(classItem._id)}>
+      {/* <button className="btn btn-edit" onClick={() => handleEdit(classItem._id)}>
         <AiOutlineEdit />
-      </button>
+      </button> */}
       <button className="btn btn-delete" onClick={() => handleDelete(classItem._id)}>
         <AiOutlineDelete />
       </button>

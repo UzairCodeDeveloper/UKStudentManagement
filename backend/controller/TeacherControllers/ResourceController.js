@@ -76,7 +76,7 @@ module.exports = {
     updateResource: async (req, res) => {
         try {
             const { id } = req.params;
-            const { title, description, resource_type, course_id, due_date } = req.body;
+            const { title, description, resource_type, due_date } = req.body;
 
             // Find the resource by ID
             let resource = await Resource.findById(id);
@@ -85,27 +85,18 @@ module.exports = {
             }
 
             // Check if course exists if course_id is updated
-            if (course_id) {
-                const course = await Course.findById(course_id);
-                if (!course) {
-                    return res.status(404).json({ msg: 'Course not found' });
-                }
-            }
+            
 
             // Update file if new one is provided
-            let resourceUrl = resource.resource_url;
-            if (req.file) {
-                const result = await cloud.uploads(req.file.path);
-                resourceUrl = result.url;
-            }
+           
+            
 
             // Update the resource
             resource.title = title || resource.title;
             resource.description = description || resource.description;
             resource.resource_type = resource_type || resource.resource_type;
-            resource.course = course_id || resource.course;
             resource.due_date = due_date || resource.due_date;
-            resource.resource_url = resourceUrl;
+            // resource.resource_url = resourceUrl;
 
             await resource.save();
 

@@ -15,6 +15,6 @@ router.delete('/:id', volunteerAuth, deleteResource);
 router.get('/get/:id', volunteerAuth, getResourceById);
 
 // Update a resource by ID
-router.put('/update/:id', volunteerAuth, pdfUpload.single('pdf'), updateResource); // PUT request to update
+router.put('/update/:id', volunteerAuth, updateResource); // PUT request to update
 
 module.exports = router;

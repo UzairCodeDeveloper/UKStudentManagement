@@ -3,7 +3,12 @@ import { getToken } from '../../../../util/adminUtil';
 
 // GET ALL classes
 const getAllClasses = () => {
-  return httpClient.get("/class/all-classes");
+  const token = getToken(); 
+  return httpClient.get("/class/all-classes",{
+     headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
 };
 
 
