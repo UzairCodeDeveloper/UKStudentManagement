@@ -1,21 +1,28 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+import { SiTask } from "react-icons/si";
+import { MdUploadFile } from "react-icons/md";
+dayjs.extend(isBetween); // Extend with the isBetween plugin
 import DatePicker from 'react-datepicker'; // Ensure react-datepicker is installed
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
-import './DetailedCourse.css'
+import './DetailedCourse.css';
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { SlPeople } from "react-icons/sl";
 import { GrResources } from "react-icons/gr";
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseManager from "../../../../../api/services/teacher/course/courseManager";
+
 export default function DetailCourse() {
   // State to manage course start date selected via DatePicker
   const [startDate, setStartDate] = useState(null);
   const [courseData, setCourseData] = useState({});
+  const [tasks, setTasks] = useState([]);
 
   // Course duration constants
-  const courseDurationMonths = 14;
-  const navigate=useNavigate();
+  const courseDurationMonths = 15;
+  const navigate = useNavigate();
+
   // Function to generate weeks based on start date and 13-month duration
   const generateWeeks = (startDate) => {
     const weeks = [];
@@ -31,12 +38,17 @@ export default function DetailCourse() {
 
       const weekEnd = weekStart.add(6, 'day');
 
-      // Dummy tasks for each week
-      const tasks = [
-        `Task ${i * 3 + 1} for ${weekStart.format('D MMM YYYY')}`,
-        `Task ${i * 3 + 2} for ${weekStart.format('D MMM YYYY')}`,
-        `Task ${i * 3 + 3} for ${weekStart.format('D MMM YYYY')}`,
-      ];
+      // Initialize an empty tasks array for this week
+      const weeklyTasks = [];
+
+      // Check tasks for the current week
+      tasks.forEach(task => {
+        const taskDate = dayjs(task.createdAt);
+        // Check if task falls within the current week
+        if (taskDate.isBetween(weekStart, weekEnd, null, '[]')) {
+          weeklyTasks.push(task.title); // Push the title to the week's tasks
+        }
+      });
 
       weeks.push({
         weekStart: weekStart.format('D MMM YYYY'),
@@ -44,7 +56,7 @@ export default function DetailCourse() {
         weekMonth: weekStart.month() + 1, // Get the month (0-indexed, so +1)
         weekYear: weekStart.year(),
         weekStartDate: weekStart, // Keep the date object for comparisons
-        tasks, // Adding the tasks to the week
+        tasks: weeklyTasks, // Assigning weekly tasks
       });
     }
     return weeks;
@@ -82,30 +94,35 @@ export default function DetailCourse() {
   };
 
   const params = useParams();
-  const id = params.id
+  const id = params.id;
 
-  useEffect(()=>{
+  useEffect(() => {
     CourseManager.getCourseByIdInstructor(id)
-    .then(res=>{
-      console.log(res.data.classDetails.session.start_date)
-      setStartDate(new Date(res.data.classDetails.session.start_date))
-      setCourseData(res.data)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
+      .then(res => {
+        console.log(res.data.classDetails.session.start_date);
+        setStartDate(new Date(res.data.classDetails.session.start_date));
+        setCourseData(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
-
-    // console.log(id)
-  },[])
+    CourseManager.getResourcesByCourse(id)
+      .then((res) => {
+        // console.log(res.data.data);
+        setTasks(res.data.data); // Store tasks from API response
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [id]);
 
   return (
-    
     <div className="courses-dashboard">
       <h3>{courseData?.course?.course_name}</h3>
-      
+
       {/* DatePicker to select course start date */}
-      <div className="date-picker-container" style={{ marginBottom: '20px', display:'none' }}>
+      <div className="date-picker-container" style={{ marginBottom: '20px', display: 'none' }}>
         <label>
           {/* Select  */}
           Course Start Date: </label>
@@ -121,42 +138,39 @@ export default function DetailCourse() {
 
       {startDate && (
         <div className="course-overview" style={{ backgroundColor: 'white', padding: '30px', borderRadius: '20px' }}>
-          
-
           <div className="accordion" id="accordionExample">
             {/* Accordion for Welcome to Course */}
             <div className="accordion-item">
               <h2 className="accordion-header" id="headingOne">
-                <button 
-                  className="accordion-button" 
-                  type="button" 
-                  data-bs-toggle="collapse" 
-                  data-bs-target="#collapseOne" 
-                  aria-expanded="true" 
+                <button
+                  className="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne"
+                  aria-expanded="true"
                   aria-controls="collapseOne"
-                  style={{ fontWeight: '600', fontSize: '22px', backgroundColor: 'none !important'}}
+                  style={{ fontWeight: '600', fontSize: '22px', backgroundColor: 'none !important' }}
                   onClick={handleAccordionToggle}
                 >
                   Welcome to Course
                 </button>
               </h2>
-              <div 
-                id="collapseOne" 
-                className="accordion-collapse collapse show" 
-                aria-labelledby="headingOne" 
+              <div
+                id="collapseOne"
+                className="accordion-collapse collapse show"
+                aria-labelledby="headingOne"
                 data-bs-parent="#accordionExample"
                 onTransitionEnd={handleAccordionToggle}
               >
                 <div className="accordion-body">
-                <div className='accordionBox' style={{border:'1px solid #dee2e6',padding:'20px',borderRadius:'10px', }}>
-                    <GrResources style={{backgroundColor:'#f7634d', color:'white', fontSize:'3rem',padding:'5px', borderRadius:'5px'}}/>
-                    <span style={{fontSize:'1.2rem', marginLeft:'20px'}}><a href='' style={{cursor:'pointer'}} onClick={()=>{navigate(`/courseResources/${id}`)}}>Resources</a></span>
+                  <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px' }}>
+                    <GrResources style={{ backgroundColor: '#f7634d', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
+                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={() => { navigate(`/courseResources/${id}`) }}>Resources</a></span>
                   </div>
-                  <div className='accordionBox' style={{border:'1px solid #dee2e6',padding:'20px',borderRadius:'10px', marginTop:'10px'}}>
-                    <MdOutlinePeopleAlt style={{backgroundColor:'#5d63f6', color:'white', fontSize:'3rem',padding:'5px', borderRadius:'5px'}}/>
-                    <span style={{fontSize:'1.2rem', marginLeft:'20px'}}><a href='' style={{cursor:'pointer'}} onClick={()=>{navigate('/courseattendance')}}>Attendance</a></span>
+                  <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px', marginTop: '10px' }}>
+                    <MdOutlinePeopleAlt style={{ backgroundColor: '#5d63f6', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
+                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={() => { navigate('/courseattendance') }}>Attendance</a></span>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -165,45 +179,46 @@ export default function DetailCourse() {
             {filteredWeeks.map((week, index) => (
               <div className="accordion-item" key={index}>
                 <h2 className="accordion-header" id={`heading${index + 2}`}>
-                  <button 
-                    className="accordion-button" 
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target={`#collapse${index + 2}`} 
-                    aria-expanded={currentWeekStartDate.isSame(week.weekStartDate, 'week') ? 'true' : 'false'} 
+                  <button
+                    className="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target={`#collapse${index + 2}`}
+                    aria-expanded={currentWeekStartDate.isSame(week.weekStartDate, 'week') ? 'true' : 'false'}
                     aria-controls={`collapse${index + 2}`}
                     style={{ fontWeight: '500', fontSize: '22px' }}
                     onClick={handleAccordionToggle}
                   >
                     {week.weekStart} - {week.weekEnd}
-                    {currentWeekStartDate.isSame(week.weekStartDate, 'week') && 
+                    {currentWeekStartDate.isSame(week.weekStartDate, 'week') &&
                       <span className="currently-week" style={{ marginLeft: '20px', fontSize: "12px", backgroundColor: '#0f47ad', color: 'white', fontWeight: '500', padding: '5px', borderRadius: '10px' }}>
-                        Currently Week
+                        Current Week
                       </span>
                     }
                   </button>
                 </h2>
-                <div 
-                  id={`collapse${index + 2}`} 
-                  className="accordion-collapse collapse" 
-                  aria-labelledby={`heading${index + 2}`} 
+                <div
+                  id={`collapse${index + 2}`}
+                  className="accordion-collapse collapse"
+                  aria-labelledby={`heading${index + 2}`}
                   data-bs-parent="#accordionExample"
-                  onTransitionEnd={handleAccordionToggle}
                 >
                   <div className="accordion-body">
-                    <p>Content for {week.weekStart} - {week.weekEnd}</p>
-                    <ul>
-                      {week.tasks.map((task, taskIndex) => (
-                        <li key={taskIndex}>{task}</li> // Render each task for the week
-                      ))}
-                    </ul>
+                    {/* Displaying tasks for the week */}
+                    {week.tasks.length > 0 ? (
+                      <ul>
+                        {week.tasks.map((task, taskIndex) => (
+                          <div><a href='#'><GrResources style={{color:'#f7634d', marginRight:'5px'}}/>{task}</a></div>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No tasks available for this week.</p>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Previous/Next Month Navigation */}
           <div className="mt-3 d-flex justify-content-between">
             <button 
               className="btn btn-primary" 
