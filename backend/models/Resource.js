@@ -16,6 +16,9 @@ const resourceSchema = new Schema({
         type: String,
         required: true,
     },
+    due_date: {
+        type: Date
+    },
     resource_type: {
         type: String,
         enum: ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'], // Allowed types of resources

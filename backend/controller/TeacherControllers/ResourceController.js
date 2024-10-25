@@ -7,7 +7,7 @@ module.exports = {
     // Upload resource
     uploadResource: async (req, res) => {
         try {
-            const { title, description, resource_type, course_id } = req.body;
+            const { title, description, resource_type, course_id, due_date } = req.body; // Include due_date in request
     
             // Validating the required fields
             if (!title) {
