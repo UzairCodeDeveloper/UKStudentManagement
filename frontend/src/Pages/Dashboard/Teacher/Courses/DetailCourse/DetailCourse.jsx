@@ -43,7 +43,7 @@ export default function DetailCourse() {
 
       // Check tasks for the current week
       tasks.forEach(task => {
-        const taskDate = dayjs(task.createdAt);
+        const taskDate = dayjs(task?.due_date);
         // Check if task falls within the current week
         if (taskDate.isBetween(weekStart, weekEnd, null, '[]')) {
           weeklyTasks.push(task.title); // Push the title to the week's tasks
@@ -109,7 +109,7 @@ export default function DetailCourse() {
 
     CourseManager.getResourcesByCourse(id)
       .then((res) => {
-        // console.log(res.data.data);
+        console.log(res.data.data);
         setTasks(res.data.data); // Store tasks from API response
       })
       .catch((e) => {
