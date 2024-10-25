@@ -161,9 +161,12 @@ export default function ShowStudents() {
             <tbody>
               {filteredResources.map((student,key) => (
                 <tr key={student._id}>
-                  <td>{key}</td>
+                  <td>{key+1}</td>
                   <td><a href={student.resource_url} target='_blank'>{student.title}</a></td>
-                  <td>{new Date(student.createdAt).toLocaleDateString()}</td>
+                  {
+                    (student?.due_date === null) ? <td>Not Set</td> : <td>{new Date(student?.due_date).toLocaleDateString()}</td>
+                  }
+                  {/* <td>{new Date(student?.due_date).toLocaleDateString()}</td> */}
                   <td className="status-buttons">
                     <button className="btn btn-edit" onClick={() => handleEdit(student._id)}>
                       <AiOutlineEdit />

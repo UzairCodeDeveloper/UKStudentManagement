@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Resource Schema
+
+
 const resourceSchema = new Schema({
     course: {
         type: Schema.Types.ObjectId,

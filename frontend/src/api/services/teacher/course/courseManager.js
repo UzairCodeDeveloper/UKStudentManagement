@@ -33,6 +33,7 @@ const uploadResource = (resourceData) => {
   formData.append("description", resourceData.description);
   formData.append("resource_type", resourceData.resource_type);
   formData.append("course_id", resourceData.course_id);
+  formData.append("due_date", resourceData.due_date);
   
   if (resourceData.pdf) {
     formData.append("pdf", resourceData.pdf); // Attach the file if it exists

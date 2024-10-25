@@ -6,86 +6,74 @@ import { FaFileImage } from "react-icons/fa";
 import '../../../../Admin/Classes/AddClass/AddClass.css'; // Ensure you have this CSS file for styles
 import CourseManager from '../../../../../../api/services/teacher/course/courseManager'
 import { useParams } from 'react-router-dom';
+
 export default function AddResource() {
   const [selectedResource, setSelectedResource] = useState('');
   const [resourceTitle, setResourceTitle] = useState('');
   const [description, setDescription] = useState(''); // State for description
   const [selectedDate, setSelectedDate] = useState('');
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const resources = ['Book', 'Assignment', 'Syllabus', 'HomeWork', 'Other resourceTitle'];
+  const resources = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'];
   const params = useParams();
-  const id = params.id
+  const id = params.id;
+
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    // Prepare resource data to match the API structure
+
     const resourceData = {
       resource_type: selectedResource,
       title: resourceTitle,
-      description: description, // Include description in the submission
+      description, // Include description in the submission
       course_id: id,
-      pdf: uploadedFiles // Assuming a single file upload; adjust if handling multiple files
+      due_date: selectedDate,
+      pdf: uploadedFile // Single file upload
     };
-    
-    // console.log(resourceData)
-    // Call the uploadResource function with resourceData
+    setLoading(true);
     CourseManager.uploadResource(resourceData)
       .then((response) => {
+        setLoading(true);
         console.log('Resource uploaded successfully:', response.data);
         alert("Resource assigned successfully");
-  
+        setLoading(false)
         // Reset fields after successful submission
-        setResourceTitle('');
-        setDescription('');
-        setSelectedResource('');
-        setSelectedDate('');
-        setUploadedFiles([]);
+        // setResourceTitle('');
+        // setDescription('');
+        // setSelectedResource('');
+        // setSelectedDate('');
+        setUploadedFile(null);
       })
       .catch((error) => {
         console.error('Error uploading resource:', error);
         alert("Failed to upload resource");
+        setLoading(false)
       });
   };
-  
 
-
-  
-
-
-
-
-
-
-
-  // React Dropzone for drag-and-drop functionality
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: acceptedFiles => {
-      const validFiles = acceptedFiles.filter(file =>
-        file.type.startsWith('image/') || file.type === 'application/pdf'
-      );
-
-      if (validFiles.length < acceptedFiles.length) {
-        setErrorMessage('Only image or PDF files are allowed.');
-      } else {
+      const file = acceptedFiles[0]; // Only take the first file
+      if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
         setErrorMessage('');
+        setUploadedFile(file); // Set only one file
+      } else {
+        setErrorMessage('Only image or PDF files are allowed.');
       }
-
-      setUploadedFiles(prevFiles => [...prevFiles, ...validFiles]);
     },
     accept: {
       'application/pdf': ['.pdf'],
-      'image/*': ['.jpeg', '.jpg', '.png']
+      // 'image/*': ['.jpeg', '.jpg', '.png']
     },
     onDropRejected: () => {
       setErrorMessage('Unsupported file type. Only PDF or image files are allowed.');
     },
-    multiple: true
+    multiple: false // Restrict to a single file
   });
 
-  const removeFile = (file) => {
-    setUploadedFiles(prevFiles => prevFiles.filter(f => f !== file));
+  const removeFile = () => {
+    setUploadedFile(null);
   };
 
   const shortenFileName = (name, maxLength = 15) => {
@@ -111,7 +99,6 @@ export default function AddResource() {
         <div className='classBox'>
           <h5 style={{ marginBottom: '20px' }}>Add New Resource</h5>
           <form onSubmit={handleSubmit}>
-            {/* Select Resource Dropdown */}
             <div className='form-group'>
               <label htmlFor="selectClass" className="field-label required-bg">Select Resource*</label>
               <div className="input-wrapper">
@@ -130,9 +117,7 @@ export default function AddResource() {
               </div>
             </div>
 
-
-             {/* Select Date */}
-             <div className='form-group' style={{ marginTop: '20px' }}>
+            <div className='form-group' style={{ marginTop: '20px' }}>
               <label htmlFor="selectDate" className="field-label required-bg">Select Date*</label>
               <div className="input-wrapper">
                 <input
@@ -146,8 +131,6 @@ export default function AddResource() {
               </div>
             </div>
 
-
-            {/* Title Name */}
             <div className='form-group AddClassFormGroup'>
               <label htmlFor={`subjectName`} className="field-label required-bg">Title Name*</label>
               <div className="input-wrapper">
@@ -163,7 +146,6 @@ export default function AddResource() {
               </div>
             </div>
 
-            {/* Description Textarea */}
             <div className='form-group'>
               <label htmlFor="description" className="field-label required-bg">Description</label>
               <div className="input-wrapper">
@@ -179,11 +161,8 @@ export default function AddResource() {
               </div>
             </div>
 
-           
-
-            {/* Drag and Drop Zone */}
             <div className="form-group" style={{ marginTop: '20px' }}>
-              <label className="field-label required-bg">Upload Resources (PDF/Images)*</label>
+              <label className="field-label required-bg">Upload Resource (PDF/Image)*</label>
               <div
                 {...getRootProps()}
                 className="dropzone"
@@ -199,54 +178,48 @@ export default function AddResource() {
               >
                 <input {...getInputProps()} />
                 {isDragActive ? (
-                  <p>Drop the files here...</p>
+                  <p>Drop the file here...</p>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <AiOutlineFileAdd style={{ fontSize: '50px', color: '#cccccc' }} />
-                    <p>Drag 'n' drop some files here, or click to select files</p>
+                    <p>Drag 'n' drop a file here, or click to select a file</p>
                   </div>
                 )}
               </div>
 
-              {/* Error Message for unsupported file types */}
-              {errorMessage && (
-                <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>
-              )}
+              {errorMessage && <p style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</p>}
 
-              {/* Display uploaded files with cancel button and icons */}
-              {uploadedFiles.length > 0 && (
+              {uploadedFile && (
                 <ul style={{ marginTop: '10px' }}>
-                  {uploadedFiles.map((file, index) => (
-                    <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {/* File Type Icon */}
-                        {getFileIcon(file.type)}
-                        {/* Shortened file name with tooltip */}
-                        <span title={file.name}>{shortenFileName(file.name)}</span>
-                      </div>
-                      <button
-                        type="button"
-                        style={{
-                          marginLeft: '10px',
-                          backgroundColor: '#ff4d4d',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '5px',
-                          cursor: 'pointer',
-                          padding: '3px 8px'
-                        }}
-                        onClick={() => removeFile(file)}
-                      >
-                        Cancel
-                      </button>
-                    </li>
-                  ))}
+                  <li style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      {getFileIcon(uploadedFile.type)}
+                      <span title={uploadedFile.name}>{shortenFileName(uploadedFile.name)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      style={{
+                        marginLeft: '10px',
+                        backgroundColor: '#ff4d4d',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        padding: '3px 8px'
+                      }}
+                      onClick={removeFile}
+                    >
+                      Cancel
+                    </button>
+                  </li>
                 </ul>
               )}
             </div>
 
-            <button type="submit" className='submit-button' style={{ marginTop: '20px', backgroundColor: '#ffc674', fontWeight: '400', color: 'black' }}>
-             Upload
+            <button disabled={loading} type="submit" className='submit-button' style={{ marginTop: '20px', backgroundColor: '#ffc674', fontWeight: '400', color: 'black' }}>
+              {
+                loading ? 'Loading...' : 'Add Resource'
+              }
             </button>
           </form>
         </div>
