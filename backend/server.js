@@ -1,5 +1,6 @@
 
 const express = require('express');
+const bodyParser = require('body-parser');
 
 // Will use when media is involved
 // const bodyParser = require('body-parser');
@@ -13,6 +14,9 @@ const cors = require("cors");
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+app.use(bodyParser.json({ limit: '10mb' })); // to support JSON-encoded bodies
+app.use(express.json({ extended: false }))
 // app.use(
 // 	cookieSession({
 // 		name: "session",
@@ -61,6 +65,9 @@ app.use('/api/volunteer', require('./routes/api/volunteer'))
 
 // Student APIs
 app.use('/api/session', require('./routes/api/session'))
+
+// Resources APIs
+app.use('/api/resources', require('./routes/api/resources'))
 
 
 // for production
