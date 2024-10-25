@@ -26,13 +26,8 @@ app.use(express.json({ extended: false }))
 // );
 
 
-// Parse JSON and form data with increased limit
-// app.use(bodyParser.json({ limit: '10mb' }));
-// app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-
-
-// // for Production
-// const path = require('path')
+// for Production
+const path = require('path')
 
 
 // Connect Database
