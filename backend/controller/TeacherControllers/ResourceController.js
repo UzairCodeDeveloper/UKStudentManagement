@@ -160,4 +160,23 @@ module.exports = {
             res.status(500).json({ msg: 'Server Error' });
         }
     },
+
+     getResourceById: async (req, res) => {
+        const { id } = req.params;
+        console.log(id)
+        console.log('first')
+        try {
+            const resource = await Resource.findById(id);
+            if (!resource) {
+                return res.status(404).json({ msg: 'Session not found' });
+            }
+    
+            res.status(200).json(resource);
+        } catch (error) {
+            console.error('Error fetching session:', error.message);
+            res.status(500).json({ msg: 'Server Error' });
+        }
+    }
 };
+
+

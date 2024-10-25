@@ -340,7 +340,7 @@ StudentServices.createStudent(studentData)
                   autoComplete="off"
                   
                 />
-              <label htmlFor={certificate.id} className="btn btn-outline-primary">
+              <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
                 {certificate.label}
               </label>
             </div>

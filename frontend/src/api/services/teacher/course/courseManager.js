@@ -26,18 +26,22 @@ const getCourseByIdInstructor = (id) => {
 // UPLOAD a new resource
 const uploadResource = (resourceData) => {
   const token = getToken();  
-
+  // console.log(resourceData)
   // Use FormData for file uploads
   const formData = new FormData();
   formData.append("title", resourceData.title);
   formData.append("description", resourceData.description);
   formData.append("resource_type", resourceData.resource_type);
   formData.append("course_id", resourceData.course_id);
-
+  
   if (resourceData.pdf) {
     formData.append("pdf", resourceData.pdf); // Attach the file if it exists
   }
 
+
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
   return httpClient.post("/resources/upload", formData, {
     headers: {
       "x-auth-token": token,  
@@ -49,7 +53,6 @@ const uploadResource = (resourceData) => {
 // GET all resources by course
 const getResourcesByCourse = (course_id) => {
   const token = getToken();  
-
   return httpClient.get(`/resources/${course_id}`, {
     headers: {
       "x-auth-token": token,  
@@ -68,12 +71,23 @@ const deleteResource = (resource_id) => {
   });
 };
 
+const getResourcebyId = (id) => {
+  const token = getToken(); // Get token from Redux state or other source
+
+  return httpClient.get(`/resources/get/${id}`, {
+    headers: {
+      "x-auth-token": token, // Pass the token in the headers correctly
+    },
+  });
+};
+
 const exportedObject = {
   getAllTeacherCourses,
   getCourseByIdInstructor,
   uploadResource,       
   getResourcesByCourse,
-  deleteResource,       
+  deleteResource,
+  getResourcebyId       
 };
 
 export default exportedObject;

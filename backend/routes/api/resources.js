@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { uploadResource, getResourcesByCourse, deleteResource } = require('../../controller/TeacherControllers/ResourceController');
+const { uploadResource, getResourcesByCourse, deleteResource,getResourceById } = require('../../controller/TeacherControllers/ResourceController');
 const { pdfUpload } = require('../../config/multerConfigPdf'); // Correctly destructure pdfUpload
 const volunteerAuth = require('../../middleware/volunteerAuth'); // Assuming you use an auth middleware
 
@@ -12,5 +12,6 @@ router.get('/:course_id', volunteerAuth, getResourcesByCourse);
 
 // Delete a resource by ID
 router.delete('/:id', volunteerAuth, deleteResource);
+router.get('/:id', volunteerAuth, getResourceById);
 
 module.exports = router;
