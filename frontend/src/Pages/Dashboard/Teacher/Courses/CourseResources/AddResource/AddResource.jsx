@@ -28,7 +28,7 @@ export default function AddResource() {
       title: resourceTitle,
       description, // Include description in the submission
       course_id: id,
-      due_date: selectedDate,
+      due_date: selectedDate, 
       pdf: uploadedFile // Single file upload
     };
     setLoading(true);
