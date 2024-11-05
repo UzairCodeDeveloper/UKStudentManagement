@@ -17,6 +17,7 @@ import CourseResources from './Courses/CourseResources/CourseResources'
 import AddResource from './Courses/CourseResources/AddResource/AddResource'
 import CourseAttendance from './Courses/Course Attendance/CourseAttendance';
 import EditResource from './Courses/CourseResources/EditResource/EditResource';
+import ResourceGrading from './Courses/CourseResources/ResourceGrading/ResourceGrading';
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -163,6 +164,7 @@ export default function AdminDashboard() {
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
         <Route path="/courseattendance" element={<CourseAttendance/>} />
+        <Route path="/resourcegrading" element={<ResourceGrading/>} />
         <Route path="*" element={<div className="content">Select an option from the sidebar</div>} />
       </Routes>
     );

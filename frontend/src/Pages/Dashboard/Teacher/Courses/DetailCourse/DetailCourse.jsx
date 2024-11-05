@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import { SiTask } from "react-icons/si";
-import { MdUploadFile } from "react-icons/md";
+import { SiBookstack } from "react-icons/si";
 dayjs.extend(isBetween); // Extend with the isBetween plugin
 import DatePicker from 'react-datepicker'; // Ensure react-datepicker is installed
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
@@ -12,13 +11,14 @@ import { SlPeople } from "react-icons/sl";
 import { GrResources } from "react-icons/gr";
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseManager from "../../../../../api/services/teacher/course/courseManager";
+import Loader from '../../../../../components/Loader/Loader';
 
 export default function DetailCourse() {
   // State to manage course start date selected via DatePicker
   const [startDate, setStartDate] = useState(null);
   const [courseData, setCourseData] = useState({});
   const [tasks, setTasks] = useState([]);
-
+  const [loading, setLoading] = useState(true)
   // Course duration constants
   const courseDurationMonths = 15;
   const navigate = useNavigate();
@@ -76,9 +76,10 @@ export default function DetailCourse() {
 
   // Filter weeks to only show those for the current and next month
   const filteredWeeks = weeks.filter(week =>
-    (week.weekMonth === currentMonth.month() + 1 && week.weekYear === currentMonth.year()) ||
-    (week.weekMonth === nextMonth.month() + 1 && week.weekYear === nextMonth.year())
+    (week.weekStartDate.isSame(currentMonth, 'month') || week.weekStartDate.isSame(nextMonth, 'month')) ||
+    (week.weekStartDate.add(6, 'day').isSame(currentMonth, 'month') || week.weekStartDate.add(6, 'day').isSame(nextMonth, 'month'))
   );
+
 
   // Disable previous and next buttons logic
   const isPreviousDisabled = startDate && currentMonth.isSame(dayjs(startDate), 'month');
@@ -97,25 +98,30 @@ export default function DetailCourse() {
   const id = params.id;
 
   useEffect(() => {
-    CourseManager.getCourseByIdInstructor(id)
-      .then(res => {
-        console.log(res.data.classDetails.session.start_date);
-        setStartDate(new Date(res.data.classDetails.session.start_date));
-        setCourseData(res.data);
+    setLoading(true); // Set loading to true before fetching
+    Promise.all([
+      CourseManager.getCourseByIdInstructor(id),
+      CourseManager.getResourcesByCourse(id),
+    ])
+      .then(([courseRes, resourcesRes]) => {
+        console.log(courseRes.data.classDetails.session.start_date);
+        setStartDate(new Date(courseRes.data.classDetails.session.start_date));
+        setCourseData(courseRes.data);
+        setTasks(resourcesRes.data.data); // Store tasks from API response
       })
       .catch(err => {
-        console.log(err);
-      });
-
-    CourseManager.getResourcesByCourse(id)
-      .then((res) => {
-        console.log(res.data.data);
-        setTasks(res.data.data); // Store tasks from API response
+        console.error(err); // Handle errors here if needed
       })
-      .catch((e) => {
-        console.log(e);
+      .finally(() => {
+        setLoading(false); // Set loading to false once fetching is complete
       });
   }, [id]);
+
+  if (loading) {
+    return <Loader />; // Show loader while loading
+  }
+
+
 
   return (
     <div className="courses-dashboard">
@@ -165,11 +171,17 @@ export default function DetailCourse() {
                 <div className="accordion-body">
                   <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px' }}>
                     <GrResources style={{ backgroundColor: '#f7634d', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
-                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={() => { navigate(`/courseResources/${id}`) }}>Resources</a></span>
+                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={(e) => {
+                      e.preventDefault(); // Prevent the default anchor behavior
+                      navigate(`/courseResources/${id}`); // Use navigate to change route
+                    }}>Resources</a></span>
                   </div>
                   <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px', marginTop: '10px' }}>
                     <MdOutlinePeopleAlt style={{ backgroundColor: '#5d63f6', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
-                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={() => { navigate('/courseattendance') }}>Attendance</a></span>
+                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={(e) => {
+                      e.preventDefault(); // Prevent the default anchor behavior
+                      navigate('/courseattendance'); // Use navigate to change route
+                    }}>Attendance</a></span>
                   </div>
                 </div>
               </div>
@@ -208,7 +220,7 @@ export default function DetailCourse() {
                     {week.tasks.length > 0 ? (
                       <ul>
                         {week.tasks.map((task, taskIndex) => (
-                          <div><a href='#'><GrResources style={{color:'#f7634d', marginRight:'5px'}}/>{task}</a></div>
+                          <div><a href='' onClick={(e)=>{ e.preventDefault(); navigate('/resourcegrading')}}  ><GrResources style={{ color: '#f7634d', marginRight: '5px' }} />{task}</a></div>
                         ))}
                       </ul>
                     ) : (
@@ -220,15 +232,15 @@ export default function DetailCourse() {
             ))}
           </div>
           <div className="mt-3 d-flex justify-content-between">
-            <button 
-              className="btn btn-primary" 
+            <button
+              className="btn btn-primary"
               onClick={() => setCurrentMonthOffset(prev => prev - 1)}
               disabled={isPreviousDisabled}
             >
               Previous Month
             </button>
-            <button 
-              className="btn btn-primary" 
+            <button
+              className="btn btn-primary"
               onClick={() => setCurrentMonthOffset(prev => prev + 1)}
               disabled={isNextDisabled}
             >
