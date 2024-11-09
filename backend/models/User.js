@@ -55,6 +55,9 @@ const userSchema = new mongoose.Schema({
         }
     },
     studentData: {
+        familyRegNo:{
+            type:String
+        },
         forename: {
             type: String
         },
@@ -120,6 +123,9 @@ const userSchema = new mongoose.Schema({
             },
             guardianAddress: {
                 type: String
+            },
+            email:{
+                type:String
             },
             primaryContactNumber: {
                 type: String

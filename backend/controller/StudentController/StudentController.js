@@ -115,7 +115,7 @@ const getStudentById = async (req, res) => {
 
 const updateStudent = async (req, res) => {
   const { id } = req.params;
-
+  console.log(res)
   console.log(req.body);
 
   // Check if student_details is present
@@ -124,6 +124,7 @@ const updateStudent = async (req, res) => {
   }
 
   const { 
+    familyRegNo,
     forename, 
     surname, 
     gender, 
@@ -153,6 +154,7 @@ const updateStudent = async (req, res) => {
     }
 
     // Update the student's studentData fields
+    student.studentData.familyRegNo = familyRegNo || student.studentData.familyRegNo;
     student.studentData.forename = forename || student.studentData.forename;
     student.studentData.surname = surname || student.studentData.surname;
     student.studentData.gender = gender || student.studentData.gender;

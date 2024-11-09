@@ -16,6 +16,7 @@ export default function Login() {
   const dispatch = useDispatch();
   
   const onSubmit = (data) => {
+    console.log(data)
     const { username, password } = data; // Destructure the data for easier access
     
     // Regular expressions to check the format of user ID
@@ -32,7 +33,7 @@ export default function Login() {
         })
         .catch(error => {
           console.log(error);
-          // alert(error.response.data.errors[0].msg);
+          alert(error);
           setErrorResponse('Invalid Credentials')
         });
     } else if (isStudentID) {
@@ -53,12 +54,12 @@ export default function Login() {
       // console.log('Calling Volunteer API'); // Replace with actual API call
       VolunteerServices.loginVolunteer(data)
         .then(response => {
-          // console.log(response.data);
+          console.log(response.data);
           dispatch(setTeacherUser(response.data));
         })
         .catch(error => {
           console.log(error);
-          // alert(error.response.data.msg);
+          alert(error);
           setErrorResponse('Invalid Credentials')
         });
     } else {
