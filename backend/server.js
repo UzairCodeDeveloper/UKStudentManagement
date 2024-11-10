@@ -64,6 +64,10 @@ app.use('/api/session', require('./routes/api/session'))
 // Resources APIs
 app.use('/api/resources', require('./routes/api/resources'))
 
+// Attendance APIs
+app.use('/api/attendence', require('./routes/api/attendence'))
+
+
 
 // for production
 // Serve static assets in production

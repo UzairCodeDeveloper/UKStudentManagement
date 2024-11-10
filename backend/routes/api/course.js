@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const adminAuth = require('../../middleware/adminAuth')
 const volunteerAuth = require('../../middleware/volunteerAuth')
-const { createCourse, getAllCourses, getCourseById, updateCourse, deleteCourse, getAllTeacherCourses,getCourseByIdInstructor } = require('../../controller/CourseController/CourseController');
+const { createCourse, getAllCourses, getCourseById, updateCourse, deleteCourse,
+     getAllTeacherCourses,getCourseByIdInstructor,
+    } = require('../../controller/CourseController/CourseController');
 
 // @route POST /api/courses
 // @desc Create a new course
@@ -33,5 +35,8 @@ router.delete('/:id',adminAuth, deleteCourse);
 // InstructorAPIs
 router.get('/my-courses/getALL',volunteerAuth, getAllTeacherCourses);
 router.get('/my-courses/:id',volunteerAuth, getCourseByIdInstructor);
+
+
+// router.get('/get-Students-enrolled/:id',volunteerAuth, getStudentsEnrolledInTheCourse);
 
 module.exports = router;

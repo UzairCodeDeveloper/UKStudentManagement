@@ -289,6 +289,9 @@ const getCourseByIdInstructor = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
+
+
   
 module.exports = {
     createCourse,
@@ -296,7 +299,6 @@ module.exports = {
     getCourseById,
     updateCourse,
     deleteCourse,
-
     // For Instructors
     getAllTeacherCourses,
     getCourseByIdInstructor
