@@ -13,6 +13,7 @@ export default function EditStudent() {
   const { id } = useParams();
   console.log(id);
   // State variables for each input
+  const[familyRegNo,setFamilyRegNo]=useState('');
   const [forename, setForename] = useState("");
   const [surname, setSurname] = useState("");
   const [gender, setGender] = useState("");
@@ -39,6 +40,7 @@ export default function EditStudent() {
   const [guardianName, setGuardianName] = useState("");
   const [relationToChild, setRelationToChild] = useState("");
   const [guardianAddress, setGuardianAddress] = useState("");
+  const[email,setemail]=useState('')
   const [primaryContactNumber, setPrimaryContactNumber] = useState("");
   const [secondaryContactNumber, setSecondaryContactNumber] = useState("");
 
@@ -77,7 +79,10 @@ export default function EditStudent() {
       !guardianName ||
       !relationToChild ||
       !guardianAddress ||
-      !primaryContactNumber 
+      !primaryContactNumber ||
+      !email ||
+      !familyRegNo
+
        // Fixed typo (previously duplicated)
     ) {
       setError("Please fill in all required fields.");
@@ -87,6 +92,7 @@ export default function EditStudent() {
     // If validation passes, you can handle your submission logic here
     const studentData = {
       student_details: { // Updated to match the expected structure
+        familyRegNo,
         forename,
         surname,
         gender,
@@ -110,6 +116,7 @@ export default function EditStudent() {
           guardianName,
           relationToChild,
           guardianAddress,
+          email,
           primaryContactNumber,
           secondaryContactNumber,
         },
@@ -245,6 +252,7 @@ useEffect(() => {
     const studentData = response.data.studentData;
     console.log(studentData)
     // Mapping the response data to state variables
+    setFamilyRegNo(studentData.familyRegNo || '');
     setForename(studentData.forename || '');
     setSurname(studentData.surname || '');
     setGender(studentData.gender || '');
@@ -275,7 +283,7 @@ useEffect(() => {
     setGuardianAddress(guardianDetails.guardianAddress || '');
     setPrimaryContactNumber(guardianDetails.primaryContactNumber || '');
     setSecondaryContactNumber(guardianDetails.secondaryContactNumber || '');
-
+    setemail(guardianDetails.email || '');
     // Interests
     const { interests } = studentData;
     setHobbyInterest(interests.hobbyInterest || '');
@@ -348,6 +356,28 @@ useEffect(() => {
             <span className="section-number">1</span> Student Information
           </h4>
           <div className="form-grid">
+
+
+
+          <div className="form-group">
+              <label className="field-label required-bg">Family Reg NO*</label>
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Enter Registration No"
+                  className="form-input"
+                  value={familyRegNo}
+                  onChange={(e) => setFamilyRegNo(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+
+
+
+
+
             {/* Forename */}
             <div className="form-group">
               <label className="field-label required-bg">Forename*</label>
@@ -745,6 +775,21 @@ useEffect(() => {
                   className="form-input"
                   value={guardianAddress}
                   onChange={(e) => setGuardianAddress(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+
+            <div className="form-group">
+              <label className="field-label required-bg">Email*</label>
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Enter Email"
+                  className="form-input"
+                  value={email}
+                  onChange={(e) => setemail(e.target.value)}
                   required
                 />
               </div>

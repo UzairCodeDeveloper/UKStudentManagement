@@ -18,6 +18,7 @@ const Enrollment = require("../../models/Enrolment");
 
 const registerUser = async (req, res) => {
     const { 
+        familyRegNo,
         forename,
         surname,
         gender,
@@ -59,6 +60,7 @@ const registerUser = async (req, res) => {
             isVerified: false,
             role: roleObj._id, // Assign the role ObjectId to the user
             studentData: {
+                familyRegNo,
                 forename,
                 surname,
                 gender,

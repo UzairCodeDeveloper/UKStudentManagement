@@ -44,6 +44,7 @@ const deleteStudent = (id) => {
 
 // Edit Volunteer
 const editStudent = (id,data) => {
+  console.log(data)
   const token = getToken(); // Get token from Redux state or other source
   return httpClient.put(`/users/update/${id}`,data, {
     headers: {

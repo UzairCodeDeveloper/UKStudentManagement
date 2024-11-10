@@ -196,13 +196,8 @@ export default function AdminDashboard() {
 
 
 
-          <li>
-            <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
-              onClick={() => setActiveLink('/timetable')}>
-              <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Timetable</span>
-            </Link>
-          </li>
-          {/* <li
+          
+          <li
             className={`sidebar-item sidebar-item-with-submenu`}
             onClick={() => setIsAttendenceOpen(!isAttendenceOpen)}
           >
@@ -225,7 +220,14 @@ export default function AdminDashboard() {
               </Link>
             </li>
           </ul>
+
           <li>
+            <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/timetable')}>
+              <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Timetable</span>
+            </Link>
+          </li>
+          {/* <li>
             <Link to="/fees" className={`sidebar-item ${activeLink === '/fees' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/fees')}>
               <BiBriefcase className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Fees</span>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './CoursesDashboard.css';
+import '../../../Teacher/Courses/CoursesDashboard/CoursesDashboard.css';
 import { useNavigate } from 'react-router-dom';
 import CourseManager from "../../../../../api/services/teacher/course/courseManager";
 

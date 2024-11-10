@@ -15,6 +15,7 @@ export default function AddStudent() {
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
   const [classes, setClasses] = useState('');
+  const [familyRegNo, setFamilyRegNo]=useState('')
   // Doctor details
   const [doctorName, setDoctorName] = useState('');
   const [doctorAddress, setDoctorAddress] = useState('');
@@ -37,6 +38,7 @@ export default function AddStudent() {
   const [guardianAddress, setGuardianAddress] = useState('');
   const [primaryContactNumber, setPrimaryContactNumber] = useState('');
   const [secondaryContactNumber, setSecondaryContactNumber] = useState('');
+  const [email,setemail]=useState('')
 
   // Interest/Hobby details
   const [hobbyInterest, setHobbyInterest] = useState('');
@@ -62,13 +64,14 @@ export default function AddStudent() {
     e.preventDefault();
 
     // Basic validation
-    if (!forename || !surname || !gender || !dob || !doctorName || !doctorAddress || !gpSurgeryContact  || !guardianName || !relationToChild || !guardianAddress || !primaryContactNumber || !primaryContactNumber) {
+    if (!forename || !surname || !gender || !dob || !doctorName || !doctorAddress || !gpSurgeryContact  || !guardianName || !relationToChild || !guardianAddress || !primaryContactNumber || !primaryContactNumber || !familyRegNo || !email) {
       setError('Please fill in all required fields.');
       return;
     }
 
     // If validation passes, you can handle your submission logic here
     const studentData = {
+      familyRegNo,
       forename,
       surname,
       gender,
@@ -93,6 +96,7 @@ export default function AddStudent() {
           guardianName,
           relationToChild,
           guardianAddress,
+          email,
           primaryContactNumber,
           secondaryContactNumber,
       },
@@ -106,7 +110,7 @@ export default function AddStudent() {
   
   // console.log(selectedCertificates)
   
-
+ console.log(studentData)
 StudentServices.createStudent(studentData)
   .then((res) => {
     // Stop loading spinner or indicator
@@ -141,6 +145,7 @@ StudentServices.createStudent(studentData)
   };
 
   const resetForm = () => {
+    setFamilyRegNo('');
     setForename('');
     setSurname('');
     setGender('');
@@ -158,6 +163,7 @@ StudentServices.createStudent(studentData)
     setGuardianName('');
     setRelationToChild('');
     setGuardianAddress('');
+    setemail('')
     setPrimaryContactNumber('');
     setSecondaryContactNumber('');
     setHobbyInterest('');
@@ -240,6 +246,22 @@ StudentServices.createStudent(studentData)
         <div className="form-section">
           <h4><span className="section-number">1</span> Student Information</h4>
           <div className="form-grid">
+          
+
+
+          <div className="form-group">
+              <label className="field-label required-bg">Family Reg No*</label>
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Enter Registration No"
+                  className="form-input"
+                  value={familyRegNo}
+                  onChange={(e) => setFamilyRegNo(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
             {/* Forename */}
             <div className="form-group">
               <label className="field-label required-bg">Forename*</label>
@@ -590,6 +612,21 @@ StudentServices.createStudent(studentData)
                   className="form-input"
                   value={guardianAddress}
                   onChange={(e) => setGuardianAddress(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+
+            <div className="form-group">
+              <label className="field-label required-bg">Email*</label>
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Enter Email"
+                  className="form-input"
+                  value={email}
+                  onChange={(e) => setemail(e.target.value)}
                   required
                 />
               </div>
