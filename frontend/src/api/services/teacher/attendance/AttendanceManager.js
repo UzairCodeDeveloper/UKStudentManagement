@@ -13,10 +13,10 @@ const getAllAssignedClasses = () => {
 };
 
 // Get Attendance by Class and Date (FETCH RECORD)
-const getAttendanceRecordByClassAndDate = () => {
+const getAttendanceRecordByClassAndDate = (class_id,date) => {
     const token = getToken();
 
-    return httpClient.get("/attendence/fetchrecords/:class_id/:date", {
+    return httpClient.get(`/attendence/fetchrecords/${class_id}/${date}`, {
         headers: {
             "x-auth-token": token,
         },

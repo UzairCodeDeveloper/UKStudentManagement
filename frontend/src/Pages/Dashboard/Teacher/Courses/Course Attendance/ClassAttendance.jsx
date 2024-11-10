@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Ensure styles are applied
 import '../../../Admin/Attendence/Student/StudentAttendence.css'; // Add CSS for smooth animations and styling
+import AttendanceManager from "../../../../../api/services/teacher/attendance/AttendanceManager";
 
 export default function StudentAttendance() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [attendanceData, setAttendanceData] = useState([]); // Store attendance data for the selected date
   const [isAttendanceMarked, setIsAttendanceMarked] = useState(false);
   const [attendanceRecords, setAttendanceRecords] = useState({}); // Temporary store for attendance records
-  const [selectedClass, setSelectedClass] = useState('Class 1'); // New state for the selected class
+  const [selectedClass, setSelectedClass] = useState(''); // New state for the selected class
+  const [classes, setClasses] = useState([]); // New state for the selected class
 
   // Dummy student data, filtered by class in real scenarios
   const students = [
@@ -18,16 +20,47 @@ export default function StudentAttendance() {
   ];
 
   // Dummy classes to select from
-  const classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
+  // const classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
+  useEffect(()=>{
+    AttendanceManager.getAllAssignedClasses()
+    .then((response) => {
+        console.log(response.data);
+        setClasses(response.data);
+        setSelectedClass(response.data[0]?._id);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+  },[])
 
   const handleFetchRecords = () => {
-    const dateString = selectedDate.toISOString().split('T')[0]; // Use date as key
-    const records = attendanceRecords[dateString] || students
-      .filter(student => student.className === selectedClass) // Filter students by selected class
-      .map(student => ({ ...student, status: 'P' })); // Initialize with default status if no records
-    setAttendanceData(records);
-    setIsAttendanceMarked(true);
+    const dateString = selectedDate.toISOString().split('T')[0]; // Extract date string
+  
+    // const records = attendanceRecords[dateString] || students
+    //   .filter(student => student.className === selectedClass) // Filter students by selected class ID
+    //   .map(student => ({ ...student, status: 'P' })); // Initialize with default status if no records
+  
+    // setAttendanceData(records);
+    // setIsAttendanceMarked(true);
+
+    AttendanceManager.getAttendanceRecordByClassAndDate(selectedClass,dateString)
+    .then((response) => {
+        console.log(response.data);
+        
+        // setAttendanceData(response.data);
+
+        // setIsAttendanceMarked(true);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+  
+    // Log the date and the selected class ID
+    console.log(dateString, selectedClass);  
   };
+
 
   const handleUpdateAttendance = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
@@ -58,27 +91,29 @@ export default function StudentAttendance() {
             Attendance <span className="sub-header"><AiOutlineHome className="sidebar-icon" /> - Student Attendance</span>
           </h6>
         </div>
-
+   
         <div className="sectionAttendence" style={{ textAlign: "center", marginTop: '50px', padding: '0px 50px' }}>
           <h4>Select Date for Attendance</h4>
 
           {/* Form-like layout with better styling */}
           <div className="form-container">
-            <div className="form-group">
-              <label htmlFor="class-select">Select Class:</label>
-              <select
-                id="class-select"
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="class-select"
-              >
-                {classes.map((className, index) => (
-                  <option key={index} value={className}>
-                    {className}
-                  </option>
-                ))}
-              </select>
-            </div>
+
+  <div className="form-group">
+    <label htmlFor="class-select">Select Class:</label>
+    <select
+      id="class-select"
+      value={selectedClass}
+      onChange={(e) => setSelectedClass(e.target.value)}  
+      className="class-select"
+    >
+      {classes.map((classItem) => (
+        <option key={classItem?._id} value={classItem?._id}>
+          {classItem?.class_name} 
+        </option>
+      ))}
+    </select>
+  </div>
+
 
             <div className="form-group">
               <label htmlFor="date-picker">Select Date:</label>
