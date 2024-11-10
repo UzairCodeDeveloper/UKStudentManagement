@@ -32,13 +32,20 @@ exports.getAttendanceRecordsForInstructor = async (req, res) => {
         // Get today's date at midnight (00:00:00)
         const today = new Date();
         today.setHours(0, 0, 0, 0);  // Set time to midnight
+        
+        // Convert to UTC and format it as YYYY-MM-DD
+        const utcToday = new Date(today.getTime() + today.getTimezoneOffset() * 60000);
+        
+        // Extract the date part in YYYY-MM-DD format
+        const dateString = utcToday.toISOString().split('T')[0];
 
         // Iterate through unique classes and check if attendance is marked for today
         for (const classObj of uniqueClasses) {
             const attendanceRecord = await Attendance.findOne({
                 class_id: classObj._id,
-                date: today  // Compare only the date, ignoring time
+                date: dateString  // Compare only the date, ignoring time
             });
+            // console.log(classObj._id,today,attendanceRecord);
 
             // Add a new field to indicate if attendance is marked today
             classObj.isAttendanceMarkedToday = attendanceRecord ? true : false;
