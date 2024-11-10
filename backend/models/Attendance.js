@@ -6,6 +6,7 @@ const attendanceSchema = new Schema({
     type: Date,
     required: true 
   },
+  
   class_id: {
     type: Schema.Types.ObjectId, 
     ref: 'Class', 
@@ -31,7 +32,7 @@ const attendanceSchema = new Schema({
       }
     }
   ]
-});
+},{ timestamps: true });
 
 
 attendanceSchema.index({ class_id: 1, date: 1 }, { unique: true }); 
