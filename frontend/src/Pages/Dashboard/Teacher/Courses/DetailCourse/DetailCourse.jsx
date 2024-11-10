@@ -7,7 +7,9 @@ import DatePicker from 'react-datepicker'; // Ensure react-datepicker is install
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
 import './DetailedCourse.css';
 import { MdOutlinePeopleAlt } from "react-icons/md";
-import { SlPeople } from "react-icons/sl";
+
+import { LuFolderSymlink } from "react-icons/lu";
+
 import { GrResources } from "react-icons/gr";
 import { useNavigate, useParams } from 'react-router-dom';
 import CourseManager from "../../../../../api/services/teacher/course/courseManager";
@@ -107,7 +109,12 @@ export default function DetailCourse() {
         console.log(courseRes.data.classDetails.session.start_date);
         setStartDate(new Date(courseRes.data.classDetails.session.start_date));
         setCourseData(courseRes.data);
-        setTasks(resourcesRes.data.data); // Store tasks from API response
+        const filteredResources = resourcesRes.data.data.filter(resource => 
+          !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
+        );
+        
+        // Set the filtered resources as tasks
+        setTasks(filteredResources); // Store tasks from API response
       })
       .catch(err => {
         console.error(err); // Handle errors here if needed
@@ -177,11 +184,11 @@ export default function DetailCourse() {
                     }}>Resources</a></span>
                   </div>
                   <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px', marginTop: '10px' }}>
-                    <MdOutlinePeopleAlt style={{ backgroundColor: '#5d63f6', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
+                    <LuFolderSymlink style={{ backgroundColor: '#5d63f6', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
                     <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={(e) => {
                       e.preventDefault(); // Prevent the default anchor behavior
-                      navigate('/courseattendance'); // Use navigate to change route
-                    }}>Attendance</a></span>
+                      navigate(`/handouts/${id}`); // Use navigate to change route
+                    }}>Handouts</a></span>
                   </div>
                 </div>
               </div>

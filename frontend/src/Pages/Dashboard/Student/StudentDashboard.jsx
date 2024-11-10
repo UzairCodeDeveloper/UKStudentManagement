@@ -4,13 +4,14 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { TiHomeOutline } from "react-icons/ti";
 import { GiNotebook } from "react-icons/gi";
 import { CiViewTimeline } from "react-icons/ci";
+import { IoMdSettings } from "react-icons/io";
 import { BsPersonCheckFill } from "react-icons/bs";
 import '../Admin/Admin.css'; // Ensure you have this CSS file for styles
 import { ImProfile } from "react-icons/im";
 // import Timetable from './TimeTable/Timetable';
 import CoursesDashboard from './Courses/CoursesDashboard/CoursesDashboard';
 // import TeachersAttendence from './TeachersAttendence/TeachersAttendence'
-// import UserProfile from '../../../components/UserProfile/UserProfile';
+import UserProfile from '../../../components/UserProfile/UserProfile';
 // import TeacherHomeDashboard from './TeacherHomeDashboard/TeacherHomeDashboard';
 // import DetailCourse from './Courses/DetailCourse/DetailCourse';
 // import CourseResources from './Courses/CourseResources/CourseResources'
@@ -91,12 +92,12 @@ export default function AdminDashboard() {
             </Link>
             </li>
           <li>
-          {/* <li>
+          <li>
           <Link to="/user-profile" className={`sidebar-item ${activeLink === '/user-profile' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/user-profile')}>
-              <ImProfile className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Profile</span>
+              <IoMdSettings className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Settings</span>
             </Link>
-            </li> */}
+            </li>
           <li></li>
             <Link to="/courses" className={`sidebar-item ${activeLink === '/courses' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/courses')}>
@@ -152,16 +153,16 @@ export default function AdminDashboard() {
       <Routes>
         <Route path="/" element={<StudentHomeDashboard />} />
         <Route path="/courses" element={<CoursesDashboard />} />
+        <Route path="/user-profile" element={<UserProfile role='Student'/>} />
         {/* <Route path="/attendence" element={<TeachersAttendence/>} />
         <Route path="/timetable" element={<Timetable />} />
-        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
         <Route path="/courseattendance" element={<CourseAttendance/>} />
         <Route path="/resourcegrading" element={<ResourceGrading/>} /> */}
-        <Route path="*" element={<div className="content">Select an option from the sidebar</div>} />
+        <Route path="*" element={<StudentHomeDashboard/>} />
       </Routes>
     );
   };

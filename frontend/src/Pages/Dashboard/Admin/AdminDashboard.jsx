@@ -8,8 +8,7 @@ import { BiBriefcase } from "react-icons/bi";
 import { GiNotebook } from "react-icons/gi";
 import { CiViewTimeline } from "react-icons/ci";
 import { MdOutlineTimer } from "react-icons/md";
-import { TfiHandStop } from "react-icons/tfi";
-import { useNavigate } from 'react-router-dom';
+import { IoMdSettings } from "react-icons/io";
 import './Admin.css';
 import AdminHomeDashbboard from './RightsideContent/DefaultDashboard/AdminHomeDashbboard';
 import AddStudent from './Student/AddStudent/AddStudent';
@@ -63,6 +62,12 @@ export default function AdminDashboard() {
             </Link>
           </li>
           
+          <li>
+          <Link to="/user-profile" className={`sidebar-item ${activeLink === '/user-profile' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/user-profile')}>
+              <IoMdSettings className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Settings</span>
+            </Link>
+            </li>
           <li
             className={`sidebar-item sidebar-item-with-submenu`}
             onClick={() => setIsStudentOpen(!isStudentOpen)}
@@ -256,14 +261,14 @@ export default function AdminDashboard() {
         <Route path="/employee-attendance" element={<EmployeeAttendence />} />
         <Route path="/employees" element={<AllEmployee />} />
         <Route path="/add-employee" element={<AddEmployee />} />
-        <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/user-profile" element={<UserProfile role='Admin'/>} />
         <Route path="/students/edit/:id" element={<EditStudent/>} />
         <Route path="/employees/edit/:id" element={<EditEmployee/>} />
         <Route path="/add-session" element={<AddSession />} />
         <Route path="/sessions" element={<AllSession />} />
         <Route path="/sessions/edit/:id" element={<EditSession />} />
         <Route path="/fees" element={<div className="content">Fees Management Content</div>} />
-        <Route path="*" element={<div className="content">Select an option from the sidebar</div>} />
+        <Route path="*" element={<AdminHomeDashbboard/>} />
       </Routes>
     );
   };

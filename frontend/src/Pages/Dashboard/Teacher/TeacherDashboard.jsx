@@ -5,6 +5,8 @@ import { TiHomeOutline } from "react-icons/ti";
 import { GiNotebook } from "react-icons/gi";
 import { CiViewTimeline } from "react-icons/ci";
 import { BsPersonCheckFill } from "react-icons/bs";
+import { IoMdSettings } from "react-icons/io";
+import { MdOutlinePeopleOutline } from "react-icons/md";
 import '../Admin/Admin.css'; // Ensure you have this CSS file for styles
 import { ImProfile } from "react-icons/im";
 import Timetable from './TimeTable/Timetable';
@@ -15,9 +17,10 @@ import TeacherHomeDashboard from './TeacherHomeDashboard/TeacherHomeDashboard';
 import DetailCourse from './Courses/DetailCourse/DetailCourse';
 import CourseResources from './Courses/CourseResources/CourseResources'
 import AddResource from './Courses/CourseResources/AddResource/AddResource'
-import CourseAttendance from './Courses/Course Attendance/CourseAttendance';
+import CourseHandouts from './Courses/CourseHandouts/CourseHandouts';
 import EditResource from './Courses/CourseResources/EditResource/EditResource';
 import ResourceGrading from './Courses/CourseResources/ResourceGrading/ResourceGrading';
+import ClassAttendance from './Courses/Course Attendance/ClassAttendance';
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -93,7 +96,7 @@ export default function AdminDashboard() {
           <li>
           <Link to="/user-profile" className={`sidebar-item ${activeLink === '/user-profile' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/user-profile')}>
-              <ImProfile className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Profile</span>
+              <IoMdSettings className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Settings</span>
             </Link>
             </li>
           <li></li>
@@ -112,6 +115,13 @@ export default function AdminDashboard() {
             <Link to="/attendence" className={`sidebar-item ${activeLink === '/attendence' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/attendence')}>
               <BsPersonCheckFill className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Attendance</span>
+            </Link>
+            </li>
+
+            <li>
+            <Link to="/classattendance" className={`sidebar-item ${activeLink === '/classattendance' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/classattendance')}>
+              <MdOutlinePeopleOutline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Class Attendance</span>
             </Link>
             </li>
 
@@ -158,14 +168,15 @@ export default function AdminDashboard() {
         <Route path="/courses" element={<CoursesDashboard />} />
         <Route path="/attendence" element={<TeachersAttendence/>} />
         <Route path="/timetable" element={<Timetable />} />
-        <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/user-profile" element={<UserProfile role="Teacher"/>} />
         <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
-        <Route path="/courseattendance" element={<CourseAttendance/>} />
+        <Route path="/handouts/:id" element={<CourseHandouts/>} />
         <Route path="/resourcegrading" element={<ResourceGrading/>} />
-        <Route path="*" element={<div className="content">Select an option from the sidebar</div>} />
+        <Route path="/classattendance" element={<ClassAttendance/>} />
+        <Route path="*" element={<TeacherHomeDashboard/>} />
       </Routes>
     );
   };

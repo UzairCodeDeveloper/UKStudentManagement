@@ -188,7 +188,7 @@ export default function AdminHomeDashbboard() {
               <h5 style={{ marginBottom: '20px', fontWeight: '600', color: '#333', fontSize: '18px' }}>
                 Events & Announcements
               </h5>
-              <ul style={{ listStyleType: 'none', padding: 0 }}>
+              <ul style={{ listStyleType: 'none', padding: 0,  height:'300px', overflow:'auto'}}>
                 {events.map(event => (
                   <li key={event.id}>
                     <h6 style={{ margin: '0', color: '#3498db' }}>{event.title}</h6>

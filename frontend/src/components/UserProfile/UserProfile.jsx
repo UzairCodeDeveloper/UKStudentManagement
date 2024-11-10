@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IoMdSettings } from "react-icons/io";
 import { useSelector } from 'react-redux';
-export default function ShowClasses() {
+export default function ShowClasses({role}) {
   // State for form inputs
   const [formData, setFormData] = useState({
     userId: '12345', // Example userId, this will be readOnly
@@ -37,7 +37,7 @@ export default function ShowClasses() {
         <div className="header" style={{backgroundColor:'#6486f5', color:'white'}}>
           <h6>
             <IoMdSettings style={{marginRight:'0.5rem'}}/>
-            Account Settings
+            Account Settings {role}
           </h6>
         </div>
         

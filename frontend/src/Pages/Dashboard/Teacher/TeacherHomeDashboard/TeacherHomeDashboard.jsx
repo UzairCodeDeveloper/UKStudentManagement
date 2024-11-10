@@ -38,14 +38,19 @@ const events = [
     { id: 1, title: "School Assembly", date: "2024-10-05", description: "All students are required to attend." },
     { id: 2, title: "Parent-Teacher Meeting", date: "2024-10-10", description: "Meet with teachers to discuss student progress." },
     { id: 3, title: "Field Trip to Museum", date: "2024-10-15", description: "A fun educational trip for all classes." },
+    
 ];
+
 export default function TeacherHomeDashboard() {
     // const data = useSelector((state) => state.user.user.volunteer.volunteer_details);
     // console.log(data)
 
     const [volunteerData] = useState(useSelector((state) => state.user.user.volunteer.volunteer_details));
     console.log(volunteerData)
-
+    const days_to_commit=volunteerData.days_to_commit;
+    const workingAreas=volunteerData.areas_of_working;
+    console.log(days_to_commit)
+   
     // useEffect(() => {
     //     // Call the API to get the volunteer data
     //     VolunteerServices.getVolunteerById(1)  
@@ -84,42 +89,49 @@ export default function TeacherHomeDashboard() {
                         <strong>Mobile No:</strong>
                         <span>{volunteerData.contact_number}</span>
                     </div>
-                    {/* <div className="profile-detail-item">
-                        <strong>Email Address:</strong>
-                        <span>uzair@example.com</span>
-                    </div> */}
+                    <div className="profile-detail-item">
+                        <strong>DOB:</strong>
+                        <span>{new Date(volunteerData.dob).toLocaleDateString()}</span>
+                        
+                    </div>
                     <div className="profile-detail-item">
                         <strong>Home Address:</strong>
                         <span>{volunteerData.address}</span>
                     </div>
                     <div className="profile-detail-item">
-                        <strong>National ID:</strong>
-                        <span>12345678</span>
+                        <strong>Commit Days</strong>
+                        {days_to_commit.map((val,key)=>{
+                            return(
+                                <span>{`${val}, `} </span>
+                            )
+                        })}
+                        
                     </div>
                     <div className="profile-detail-item">
-                        <strong>Education:</strong>
-                        <span>// Master of Science</span>
+                        <strong>Working Areas:</strong>
+                        {workingAreas.map((val,key)=>{
+                            return(
+                                <span>{`${val}, `} </span>
+                            )
+                        })}
                     </div>
                     <div className="profile-detail-item">
                         <strong>Gender:</strong>
                         <span>{volunteerData.gender}</span>
                     </div>
                     <div className="profile-detail-item">
-                        <strong>Religion:</strong>
-                        <span>Islam</span>
+                        <strong>Postal Code</strong>
+                        <span>{volunteerData.postal_code}</span>
                     </div>
-                    <div className="profile-detail-item">
+                    {/* <div className="profile-detail-item">
                         <strong>Blood Group:</strong>
                         <span>O+</span>
                     </div>
-                    <div className="profile-detail-item">
-                        <strong>Date of Joining:</strong>
-                        <span>05 October, 2024</span>
-                    </div>
+                    
                     <div className="profile-detail-item">
                         <strong>Experience:</strong>
                         <span>5 years</span>
-                    </div>
+                    </div> */}
                 </div>
 
             </div>
@@ -131,7 +143,7 @@ export default function TeacherHomeDashboard() {
                     <div>
                         <span className="waving-hand">👋</span>
                         <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold' }}>
-                            Welcome <span style={{ fontWeight: '400' }}>Uzair</span> to Teacher Portal
+                            Welcome <span style={{ fontWeight: '400' }}>{volunteerData.full_name}</span> to Teacher Portal
                         </span>
                     </div>
                     <div className='TeacherDashboardImage'>
@@ -180,7 +192,7 @@ export default function TeacherHomeDashboard() {
                             <h5 style={{ marginBottom: '20px', fontWeight: '600', color: '#333', fontSize: '18px' }}>
                                 Events & Announcements
                             </h5>
-                            <ul style={{ listStyleType: 'none', padding: 0 }}>
+                            <ul style={{ listStyleType: 'none', padding: 0, height:'300px', overflow:'auto' }}>
                                 {events.map(event => (
                                     <li key={event.id}>
                                         <h6 style={{ margin: '0', color: '#3498db' }}>{event.title}</h6>

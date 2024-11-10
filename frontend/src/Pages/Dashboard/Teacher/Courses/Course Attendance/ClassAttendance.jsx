@@ -9,16 +9,22 @@ export default function StudentAttendance() {
   const [attendanceData, setAttendanceData] = useState([]); // Store attendance data for the selected date
   const [isAttendanceMarked, setIsAttendanceMarked] = useState(false);
   const [attendanceRecords, setAttendanceRecords] = useState({}); // Temporary store for attendance records
+  const [selectedClass, setSelectedClass] = useState('Class 1'); // New state for the selected class
 
-  // Dummy student data
+  // Dummy student data, filtered by class in real scenarios
   const students = [
-    { id: 1, name: 'Alice Johnson', fatherName: 'Mark Johnson', markedBy: 'Teacher A' },
-    { id: 2, name: 'Bob Brown', fatherName: 'David Brown', markedBy: 'Teacher B' }
+    { id: 1, name: 'Alice Johnson', fatherName: 'Mark Johnson', markedBy: 'Teacher A', className: 'Class 1' },
+    { id: 2, name: 'Bob Brown', fatherName: 'David Brown', markedBy: 'Teacher B', className: 'Class 2' }
   ];
+
+  // Dummy classes to select from
+  const classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
 
   const handleFetchRecords = () => {
     const dateString = selectedDate.toISOString().split('T')[0]; // Use date as key
-    const records = attendanceRecords[dateString] || students.map(student => ({ ...student, status: 'P' })); // Initialize with default status if no records
+    const records = attendanceRecords[dateString] || students
+      .filter(student => student.className === selectedClass) // Filter students by selected class
+      .map(student => ({ ...student, status: 'P' })); // Initialize with default status if no records
     setAttendanceData(records);
     setIsAttendanceMarked(true);
   };
@@ -58,6 +64,22 @@ export default function StudentAttendance() {
 
           {/* Form-like layout with better styling */}
           <div className="form-container">
+            <div className="form-group">
+              <label htmlFor="class-select">Select Class:</label>
+              <select
+                id="class-select"
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                className="class-select"
+              >
+                {classes.map((className, index) => (
+                  <option key={index} value={className}>
+                    {className}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="form-group">
               <label htmlFor="date-picker">Select Date:</label>
               <DatePicker
