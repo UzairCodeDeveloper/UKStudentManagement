@@ -32,6 +32,10 @@ const enrolmentSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
 }, { timestamps: true });
 
 
