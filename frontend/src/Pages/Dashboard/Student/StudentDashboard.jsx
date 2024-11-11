@@ -20,6 +20,7 @@ import UserProfile from '../../../components/UserProfile/UserProfile';
 // import EditResource from './Courses/CourseResources/EditResource/EditResource';
 // import ResourceGrading from './Courses/CourseResources/ResourceGrading/ResourceGrading';
 import StudentHomeDashboard from './StudentHomeDashboard/StudentHomeDashboard';
+import StudentAttendance from './Attendance/StudentAttendance';
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -105,6 +106,12 @@ export default function AdminDashboard() {
             </Link>
             </li>
             <li>
+            <Link to="/attendence" className={`sidebar-item ${activeLink === '/attendence' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/attendence')}>
+              <BsPersonCheckFill className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Attendance</span>
+            </Link>
+            </li>
+            <li>
             <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/timetable')}>
               <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>TimeTable</span>
@@ -154,8 +161,8 @@ export default function AdminDashboard() {
         <Route path="/" element={<StudentHomeDashboard />} />
         <Route path="/courses" element={<CoursesDashboard />} />
         <Route path="/user-profile" element={<UserProfile role='Student'/>} />
-        {/* <Route path="/attendence" element={<TeachersAttendence/>} />
-        <Route path="/timetable" element={<Timetable />} />
+        <Route path="/attendence" element={<StudentAttendance/>} />
+        {/* <Route path="/timetable" element={<Timetable />} />
         <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />

@@ -27,6 +27,7 @@ const getAttendanceRecordByClassAndDate = (class_id,date) => {
 
 // MARK ATTENDANCE
 const markAttendance = (data) => {
+    console.log(data)
     const token = getToken(); // Get token from Redux state or other source
     console.log(data)
     return httpClient.post(`/attendence/markattendance`, data, {

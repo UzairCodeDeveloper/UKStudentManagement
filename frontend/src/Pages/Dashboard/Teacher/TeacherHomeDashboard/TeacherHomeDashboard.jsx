@@ -141,7 +141,7 @@ export default function TeacherHomeDashboard() {
                 {/* Attendance Section */}
                 <div className="Intro">
                     <div>
-                        <span className="waving-hand">👋</span>
+                        <span className="waving-hand" style={{fontSize:'20px'}}>👋</span>
                         <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold' }}>
                             Welcome <span style={{ fontWeight: '400' }}>{volunteerData.full_name}</span> to Teacher Portal
                         </span>

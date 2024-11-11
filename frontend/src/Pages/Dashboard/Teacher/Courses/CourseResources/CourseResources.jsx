@@ -27,7 +27,7 @@ export default function ShowStudents() {
     CourseManager.getResourcesByCourse(id)
       .then((res) => {
         setResourceData(res.data.data);
-        console.log(resourceData)
+        console.log(res.data.data)
         setLoading(false);
       })
       .catch((err) => {

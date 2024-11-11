@@ -32,6 +32,21 @@ export default function CoursesDashboard() {
     course.class_id.class_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
+  const imageUrls = [
+      "https://img.freepik.com/premium-photo/gray-triangle-low-polygon-grey-geometric-triangular-polygonal-abstract-mosaic-background-3d-rendering-illustration_51464-607.jpg",
+      "https://cdn.vectorstock.com/i/500p/19/76/blue-triangle-abstract-background-vector-1581976.jpg",
+    "https://img.freepik.com/free-vector/coloured-polygonal-background-design_1164-49.jpg",
+    "https://example.com/image3.jpg",
+    "https://example.com/image4.jpg",
+    "https://example.com/image5.jpg",
+    "https://example.com/image6.jpg",
+    "https://example.com/image7.jpg",
+    "https://example.com/image8.jpg",
+    "https://example.com/image9.jpg",
+    "https://example.com/image10.jpg"
+  ];
+
   return (
     <div className="courses-dashboard">
       <h3>My Courses</h3>
@@ -51,14 +66,14 @@ export default function CoursesDashboard() {
 
         <div className={`courses-container ${layout}`} style={{ border: 'none' }}>
           {filteredCourses.length > 0 ? (
-            filteredCourses.map((course) => (
+            filteredCourses.map((course,index) => (
               <div
                 key={course.id}
                 className={`course-card ${layout}`}
                 style={{ cursor: "pointer" }}
                 onClick={() => { navigate(`/DetailedCourse/${course._id}`) }}
               >
-                <img src="https://cdn.vectorstock.com/i/500p/19/76/blue-triangle-abstract-background-vector-1581976.jpg" alt={course.course_name} className="course-image" />
+                <img  src={imageUrls[index % imageUrls.length]} alt={course.course_name} className="course-image" />
                 <div className="course-content">
                   <p>{course.courseCode}</p>
                   <h4>{course.course_name}</h4>
