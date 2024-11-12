@@ -29,8 +29,16 @@ const attendanceSchema = new Schema({
         type: String,
         enum: ['present', 'absent', 'leave'], 
         required: true
-      }
+      },
+      reason_for_leave: {
+        type: String,
+        default: '' 
+      },
+      behaviour_marks: {
+        type: Number,
+        default: 0
     }
+  }
   ]
 },{ timestamps: true });
 

@@ -67,6 +67,8 @@ app.use('/api/resources', require('./routes/api/resources'))
 // Attendance APIs
 app.use('/api/attendence', require('./routes/api/attendence'))
 
+// Teacher Attendance APIs 
+app.use('/api/teacher-attendance', require('./routes/api/teacher-attendanceRoute'));
 
 
 // for production
