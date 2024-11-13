@@ -22,7 +22,7 @@ export default function App() {
         // Render Login if the user is not logged in
         <Login />
       )}
-      <StudentDashboard/>
+      {/* <StudentDashboard/> */}
 
     </>
   );

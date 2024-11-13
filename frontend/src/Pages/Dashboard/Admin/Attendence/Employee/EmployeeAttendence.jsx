@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Ensure styles are applied
 import './EmployeeAttendence.css'; // Add CSS for smooth animations and styling
+import VolunteerServices from "../../../../../api/services/admin/volunteer/volunteerManager"
 
 export default function EmployeeAttendance() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [attendanceData, setAttendanceData] = useState([]);
   const [isAttendanceMarked, setIsAttendanceMarked] = useState(false);
+  const [employees, setEmployees] = useState([]); 
 
   // Dummy employee data
-  const employees = [
-    { id: 1, name: 'John Doe', fatherName: 'Robert Doe', status: 'P' },
-    { id: 2, name: 'Jane Smith', fatherName: 'Michael Smith', status: 'P' }
-  ];
+  // const employees = [
+  //   { id: 1, name: 'John Doe', fatherName: 'Robert Doe', status: 'P' },
+  //   { id: 2, name: 'Jane Smith', fatherName: 'Michael Smith', status: 'P' }
+  // ];
 
   const handleMarkAttendance = () => {
     setAttendanceData(employees);
@@ -31,6 +33,18 @@ export default function EmployeeAttendance() {
     );
     setAttendanceData(updatedData);
   };
+
+  useEffect(()=>{
+    VolunteerServices.getAllVolunteers()
+    .then((response)=>{
+      console.log(response.data)
+      setEmployees(response.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+
+  },[])
 
   return (
     <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
@@ -68,8 +82,8 @@ export default function EmployeeAttendance() {
             </thead>
             <tbody>
               {attendanceData.map((employee) => (
-                <tr key={employee.id}>
-                  <td>{employee.name}</td>
+                <tr key={employee._id}>
+                  <td>{employee.volunteer_details.full_name}</td>
                   <td>{employee.fatherName}</td>
                   <td>
                     <div className="status-buttons">
