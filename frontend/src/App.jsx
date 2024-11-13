@@ -3,7 +3,7 @@ import Login from './Pages/Login/Login'
 import AdminDashboard from './Pages/Dashboard/Admin/AdminDashboard'
 import { useSelector } from 'react-redux';
 import TeacherDashboard from './Pages/Dashboard/Teacher/TeacherDashboard';
-import StudentDashboard from './Pages/Dashboard/Student/StudentDashboard'
+// import StudentDashboard from './Pages/Dashboard/Student/StudentDashboard'
 
 
 export default function App() {

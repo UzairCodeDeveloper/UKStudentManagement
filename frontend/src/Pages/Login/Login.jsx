@@ -5,6 +5,7 @@ import animation from './loginAnimation.json';
 import Lottie from 'lottie-react';
 import AdminUserServices from "../../api/services/admin/adminUser"
 import VolunteerServices from "../../api/services/admin/volunteer/volunteerManager"
+import AuthenicationManager from "../../api/services/student/AuthenticationManager"
 import { useDispatch } from 'react-redux';
 import { setAdminUser,setTeacherUser } from '../../Redux/userSlice';
 import { useState } from 'react';
@@ -37,19 +38,20 @@ export default function Login() {
           setErrorResponse('Invalid Credentials')
         });
     } else if (isStudentID) {
-      // Call Student API
-      // console.log('Calling Student API'); 
-      alert("Student is yet to be integrated")
-      // Example:
-      // StudentUserServices.signInStudent(data)
-      //   .then(response => {
-      //     console.log(response.data);
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //     alert(error.response.data.errors[0].msg);
-      //   });
-    } else if (isVolunteerID) {
+      // Transform the data to match the required format
+      const formattedData = { user_id: username, password }; // Rename username to user_id
+  
+      AuthenicationManager.userLogin(formattedData)
+        .then(response => {
+          console.log(response.data);
+          dispatch(setTeacherUser(response.data));
+        })
+        .catch(error => {
+          console.log(error);
+          alert(error);
+          setErrorResponse('Invalid Credentials');
+        });
+    }  else if (isVolunteerID) {
       const data = {employee_id:username, password};
       // console.log('Calling Volunteer API'); // Replace with actual API call
       VolunteerServices.loginVolunteer(data)

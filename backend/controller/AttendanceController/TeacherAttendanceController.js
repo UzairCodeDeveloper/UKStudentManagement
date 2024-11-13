@@ -41,7 +41,7 @@ exports.getTeacherAttendance = async (req, res) => {
 
     // Find the attendance for the given date
     const teacherAttendance = await TeacherAttendance.findOne({ date })
-      .populate('teacher_id', 'name'); // Assuming "name" is a field in the Volunteer schema
+      .populate('attendance.teacher_id', 'name'); // Assuming "name" is a field in the Volunteer schema
 
     if (!teacherAttendance) {
       return res.status(404).json({
