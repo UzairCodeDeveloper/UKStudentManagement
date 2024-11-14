@@ -17,7 +17,7 @@ const Enrollment = require("../../models/Enrolment");
 
 
 const registerUser = async (req, res) => {
-    const { 
+    const {
         familyRegNo,
         forename,
         surname,
@@ -109,7 +109,7 @@ const registerUser = async (req, res) => {
             { expiresIn: 9999999999999999 }, // Consider adjusting expiration
             (err, token) => {
                 if (err) throw err;
-                res.json({ msg: "User Registered Successfully", token, user_id: user.user_id, roll_number: user.roll_number, password:password });
+                res.json({ msg: "User Registered Successfully", token, user_id: user.user_id, roll_number: user.roll_number, password: password });
             }
         );
     } catch (err) {
@@ -124,34 +124,34 @@ const loginUser = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-  
+
         const { user_id, password } = req.body;
-  
+
         // Find user by user_id
         const user = await User.findOne({ user_id });
-  
+
         if (!user) {
             return res.status(400).json({ errors: [{ msg: "User not found" }] });
         }
-  
+
         // Check if user has the student role
         const studentRole = await Role.findOne({ name: 'student' });
         if (!studentRole || !user.role.equals(studentRole._id)) {
             return res.status(403).json({ errors: [{ msg: "Access denied: Not a student" }] });
         }
-  
+
         // Compare the entered password with the hashed password in the DB
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ errors: [{ msg: "Incorrect password" }] });
         }
-  
+
         // Remove password from the user object before sending the response
         user.password = undefined;
-  
+
         // Prepare JWT payload
         const payload = { user: { id: user.id } };
-  
+
         // Sign JWT
         jwt.sign(
             payload,
@@ -166,39 +166,85 @@ const loginUser = async (req, res) => {
         console.error(err.message);
         res.status(500).send({ errors: [{ msg: "Server Error" }] });
     }
-  };
-  
+};
+
+const updatePassword = async (req, res) => {
+    try {
+        // Find the user by ID and exclude the password field
+        const
+            user = await User.findById(req.user.id).select("-password");
+
+        // Extract the role from the URL parameter
+        const role = req.params.role;
+
+        // Authorizing user based on role obtained from URL parameter
+        const isAuthorized = await authorizeUser(user.role, role);
+
+        if (isAuthorized) {
+            // Extract the old and new passwords from the request body
+            const { oldPassword, newPassword } = req.body;
+
+            // Find the user by ID
+            const user = await User.findById(req.user.id);
+
+            // Compare the entered password with the hashed password in the DB
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ errors: [{ msg: "Incorrect password" }] });
+            }
+
+            // Encrypt the new password
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(newPassword, salt);
+
+            // Save the updated user object
+            await user.save();
+
+            // Return the user object with or without the medicalProfessionalStatus field
+            res.json(user);
+            // logAction(user.id, "Password updated");
+        }
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send({ errors: [{ msg: "Server Error" }] });
+    }
+}
+
+
+
 
 
 
 
 const authenticateUser = async (req, res) => {
-  try {
-      // Find the user by ID and exclude the password field
-      const user = await User.findById(req.user.id).select("-password");
+    try {
+        // Find the user by ID and exclude the password field
+        const user = await User.findById(req.user.id).select("-password");
 
-      // Extract the role from the URL parameter
-      const role = req.params.role;
+        // Extract the role from the URL parameter
+        const role = req.params.role;
 
-      // Authorizing user based on role obtained from URL parameter
-      const isAuthorized = await authorizeUser(user.role, role);
-      if (isAuthorized) {
-          // Return the user object with or without the medicalProfessionalStatus field
-          res.json(user);
-        //   logAction(user.id, "Logged in");
-      } else {
-          res.status(401).json({ errors: [{ msg: "User Not found!" }] });
-          console.log("Unauthorized Access")
-      }
-  } catch (err) {
-      console.error(err.message);
-      res.status(500).send({ errors: [{ msg: "Server Error" }] });
-  }
+        // Authorizing user based on role obtained from URL parameter
+        const isAuthorized = await authorizeUser(user.role, role);
+        if (isAuthorized) {
+            // Return the user object with or without the medicalProfessionalStatus field
+            res.json(user);
+            //   logAction(user.id, "Logged in");
+        } else {
+            res.status(401).json({ errors: [{ msg: "User Not found!" }] });
+            console.log("Unauthorized Access")
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send({ errors: [{ msg: "Server Error" }] });
+    }
 };
 
 
-module.exports = { registerUser, loginUser
+module.exports = {
+    registerUser, loginUser
     // authenticateUser,
- };
+};
 
 
