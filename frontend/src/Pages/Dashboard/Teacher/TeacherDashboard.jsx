@@ -174,7 +174,7 @@ export default function AdminDashboard() {
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
         <Route path="/handouts/:id" element={<CourseHandouts/>} />
-        <Route path="/resourcegrading" element={<ResourceGrading/>} />
+        <Route path="/resourcegrading/:id" element={<ResourceGrading/>} />
         <Route path="/classattendance" element={<ClassAttendance/>} />
         <Route path="*" element={<TeacherHomeDashboard/>} />
       </Routes>

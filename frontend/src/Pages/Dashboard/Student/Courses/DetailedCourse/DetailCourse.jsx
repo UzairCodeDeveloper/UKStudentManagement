@@ -5,7 +5,7 @@ import { SiBookstack } from "react-icons/si";
 dayjs.extend(isBetween); // Extend with the isBetween plugin
 import DatePicker from 'react-datepicker'; // Ensure react-datepicker is installed
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
-import './DetailedCourse.css';
+import '../../../Teacher/Courses/DetailCourse/DetailedCourse.css';
 import { MdOutlinePeopleAlt } from "react-icons/md";
 
 import { LuFolderSymlink } from "react-icons/lu";
@@ -67,7 +67,6 @@ export default function DetailCourse() {
     return weeks;
   };
 
-
   // Weeks and end date calculations
   const weeks = startDate ? generateWeeks(startDate) : [];
   const endDate = startDate ? dayjs(startDate).add(courseDurationMonths, 'month') : null;
@@ -103,30 +102,30 @@ export default function DetailCourse() {
   const params = useParams();
   const id = params.id;
   console.log(id)
-  useEffect(() => {
-    setLoading(true); // Set loading to true before fetching
-    Promise.all([
-      CourseManager.getCourseByIdInstructor(id),
-      CourseManager.getResourcesByCourse(id),
-    ])
-      .then(([courseRes, resourcesRes]) => {
-        console.log(courseRes.data.classDetails.session.start_date);
-        setStartDate(new Date(courseRes.data.classDetails.session.start_date));
-        setCourseData(courseRes.data);
-        const filteredResources = resourcesRes.data.data.filter(resource =>
-          !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
-        );
-
-        // Set the filtered resources as tasks
-        setTasks(filteredResources); // Store tasks from API response
-      })
-      .catch(err => {
-        console.error(err); // Handle errors here if needed
-      })
-      .finally(() => {
-        setLoading(false); // Set loading to false once fetching is complete
-      });
-  }, [id]);
+//   useEffect(() => {
+//     setLoading(true); // Set loading to true before fetching
+//     Promise.all([
+//       CourseManager.getCourseByIdInstructor(id),
+//       CourseManager.getResourcesByCourse(id),
+//     ])
+//       .then(([courseRes, resourcesRes]) => {
+//         console.log(courseRes.data.classDetails.session.start_date);
+//         setStartDate(new Date(courseRes.data.classDetails.session.start_date));
+//         setCourseData(courseRes.data);
+//         const filteredResources = resourcesRes.data.data.filter(resource => 
+//           !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
+//         );
+        
+//         // Set the filtered resources as tasks
+//         setTasks(filteredResources); // Store tasks from API response
+//       })
+//       .catch(err => {
+//         console.error(err); // Handle errors here if needed
+//       })
+//       .finally(() => {
+//         setLoading(false); // Set loading to false once fetching is complete
+//       });
+//   }, [id]);
 
   if (loading) {
     return <Loader />; // Show loader while loading
@@ -247,7 +246,7 @@ export default function DetailCourse() {
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
-                                navigate(`/resourcegrading/${task.id}`); // Navigate to the resource with the task ID
+                                navigate(`/submit/${task.id}`); // Navigate to the resource with the task ID
                               }}
                             >
                               <GrResources style={{ color: '#f7634d', marginRight: '5px' }} />
@@ -264,7 +263,6 @@ export default function DetailCourse() {
                 </div>
               </div>
             ))}
-
           </div>
           <div className="mt-3 d-flex justify-content-between">
             <button

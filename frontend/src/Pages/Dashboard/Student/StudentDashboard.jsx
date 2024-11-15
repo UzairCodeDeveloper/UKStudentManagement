@@ -7,20 +7,12 @@ import { CiViewTimeline } from "react-icons/ci";
 import { IoMdSettings } from "react-icons/io";
 import { BsPersonCheckFill } from "react-icons/bs";
 import '../Admin/Admin.css'; // Ensure you have this CSS file for styles
-// import { ImProfile } from "react-icons/im";
-// import Timetable from './TimeTable/Timetable';
 import CoursesDashboard from './Courses/CoursesDashboard/CoursesDashboard';
-// import TeachersAttendence from './TeachersAttendence/TeachersAttendence'
 import UserProfile from '../../../components/UserProfile/UserProfile';
-// import TeacherHomeDashboard from './TeacherHomeDashboard/TeacherHomeDashboard';
-// import DetailCourse from './Courses/DetailCourse/DetailCourse';
-// import CourseResources from './Courses/CourseResources/CourseResources'
-// import AddResource from './Courses/CourseResources/AddResource/AddResource'
-// import CourseAttendance from './Courses/Course Attendance/CourseAttendance';
-// import EditResource from './Courses/CourseResources/EditResource/EditResource';
-// import ResourceGrading from './Courses/CourseResources/ResourceGrading/ResourceGrading';
 import StudentHomeDashboard from './StudentHomeDashboard/StudentHomeDashboard';
 import StudentAttendance from './Attendance/StudentAttendance';
+import SubmissionPortal from './Courses/SubmissionPortal/SubmissionPortal';
+import DetailCourse from './Courses/DetailedCourse/DetailCourse';
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -47,44 +39,6 @@ export default function AdminDashboard() {
       <div className={`sidebar ${isSidebarOpen ? 'hidden ' : 'open'}`}>
       
         <ul>
-          {/* <li
-            onClick={() => handleSelect('dashboard')}
-            className={`sidebar-item ${selectedComponent === 'dashboard' ? 'active' : ''}`}
-          >
-            <TiHomeOutline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Dashboard</span>
-          </li>
-
-
-
-
-
-          
-            
-
-
-
-
-          <li
-            onClick={() => handleSelect('Courses')}
-            className={`sidebar-item ${selectedComponent === 'Courses' ? 'active' : ''}`}
-          >
-            <GiNotebook className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Courses</span>
-          </li>
-
-          <li
-            onClick={() => handleSelect('timetable')}
-            className={`sidebar-item ${selectedComponent === 'timetable' ? 'active' : ''}`}
-          >
-            <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>TimeTable</span>
-          </li>
-        
-          <li
-            onClick={() => handleSelect('attendence')}
-            className={`sidebar-item ${selectedComponent === 'attendence' ? 'active' : ''}`}
-          >
-            <BsPersonCheckFill className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Attendence</span>
-          </li> */}
-
 
           <li>
           <Link to="/" className={`sidebar-item ${activeLink === '/' ? 'active' : ''}`} 
@@ -115,6 +69,13 @@ export default function AdminDashboard() {
             <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/timetable')}>
               <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>TimeTable</span>
+            </Link>
+            </li>
+
+            <li>
+            <Link to="/SubmissionPortal" className={`sidebar-item ${activeLink === '/SubmissionPortal' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/SubmissionPortal')}>
+              <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>SubmissionPortal</span>
             </Link>
             </li>
             
@@ -162,8 +123,10 @@ export default function AdminDashboard() {
         <Route path="/courses" element={<CoursesDashboard />} />
         <Route path="/user-profile" element={<UserProfile role='Student'/>} />
         <Route path="/attendence" element={<StudentAttendance/>} />
-        {/* <Route path="/timetable" element={<Timetable />} />
+        <Route path="/SubmissionPortal" element={<SubmissionPortal/>} />
         <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
+        <Route path="/submit/:id" element={<SubmissionPortal />} />
+        {/* <Route path="/timetable" element={<Timetable />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
