@@ -7,7 +7,7 @@ import AdminUserServices from "../../api/services/admin/adminUser"
 import VolunteerServices from "../../api/services/admin/volunteer/volunteerManager"
 import AuthenicationManager from "../../api/services/student/AuthenticationManager"
 import { useDispatch } from 'react-redux';
-import { setAdminUser,setTeacherUser } from '../../Redux/userSlice';
+import { setAdminUser,setTeacherUser,setStudentUser } from '../../Redux/userSlice';
 import { useState } from 'react';
 
 export default function Login() {
@@ -44,7 +44,7 @@ export default function Login() {
       AuthenicationManager.userLogin(formattedData)
         .then(response => {
           console.log(response.data);
-          dispatch(setTeacherUser(response.data));
+          dispatch(setStudentUser(response.data));
         })
         .catch(error => {
           console.log(error);

@@ -92,6 +92,16 @@ const updateResource = (id,data) => {
   });
 };
 
+const getAllStudentCourses = () => {
+  const token = getToken();  
+
+  return httpClient.get("/course/student/getALL", {
+    headers: {
+      "x-auth-token": token,   
+    },
+  });
+};
+
 const exportedObject = {
   getAllTeacherCourses,
   getCourseByIdInstructor,
@@ -99,7 +109,8 @@ const exportedObject = {
   getResourcesByCourse,
   deleteResource,
   getResourcebyId   
-  ,updateResource    
+  ,updateResource    ,
+  getAllStudentCourses
 };
 
 export default exportedObject;

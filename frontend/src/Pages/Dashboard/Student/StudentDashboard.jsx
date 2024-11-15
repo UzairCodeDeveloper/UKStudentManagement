@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  {  useState } from 'react';
 import Header from '../../../components/Header/Header';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { TiHomeOutline } from "react-icons/ti";
@@ -7,7 +7,7 @@ import { CiViewTimeline } from "react-icons/ci";
 import { IoMdSettings } from "react-icons/io";
 import { BsPersonCheckFill } from "react-icons/bs";
 import '../Admin/Admin.css'; // Ensure you have this CSS file for styles
-import { ImProfile } from "react-icons/im";
+// import { ImProfile } from "react-icons/im";
 // import Timetable from './TimeTable/Timetable';
 import CoursesDashboard from './Courses/CoursesDashboard/CoursesDashboard';
 // import TeachersAttendence from './TeachersAttendence/TeachersAttendence'

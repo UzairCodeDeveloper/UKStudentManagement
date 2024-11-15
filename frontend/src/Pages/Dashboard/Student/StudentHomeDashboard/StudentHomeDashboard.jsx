@@ -11,8 +11,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import calendar styles
 import '../../Teacher/TeacherHomeDashboard/TeacherHomeDashboard.css';
 
-import VolunteerServices from "../../../../api/services/admin/volunteer/volunteerManager"
-import { useEffect, useState } from 'react';
+// import VolunteerServices from "../../../../api/services/admin/volunteer/volunteerManager"
+import {  useState } from 'react';
 import { useSelector } from 'react-redux';
 
 
@@ -45,11 +45,12 @@ export default function TeacherHomeDashboard() {
     // const data = useSelector((state) => state.user.user.volunteer.volunteer_details);
     // console.log(data)
 
-    const [volunteerData] = useState(useSelector((state) => state.user.user.volunteer.volunteer_details));
-    console.log(volunteerData)
-    const days_to_commit=volunteerData.days_to_commit;
-    const workingAreas=volunteerData.areas_of_working;
-    console.log(days_to_commit)
+    const studentData = useState(useSelector((state) => state.user.user.user.studentData));
+    console.log(studentData)
+    // const days_to_commit=volunteerData.days_to_commit;
+    // const workingAreas=volunteerData.areas_of_working;
+    // console.log(days_to_commit)
+    
    
     // useEffect(() => {
     //     // Call the API to get the volunteer data
@@ -72,7 +73,7 @@ export default function TeacherHomeDashboard() {
             <div className="left-section">
                 <div className="profile-image">
                     <img src={img} alt="Profile" />
-                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>{volunteerData.full_name}</h2>
+                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>{studentData.full_name}</h2>
                 </div>
                 <div className="profile-details">
                     
@@ -87,41 +88,33 @@ export default function TeacherHomeDashboard() {
                     </div> */}
                     <div className="profile-detail-item">
                         <strong>Mobile No:</strong>
-                        <span>{volunteerData.contact_number}</span>
+                        <span>{studentData?.forename}</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>DOB:</strong>
-                        <span>{new Date(volunteerData.dob).toLocaleDateString()}</span>
+                        <span>{new Date(studentData?.dob).toLocaleDateString()}</span>
                         
                     </div>
                     <div className="profile-detail-item">
                         <strong>Home Address:</strong>
-                        <span>{volunteerData.address}</span>
+                        <span>{studentData?.address}</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>Commit Days</strong>
-                        {days_to_commit.map((val,key)=>{
-                            return(
-                                <span>{`${val}, `} </span>
-                            )
-                        })}
+
                         
                     </div>
                     <div className="profile-detail-item">
                         <strong>Working Areas:</strong>
-                        {workingAreas.map((val,key)=>{
-                            return(
-                                <span>{`${val}, `} </span>
-                            )
-                        })}
+                       
                     </div>
                     <div className="profile-detail-item">
                         <strong>Gender:</strong>
-                        <span>{volunteerData.gender}</span>
+                        <span>{studentData?.gender}</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>Postal Code</strong>
-                        <span>{volunteerData.postal_code}</span>
+                        <span>{studentData?.postal_code}</span>
                     </div>
                     {/* <div className="profile-detail-item">
                         <strong>Blood Group:</strong>
@@ -143,7 +136,7 @@ export default function TeacherHomeDashboard() {
                     <div>
                         <span className="waving-hand" style={{fontSize:'20px'}}>👋</span>
                         <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold' }}>
-                            Welcome <span style={{ fontWeight: '400' }}>{volunteerData.full_name}</span> to Student Portal
+                            Welcome <span style={{ fontWeight: '400' }}>{studentData?.full_name}</span> to Student Portal
                         </span>
                     </div>
                     <div className='TeacherDashboardImage'>

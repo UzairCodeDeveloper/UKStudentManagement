@@ -10,7 +10,7 @@ export default function CoursesDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    CourseManager.getAllTeacherCourses()
+    CourseManager.getAllStudentCourses()
       .then(res => {
         // Check if res.data is an array before setting it to courses
         if (Array.isArray(res.data)) {
