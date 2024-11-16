@@ -17,9 +17,9 @@ export default function ShowClasses() {
       setLoading(true); // Start loading before making API call
 
       AttendanceManager
-        .getAttendanceByMonthAndYear(searchMonth + 1, currentYear) // Pass month (1-indexed) and year
+        .getAttendanceByMonthAndYear() // Pass month (1-indexed) and year
         .then((response) => {
-          const attendanceData = response.data.data;
+          const attendanceData = response.data.data.formattedAttendance;
 
           setAttendance(attendanceData); // Update attendance state
           const presentCounter = attendanceData.filter(att => att.status === 'present').length;

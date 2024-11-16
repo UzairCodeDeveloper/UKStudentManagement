@@ -167,44 +167,96 @@ exports.markAttendance = async (req, res) => {
 };
 
 
-// Controller to get attendance records for a specific user by user_id
 // Controller to get attendance records for a specific user by user_id and month-year
+// exports.getUserAttendanceByMonth = async (req, res) => {
+//     const user_id = req.user.id; // Extract the user ID from the authenticated user
+//     const { month, year } = req.params; // Extract month and year from params
+
+//     try {
+//         if (!month || !year) {
+//             return res.status(400).json({ msg: 'Month and Year are required as parameters.' });
+//         }
+
+//         // Construct the start and end date range for the specified month-year
+//         const startDate = new Date(`${year}-${month}-01`);
+//         const endDate = new Date(startDate);
+//         endDate.setMonth(endDate.getMonth() + 1); // Move to the next month
+//         endDate.setDate(0); // Set to the last day of the month
+
+//         // Fetch attendance records for the user within the specified month-year range
+//         const attendanceRecords = await Attendance.find({
+//             'attendance.student_id': user_id,
+//             date: { $gte: startDate, $lte: endDate },
+//         }).lean();
+
+//         if (!attendanceRecords || attendanceRecords.length === 0) {
+//             return res.status(404).json({ msg: 'No attendance records found for this user in the specified month-year.' });
+//         }
+
+//         // Format the attendance records to include only date and status for the user
+//         const formattedAttendance = attendanceRecords.map(record => {
+//             const userAttendance = record.attendance.find(entry => entry.student_id.toString() === user_id);
+//             return {
+//                 date: record.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+//                 status: userAttendance.status,                // Attendance status (present, absent, leave)
+//             };
+//         });
+
+//         // Return the formatted attendance data
+//         return res.status(200).json({ msg: 'Attendance records found', data: formattedAttendance });
+
+//     } catch (error) {
+//         console.error('Error fetching user attendance:', error.message);
+//         res.status(500).json({ msg: 'Server Error' });
+//     }
+// };
+
+
+// Get All attendance of the User
 exports.getUserAttendance = async (req, res) => {
     const user_id = req.user.id; // Extract the user ID from the authenticated user
-    const { month, year } = req.params; // Extract month and year from params
 
     try {
-        if (!month || !year) {
-            return res.status(400).json({ msg: 'Month and Year are required as parameters.' });
-        }
-
-        // Construct the start and end date range for the specified month-year
-        const startDate = new Date(`${year}-${month}-01`);
-        const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + 1); // Move to the next month
-        endDate.setDate(0); // Set to the last day of the month
-
-        // Fetch attendance records for the user within the specified month-year range
+        // Fetch attendance records for the user
         const attendanceRecords = await Attendance.find({
             'attendance.student_id': user_id,
-            date: { $gte: startDate, $lte: endDate },
         }).lean();
 
         if (!attendanceRecords || attendanceRecords.length === 0) {
-            return res.status(404).json({ msg: 'No attendance records found for this user in the specified month-year.' });
+            return res.status(404).json({ msg: 'No attendance records found for this user.' });
         }
 
-        // Format the attendance records to include only date and status for the user
+        // Initialize counters for present, absent, and total
+        let totalCount = 0;
+        let presentCount = 0;
+        let absentCount = 0;
+
+        // Format the attendance records and calculate counts
         const formattedAttendance = attendanceRecords.map(record => {
             const userAttendance = record.attendance.find(entry => entry.student_id.toString() === user_id);
-            return {
-                date: record.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
-                status: userAttendance.status,                // Attendance status (present, absent, leave)
-            };
-        });
+            
+            if (userAttendance) {
+                totalCount++;
+                if (userAttendance.status === 'present') presentCount++;
+                if (userAttendance.status === 'absent') absentCount++;
 
-        // Return the formatted attendance data
-        return res.status(200).json({ msg: 'Attendance records found', data: formattedAttendance });
+                return {
+                    date: record.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+                    status: userAttendance.status,                // Attendance status (present, absent, leave)
+                };
+            }
+        }).filter(entry => entry); // Remove undefined entries (in case `userAttendance` is not found)
+
+        // Return the formatted attendance data along with counts
+        return res.status(200).json({
+            msg: 'Attendance records found',
+            data: {
+                formattedAttendance,
+                totalCount,
+                presentCount,
+                absentCount
+            },
+        });
 
     } catch (error) {
         console.error('Error fetching user attendance:', error.message);

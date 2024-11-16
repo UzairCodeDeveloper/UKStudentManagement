@@ -18,7 +18,10 @@ router.get('/fetchrecords/:class_id/:date', teacherAuth, FetchAttendanceRecord);
 // 3. Route to mark attendance
 router.post('/markattendance', teacherAuth, markAttendance);
 
-router.get('/get-my-attendance/:month/:year', studentAuth, getUserAttendance);
+router.get('/get-my-attendance/', studentAuth, getUserAttendance);
+
+// For specific month and year
+// router.get('/get-my-attendance/:month/:year', studentAuth, getUserAttendanceByMonth);
 // ______________________________________________________________________________________________________________________
 
 // // 1. Create attendance record
