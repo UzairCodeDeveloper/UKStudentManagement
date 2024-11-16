@@ -167,128 +167,47 @@ exports.markAttendance = async (req, res) => {
 };
 
 
+// Controller to get attendance records for a specific user by user_id
+// Controller to get attendance records for a specific user by user_id and month-year
+exports.getUserAttendance = async (req, res) => {
+    const user_id = req.user.id; // Extract the user ID from the authenticated user
+    const { month, year } = req.params; // Extract month and year from params
 
+    try {
+        if (!month || !year) {
+            return res.status(400).json({ msg: 'Month and Year are required as parameters.' });
+        }
 
+        // Construct the start and end date range for the specified month-year
+        const startDate = new Date(`${year}-${month}-01`);
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1); // Move to the next month
+        endDate.setDate(0); // Set to the last day of the month
 
-// ___________________________________________________________________________
+        // Fetch attendance records for the user within the specified month-year range
+        const attendanceRecords = await Attendance.find({
+            'attendance.student_id': user_id,
+            date: { $gte: startDate, $lte: endDate },
+        }).lean();
 
+        if (!attendanceRecords || attendanceRecords.length === 0) {
+            return res.status(404).json({ msg: 'No attendance records found for this user in the specified month-year.' });
+        }
 
+        // Format the attendance records to include only date and status for the user
+        const formattedAttendance = attendanceRecords.map(record => {
+            const userAttendance = record.attendance.find(entry => entry.student_id.toString() === user_id);
+            return {
+                date: record.date.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+                status: userAttendance.status,                // Attendance status (present, absent, leave)
+            };
+        });
 
+        // Return the formatted attendance data
+        return res.status(200).json({ msg: 'Attendance records found', data: formattedAttendance });
 
-// // 1. Create attendance record
-// exports.createAttendance = async (req, res) => {
-//     const { student_id, course_id, date, status } = req.body;  // Get data from request body
-
-//     try {
-//         const classObj = await Course.findById(course_id).select('class_id').lean();
-//         console.log(classObj.class_id);
-//         // Check if the student is enrolled in the course
-//         const enrollment = await Enrolment.findOne({
-//             'student_id': student_id,
-//             'class_id': classObj.class_id, // Ensure you're using 'class_id' or whatever represents course_id
-//         });
-
-//         if (!enrollment) {
-//             return res.status(404).json({ msg: 'Student not enrolled in this course' });
-//         }
-
-//         // Create a new attendance record
-//         const attendance = new Attendance({
-//             student_id,
-//             course_id,
-//             date,
-//             status,
-//         });
-
-//         await attendance.save();
-//         res.status(201).json({ msg: 'Attendance record created successfully', attendance });
-//     } catch (error) {
-//         console.error('Error creating attendance record:', error.message);
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
-
-// // 2. Get attendance record for a student
-// exports.getStudentAttendance = async (req, res) => {
-//     const { course_id, student_id, date } = req.query;  // Use query params for course, student, and date
-
-//     try {
-//         const attendance = await Attendance.findOne({ 
-//             student_id, 
-//             course_id, 
-//             date: new Date(date) 
-//         }).lean();
-
-//         if (!attendance) {
-//             return res.status(404).json({ msg: 'Attendance not marked for this date' });
-//         }
-
-//         res.status(200).json(attendance);
-//     } catch (error) {
-//         console.error('Error fetching attendance:', error.message);
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
-
-// // 3. Update attendance record
-// exports.updateAttendance = async (req, res) => {
-//     const { attendance_id } = req.params;  // Attendance record ID to update
-//     const { status } = req.body;  // New status
-
-//     try {
-//         // Find the attendance record by ID and update
-//         const attendance = await Attendance.findByIdAndUpdate(
-//             attendance_id,
-//             { status },
-//             { new: true }  // Return the updated record
-//         );
-
-//         if (!attendance) {
-//             return res.status(404).json({ msg: 'Attendance record not found' });
-//         }
-
-//         res.status(200).json({ msg: 'Attendance record updated', attendance });
-//     } catch (error) {
-//         console.error('Error updating attendance:', error.message);
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
-
-// // 4. Delete attendance record
-// exports.deleteAttendance = async (req, res) => {
-//     const { attendance_id } = req.params;  // Attendance record ID to delete
-
-//     try {
-//         const attendance = await Attendance.findByIdAndDelete(attendance_id);
-
-//         if (!attendance) {
-//             return res.status(404).json({ msg: 'Attendance record not found' });
-//         }
-
-//         res.status(200).json({ msg: 'Attendance record deleted successfully' });
-//     } catch (error) {
-//         console.error('Error deleting attendance record:', error.message);
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
-
-// // 5. Get all attendance records for a course on a specific date
-// exports.getAllAttendanceForCourse = async (req, res) => {
-//     const { course_id, date } = req.query;  // Use query params for course and date
-
-//     try {
-//         const attendances = await Attendance.find({
-//             course_id,
-//             date: new Date(date)
-//         }).populate('student_id', 'studentData roll_number user_id _id').lean();
-
-//         if (attendances.length === 0) {
-//             return res.status(404).json({ msg: 'No attendance records for this course on the given date' });
-//         }
-
-//         res.status(200).json(attendances);
-//     } catch (error) {
-//         console.error('Error fetching attendance records:', error.message);
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
+    } catch (error) {
+        console.error('Error fetching user attendance:', error.message);
+        res.status(500).json({ msg: 'Server Error' });
+    }
+};

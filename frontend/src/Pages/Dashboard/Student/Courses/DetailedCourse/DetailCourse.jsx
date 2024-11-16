@@ -12,7 +12,7 @@ import { LuFolderSymlink } from "react-icons/lu";
 
 import { GrResources } from "react-icons/gr";
 import { useNavigate, useParams } from 'react-router-dom';
-import CourseManager from "../../../../../api/services/teacher/course/courseManager";
+import CourseManager from "../../../../../api/services/student/CourseManager";
 import Loader from '../../../../../components/Loader/Loader';
 
 export default function DetailCourse() {
@@ -102,30 +102,30 @@ export default function DetailCourse() {
   const params = useParams();
   const id = params.id;
   console.log(id)
-//   useEffect(() => {
-//     setLoading(true); // Set loading to true before fetching
-//     Promise.all([
-//       CourseManager.getCourseByIdInstructor(id),
-//       CourseManager.getResourcesByCourse(id),
-//     ])
-//       .then(([courseRes, resourcesRes]) => {
-//         console.log(courseRes.data.classDetails.session.start_date);
-//         setStartDate(new Date(courseRes.data.classDetails.session.start_date));
-//         setCourseData(courseRes.data);
-//         const filteredResources = resourcesRes.data.data.filter(resource => 
-//           !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
-//         );
+  useEffect(() => {
+    setLoading(true); // Set loading to true before fetching
+    Promise.all([
+      CourseManager.getCourseForStudent(id),
+      CourseManager.getDetailedCourse(id),
+    ])
+      .then(([courseRes, resourcesRes]) => {
+        console.log(courseRes.data.data);
+        setStartDate(new Date(courseRes.data.classDetails.session.start_date));
+        setCourseData(courseRes.data);
+        const filteredResources = resourcesRes.data.data.filter(resource => 
+          !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
+        );
         
-//         // Set the filtered resources as tasks
-//         setTasks(filteredResources); // Store tasks from API response
-//       })
-//       .catch(err => {
-//         console.error(err); // Handle errors here if needed
-//       })
-//       .finally(() => {
-//         setLoading(false); // Set loading to false once fetching is complete
-//       });
-//   }, [id]);
+        // Set the filtered resources as tasks
+        setTasks(filteredResources); // Store tasks from API response
+      })
+      .catch(err => {
+        console.error(err); // Handle errors here if needed
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false once fetching is complete
+      });
+  }, [id]);
 
   if (loading) {
     return <Loader />; // Show loader while loading

@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { validationResult } = require("express-validator");
+const moment = require('moment');
 
 // Authorization Controller
 // const { authorizeUser } = require("./AuthorizationController");
@@ -169,48 +170,44 @@ const loginUser = async (req, res) => {
 };
 
 const updatePassword = async (req, res) => {
+    const { userId, newPassword } = req.body;
+
     try {
-        // Find the user by ID and exclude the password field
-        const
-            user = await User.findById(req.user.id).select("-password");
+        // Find user by ID
+        let user = await User.findById(req.user.id);
 
-        // Extract the role from the URL parameter
-        const role = req.params.role;
-
-        // Authorizing user based on role obtained from URL parameter
-        const isAuthorized = await authorizeUser(user.role, role);
-
-        if (isAuthorized) {
-            // Extract the old and new passwords from the request body
-            const { oldPassword, newPassword } = req.body;
-
-            // Find the user by ID
-            const user = await User.findById(req.user.id);
-
-            // Compare the entered password with the hashed password in the DB
-            const isMatch = await bcrypt.compare(oldPassword, user.password);
-            if (!isMatch) {
-                return res.status(400).json({ errors: [{ msg: "Incorrect password" }] });
-            }
-
-            // Encrypt the new password
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(newPassword, salt);
-
-            // Save the updated user object
-            await user.save();
-
-            // Return the user object with or without the medicalProfessionalStatus field
-            res.json(user);
-            // logAction(user.id, "Password updated");
+        if (!user) {
+            return res.status(404).json({ errors: [{ msg: "User not found" }] });
         }
 
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send({ errors: [{ msg: "Server Error" }] });
-    }
-}
+        // Log before update (for debugging)
+        console.log('User before update:', user);
 
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Save the password history
+        const passwordHistory = {
+            oldPassword: user.password,
+            updatedAt: moment().toISOString(),  // Save timestamp
+        };
+
+        // Update the password
+        user.password = hashedPassword;
+        user.passwordHistory.push(passwordHistory);  // Save history of password changes
+        await user.save();  // Save the updated user
+
+        // Log after update (for debugging)
+        console.log('User after update:', user);
+
+        // Respond back with success
+        res.json({ msg: "Password updated successfully", user });
+    } catch (err) {
+        console.error('Error updating password:', err);
+        res.status(500).send('Server Error');
+    }
+};
 
 
 
@@ -243,7 +240,7 @@ const authenticateUser = async (req, res) => {
 
 
 module.exports = {
-    registerUser, loginUser
+    registerUser, loginUser, updatePassword
     // authenticateUser,
 };
 

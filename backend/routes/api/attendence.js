@@ -3,7 +3,8 @@ const router = express.Router();
 
 // get teacher middleware 
 const teacherAuth = require("../../middleware/volunteerAuth")
-const { FetchAttendanceRecord,getAttendanceRecordsForInstructor, getEnrolledStudentsInClass,markAttendance,
+const studentAuth = require("../../middleware/studentAuth")
+const { FetchAttendanceRecord,getAttendanceRecordsForInstructor, getEnrolledStudentsInClass,markAttendance,getUserAttendance
     // createAttendance, getStudentAttendance, updateAttendance, deleteAttendance
 } = require('../../controller/TeacherControllers/AttendenceController');  // Adjust path according to your structure
 
@@ -16,6 +17,8 @@ router.get('/fetchrecords/:class_id/:date', teacherAuth, FetchAttendanceRecord);
 
 // 3. Route to mark attendance
 router.post('/markattendance', teacherAuth, markAttendance);
+
+router.get('/get-my-attendance/:month/:year', studentAuth, getUserAttendance);
 // ______________________________________________________________________________________________________________________
 
 // // 1. Create attendance record

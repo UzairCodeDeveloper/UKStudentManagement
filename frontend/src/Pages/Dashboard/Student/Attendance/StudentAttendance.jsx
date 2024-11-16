@@ -1,39 +1,41 @@
 import { useState, useEffect } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import Loader from '../../../../components/Loader/Loader'; // Import the Loader component
+import AttendanceManager from '../../../../api/services/student/AttendanceManager';
 
 export default function ShowClasses() {
   const [searchMonth, setSearchMonth] = useState(new Date().getMonth()); // State for selected month (default to current month)
-  const [loading, setLoading] = useState(true); // State to track loading
+  const [loading, setLoading] = useState(false); // State to track loading
   const [attendance, setAttendance] = useState([]); // State for attendance
-  const [presentCount, setPresentCount] = useState(0); // Count of 'P' for selected month
-  const [absentCount, setAbsentCount] = useState(0); // Count of 'A' for selected month
-
+  const [presentCount, setPresentCount] = useState(0); // Count of 'present' days
+  const [absentCount, setAbsentCount] = useState(0); // Count of 'absent' days
   // Get the current year
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
-    // Simulate fetching attendance data with a delay
-    setTimeout(() => {
-      const attendanceData = [];
-      
-      // Generate dummy attendance for each month
-      for (let month = 0; month < 12; month++) {
-        const daysInCurrentMonth = new Date(currentYear, month + 1, 0).getDate();
-        for (let day = 1; day <= daysInCurrentMonth; day++) {
-          const status = Math.random() > 0.5 ? 'P' : 'A'; // Randomly assign P (Present) or A (Absent)
-          attendanceData.push({
-            day: day,
-            month: month,
-            status: status,
-          });
-        }
-      }
+    if (searchMonth !== '') {
+      setLoading(true); // Start loading before making API call
 
-      setAttendance(attendanceData); // Set the attendance data
-      setLoading(false); // Set loading to false
-    }, 2000); // Simulating a 2-second delay
-  }, [currentYear]);
+      AttendanceManager
+        .getAttendanceByMonthAndYear(searchMonth + 1, currentYear) // Pass month (1-indexed) and year
+        .then((response) => {
+          const attendanceData = response.data.data;
+
+          setAttendance(attendanceData); // Update attendance state
+          const presentCounter = attendanceData.filter(att => att.status === 'present').length;
+          const absentCounter = attendanceData.filter(att => att.status === 'absent').length;
+
+          setPresentCount(presentCounter); // Update present count
+          setAbsentCount(absentCounter); // Update absent count
+        })
+        .catch((error) => {
+          console.error('Error fetching attendance:', error);
+        })
+        .finally(() => {
+          setLoading(false); // Stop loading after API call
+        });
+    }
+  }, [searchMonth, currentYear]);
 
   // Filter attendance based on selected month
   const filteredAttendance = searchMonth !== ''
@@ -42,10 +44,11 @@ export default function ShowClasses() {
 
   // Update the present and absent count based on the filtered data
   useEffect(() => {
-    const presentCounter = filteredAttendance.filter(att => att.status === 'P').length;
-    const absentCounter = filteredAttendance.filter(att => att.status === 'A').length;
+    const presentCounter = filteredAttendance.filter(att => att.status === 'present').length;
+    const absentCounter = filteredAttendance.filter(att => att.status === 'absent').length;
     setPresentCount(presentCounter);
     setAbsentCount(absentCounter);
+    console.log(attendance)
   }, [filteredAttendance]);
 
   // List of months
@@ -123,7 +126,7 @@ export default function ShowClasses() {
                     <td>
                       {new Date(currentYear, att.month, att.day).toLocaleDateString('en-US', { weekday: 'long' })}
                     </td>
-                    <td style={{ color: att.status === 'P' ? 'green' : 'red' }}>
+                    <td style={{ color: att.status === 'present' ? 'green' : 'red' }}>
                       {att.status}
                     </td> {/* P for Present, A for Absent */}
                   </tr>

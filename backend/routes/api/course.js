@@ -26,6 +26,10 @@ router.post("/create-course", adminAuth, createCourse);
 // @access Public or Admin (depending on your authorization setup)
 router.get("/get-courses", adminAuth, getAllCourses);
 
+
+// Get student Course
+router.get("/student/get-courses/:id", studentAuth, getCourseById);
+
 // @route GET /api/courses/:id
 // @desc Get a course by ID
 // @access Public or Admin (depending on your authorization setup)
