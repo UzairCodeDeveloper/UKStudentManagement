@@ -6,6 +6,7 @@ import 'react-calendar/dist/Calendar.css'; // Import calendar styles
 import './AdminHomeDashboard.css';
 import { BiBriefcase } from "react-icons/bi";
 import { HiCurrencyDollar } from "react-icons/hi";
+import { AiFillPoundCircle } from "react-icons/ai";
 import { BsCalendar2EventFill } from "react-icons/bs";
 import { Chart, BarElement, LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -76,7 +77,7 @@ export default function AdminHomeDashbboard() {
             <div className="card-dashboard" style={{ backgroundColor: "#f98e97" }}>
               <h5>Total Fees</h5>
               <div className="card-inner">
-                <HiCurrencyDollar className="card-icon" />
+                <AiFillPoundCircle className="card-icon" />
                 <h5>10</h5>
               </div>
             </div>

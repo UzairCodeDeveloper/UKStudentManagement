@@ -7,11 +7,15 @@ module.exports = {
     // Upload resource
     uploadResource: async (req, res) => {
         try {
-            const { title, description, resource_type, course_id, due_date } = req.body; // Include due_date in request
+            const { title, description, resource_type, course_id, due_date,submissionRequired } = req.body; // Include due_date in request
 
             // Validating the required fields
             if (!title) {
                 return res.status(400).json({ msg: 'Title is required' });
+            }
+
+            if (!submissionRequired) {
+                return res.status(400).json({ msg: 'SubmissionRequired is required' });
             }
 
             if (!resource_type) {
@@ -60,6 +64,7 @@ module.exports = {
                 resource_type,
                 resource_url: resourceUrl, // File URL or null
                 due_date // Add due date
+                ,submissionRequired
             });
 
             await newResource.save();

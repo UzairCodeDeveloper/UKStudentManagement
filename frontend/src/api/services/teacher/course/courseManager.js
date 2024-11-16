@@ -26,7 +26,7 @@ const getCourseByIdInstructor = (id) => {
 // UPLOAD a new resource
 const uploadResource = (resourceData) => {
   const token = getToken();  
-  // console.log(resourceData)
+  console.log(resourceData)
   // Use FormData for file uploads
   const formData = new FormData();
   formData.append("title", resourceData.title);
@@ -34,7 +34,7 @@ const uploadResource = (resourceData) => {
   formData.append("resource_type", resourceData.resource_type);
   formData.append("course_id", resourceData.course_id);
   formData.append("due_date", resourceData.due_date);
-  
+  formData.append("submissionRequired", resourceData.submissionRequired);
   if (resourceData.pdf) {
     formData.append("pdf", resourceData.pdf); // Attach the file if it exists
   }
@@ -43,6 +43,7 @@ const uploadResource = (resourceData) => {
   for (let [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
   }
+  console.log(formData)
   return httpClient.post("/resources/upload", formData, {
     headers: {
       "x-auth-token": token,  

@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 
 export default function AddResource() {
   const [selectedResource, setSelectedResource] = useState('');
+  const [submissionRequired, setsubmissionRequired] = useState('No');
   const [resourceTitle, setResourceTitle] = useState('');
   const [description, setDescription] = useState(''); // State for description
   const [selectedDate, setSelectedDate] = useState('');
@@ -17,20 +18,23 @@ export default function AddResource() {
   const [loading, setLoading] = useState(false);
 
   const resources = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'];
+  const submission= ['No', 'Yes']
   const params = useParams();
   const id = params.id;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    // alert(submissionRequired)
     const resourceData = {
       resource_type: selectedResource,
       title: resourceTitle,
       description, // Include description in the submission
       course_id: id,
       due_date: selectedDate, 
-      pdf: uploadedFile // Single file upload
+      pdf: uploadedFile ,// Single file upload
+      submissionRequired
     };
+    // console.log(resourceData)
     setLoading(true);
     CourseManager.uploadResource(resourceData)
       .then((response) => {
@@ -158,6 +162,26 @@ export default function AddResource() {
                   rows="4"
                   style={{border:'none'}}
                 />
+              </div>
+            </div>
+            
+
+            <div className='form-group' style={{marginTop:'20px'}}>
+              <label htmlFor="selectClass" className="field-label required-bg">Student Submission*</label>
+              <div className="input-wrapper">
+                <select
+                  id="selectClass"
+                  className="form-input"
+                  value={submissionRequired}
+                  onChange={(e) => setsubmissionRequired(e.target.value)}
+                  required
+                  
+                >
+                  {/* <option value="">Select</option> */}
+                  {submission.map((cls, index) => (
+                    <option key={index} value={cls}>{cls}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
