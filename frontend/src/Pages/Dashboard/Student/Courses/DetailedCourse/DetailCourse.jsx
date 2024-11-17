@@ -30,15 +30,18 @@ export default function DetailCourse() {
     const weeks = [];
     if (!startDate) return weeks;
 
-    // Calculate the end date as start date + 13 months
+    // Calculate the end date as start date + courseDurationMonths * 4 weeks
     const endDate = dayjs(startDate).add(courseDurationMonths, 'month');
 
-    // Loop over the entire duration (13 months)
+    // Adjust startDate to the start of the week (you can set it to the start of Monday, for example)
+    const firstDayOfWeek = dayjs(startDate).startOf('week'); // Set to the start of the week (Sunday by default)
+
+    // Loop over the entire duration (courseDurationMonths * 4 weeks)
     for (let i = 0; i < courseDurationMonths * 4; i++) {
-      const weekStart = dayjs(startDate).add(i, 'week');
+      const weekStart = firstDayOfWeek.add(i, 'week'); // Adjust to the correct week start
       if (weekStart.isAfter(endDate)) break; // Stop if we exceed the end date
 
-      const weekEnd = weekStart.add(6, 'day');
+      const weekEnd = weekStart.add(6, 'day'); // End of the week (7th day)
 
       // Initialize an empty tasks array for this week
       const weeklyTasks = [];
@@ -46,11 +49,14 @@ export default function DetailCourse() {
       // Check tasks for the current week
       tasks.forEach(task => {
         const taskDate = dayjs(task?.due_date);
-        // Check if task falls within the current week
+
+        // Check if task falls within the current week (inclusive)
         if (taskDate.isBetween(weekStart, weekEnd, null, '[]')) {
           weeklyTasks.push({
             id: task._id, // Include the task ID
             title: task.title, // Include the task title
+            submissionStatus: task.submissionRequired,
+            // description: task.description,
           });
         }
       });
@@ -66,6 +72,7 @@ export default function DetailCourse() {
     }
     return weeks;
   };
+
 
   // Weeks and end date calculations
   const weeks = startDate ? generateWeeks(startDate) : [];
@@ -112,10 +119,10 @@ export default function DetailCourse() {
         console.log(courseRes.data.data);
         setStartDate(new Date(courseRes.data.classDetails.session.start_date));
         setCourseData(courseRes.data);
-        const filteredResources = resourcesRes.data.data.filter(resource => 
+        const filteredResources = resourcesRes.data.data.filter(resource =>
           !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
         );
-        
+
         // Set the filtered resources as tasks
         setTasks(filteredResources); // Store tasks from API response
       })
@@ -246,15 +253,17 @@ export default function DetailCourse() {
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
-                                navigate(`/submit/${task.id}`); // Navigate to the resource with the task ID
+                                // Check the submissionStatus and navigate accordingly
+                                const navigateTo = task.submissionStatus === 'Yes' ? `/submit/${task.id}` : `/resources/${courseData?.course?.course_name}/${task.id}`;
+                                navigate(navigateTo); // Navigate to the appropriate URL
                               }}
                             >
                               <GrResources style={{ color: '#f7634d', marginRight: '5px' }} />
                               {task.title} {/* Access the title of the task */}
-
                             </a>
                           </li>
                         ))}
+
                       </ul>
                     ) : (
                       <p>No tasks available for this week.</p>

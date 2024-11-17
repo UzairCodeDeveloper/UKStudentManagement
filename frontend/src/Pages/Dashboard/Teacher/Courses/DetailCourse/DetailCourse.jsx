@@ -29,32 +29,38 @@ export default function DetailCourse() {
   const generateWeeks = (startDate) => {
     const weeks = [];
     if (!startDate) return weeks;
-
-    // Calculate the end date as start date + 13 months
+  
+    // Calculate the end date as start date + courseDurationMonths * 4 weeks
     const endDate = dayjs(startDate).add(courseDurationMonths, 'month');
-
-    // Loop over the entire duration (13 months)
+  
+    // Adjust startDate to the start of the week (you can set it to the start of Monday, for example)
+    const firstDayOfWeek = dayjs(startDate).startOf('week'); // Set to the start of the week (Sunday by default)
+    
+    // Loop over the entire duration (courseDurationMonths * 4 weeks)
     for (let i = 0; i < courseDurationMonths * 4; i++) {
-      const weekStart = dayjs(startDate).add(i, 'week');
+      const weekStart = firstDayOfWeek.add(i, 'week'); // Adjust to the correct week start
       if (weekStart.isAfter(endDate)) break; // Stop if we exceed the end date
-
-      const weekEnd = weekStart.add(6, 'day');
-
+  
+      const weekEnd = weekStart.add(6, 'day'); // End of the week (7th day)
+  
       // Initialize an empty tasks array for this week
       const weeklyTasks = [];
-
+  
       // Check tasks for the current week
       tasks.forEach(task => {
         const taskDate = dayjs(task?.due_date);
-        // Check if task falls within the current week
+  
+        // Check if task falls within the current week (inclusive)
         if (taskDate.isBetween(weekStart, weekEnd, null, '[]')) {
           weeklyTasks.push({
             id: task._id, // Include the task ID
             title: task.title, // Include the task title
+            submissionStatus: task.submissionRequired,
+            description: task.description,
           });
         }
       });
-
+  
       weeks.push({
         weekStart: weekStart.format('D MMM YYYY'),
         weekEnd: weekEnd.format('D MMM YYYY'),
@@ -66,6 +72,7 @@ export default function DetailCourse() {
     }
     return weeks;
   };
+  
 
 
   // Weeks and end date calculations
@@ -247,15 +254,20 @@ export default function DetailCourse() {
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
-                                navigate(`/resourcegrading/${task.id}`); // Navigate to the resource with the task ID
+                                // Conditionally navigate based on submissionStatus
+                                if (task.submissionStatus === 'Yes') {
+                                  navigate(`/resourcegrading/${task.id}`); // Navigate to resource grading if status is 'Yes'
+                                } else {
+                                  navigate(`/resource/${courseData?.course?.course_name}/${task.id}`); // Navigate to /resource if status is 'No'
+                                }
                               }}
                             >
                               <GrResources style={{ color: '#f7634d', marginRight: '5px' }} />
                               {task.title} {/* Access the title of the task */}
-
                             </a>
                           </li>
                         ))}
+
                       </ul>
                     ) : (
                       <p>No tasks available for this week.</p>

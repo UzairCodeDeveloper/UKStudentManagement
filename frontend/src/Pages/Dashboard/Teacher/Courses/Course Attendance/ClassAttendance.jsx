@@ -141,13 +141,14 @@ export default function StudentAttendance() {
                 <div className="form-group">
                   <label htmlFor="date-picker">Select Date:</label>
                   <DatePicker
-                    id="date-picker"
-                    selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
-                    dateFormat="MMMM d, yyyy"
-                    maxDate={new Date()}
-                    className="date-picker"
-                  />
+  id="date-picker"
+  selected={selectedDate}
+  onChange={(date) => setSelectedDate(date)}
+  dateFormat="MMMM d, yyyy"
+  maxDate={new Date()}
+  className="date-picker"
+  filterDate={(date) => date.getDay() !== 0} // Disable Sundays (0 represents Sunday)
+ />
                 </div>
 
                 <button className="mark-button" onClick={handleFetchRecords}>Fetch Records</button>

@@ -21,6 +21,7 @@ import CourseHandouts from './Courses/CourseHandouts/CourseHandouts';
 import EditResource from './Courses/CourseResources/EditResource/EditResource';
 import ResourceGrading from './Courses/CourseResources/ResourceGrading/ResourceGrading';
 import ClassAttendance from './Courses/Course Attendance/ClassAttendance';
+import ResourceOnlyDescription from './Courses/CourseResources/ResourceOnlyDescription/ResouceOnlyDescription'
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -47,43 +48,6 @@ export default function AdminDashboard() {
       <div className={`sidebar ${isSidebarOpen ? 'hidden ' : 'open'}`}>
       
         <ul>
-          {/* <li
-            onClick={() => handleSelect('dashboard')}
-            className={`sidebar-item ${selectedComponent === 'dashboard' ? 'active' : ''}`}
-          >
-            <TiHomeOutline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Dashboard</span>
-          </li>
-
-
-
-
-
-          
-            
-
-
-
-
-          <li
-            onClick={() => handleSelect('Courses')}
-            className={`sidebar-item ${selectedComponent === 'Courses' ? 'active' : ''}`}
-          >
-            <GiNotebook className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Courses</span>
-          </li>
-
-          <li
-            onClick={() => handleSelect('timetable')}
-            className={`sidebar-item ${selectedComponent === 'timetable' ? 'active' : ''}`}
-          >
-            <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>TimeTable</span>
-          </li>
-        
-          <li
-            onClick={() => handleSelect('attendence')}
-            className={`sidebar-item ${selectedComponent === 'attendence' ? 'active' : ''}`}
-          >
-            <BsPersonCheckFill className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Attendence</span>
-          </li> */}
 
 
           <li>
@@ -136,30 +100,7 @@ export default function AdminDashboard() {
     );
   };
 
-  // const Content = () => {
-  //   switch (selectedComponent) {
-  //     case 'dashboard':
-  //       return <AdminHomeDashbboard />;
-  //     case 'Courses':
-  //       // return <CoursesDashboard/>
-  //       return <CourseRouting/>
-     
-
-      
-  //         case 'userProfile':
-  //           return <UserProfile/>
-
-  //     case 'attendence':
-  //       return <TeachersAttendence/>
-      
-
-  //     case 'timetable':
-  //       return <Timetable />; // Timetable content
-      
-  //     default:
-  //       return <div className="content">Select an option from the sidebar</div>;
-  //   }
-  // };
+ 
 
   const Content = () => {
     return (
@@ -173,6 +114,7 @@ export default function AdminDashboard() {
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
+        <Route path="/resource/:course/:id" element={<ResourceOnlyDescription/>} />
         <Route path="/handouts/:id" element={<CourseHandouts/>} />
         <Route path="/resourcegrading/:id" element={<ResourceGrading/>} />
         <Route path="/classattendance" element={<ClassAttendance/>} />
