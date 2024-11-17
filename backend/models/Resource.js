@@ -37,6 +37,11 @@ const resourceSchema = new Schema({
         type: Number,
         default: 0,
     },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
+    
 }, { timestamps: true });
 
 const Resource = mongoose.model('Resource', resourceSchema);

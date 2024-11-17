@@ -6,7 +6,8 @@ const {
     updateSubmissionMarks,
     getSubmissionsByStudent,
     getResourceById,
-    getSubmissionById
+    getSubmissionById,
+    markSubmissionMarks
 } = require('../../controller/SubmissionController/SubmissionController');
 const { pdfUpload } = require('../../config/multerConfigPdf'); 
 const studentAuth = require('../../middleware/studentAuth');  
@@ -26,5 +27,8 @@ router.get('/student/:studentId', studentAuth, getSubmissionsByStudent);
 
 // Get submission by ID
 router.get('/submission/:submissionId', getSubmissionById);
+
+// Route to mark obtained marks for a submission (Teacher)
+router.put('/grade',teacherAuth, markSubmissionMarks);
 
 module.exports = router;

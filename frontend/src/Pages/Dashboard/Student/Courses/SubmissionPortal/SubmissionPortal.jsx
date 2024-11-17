@@ -9,24 +9,52 @@ import { Table } from 'react-bootstrap'; // Importing the Table component from r
 import ResourceManager from "../../../../../api/services/student/ResourceManager"
 
 export default function ShowClasses() {
+  function toLondonTimeWithMinutes(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString); // Convert string to Date object
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    }).format(date);
+  }
+
+  function toLondonTime(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString); // Convert string to Date object
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(date);
+  }
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [files, setFiles] = useState([]);
   const [showDropzone, setShowDropzone] = useState(false);
-  const [submissionTime, setSubmissionTime] = useState(null);
+  // const [submissionTime, setSubmissionTime] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [resource, setResource] = useState(null);
+  const [submission, setSubmission] = useState(null);
 
   const params = useParams();
 
   useEffect(() => {
-    // Fetch resource details based on the provided resource ID from URL
+    // Fetch resource details
     ResourceManager.getResourceByID(params.id)
       .then((res) => {
         setResource(res.data.data); // Set resource details
+        setIsSubmitted(res.data.isSubmitted); // Update submission status
+        if (res.data.isSubmitted) {
+          setSubmission(res.data.submission); // Set submission details if available
+        }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }, [params.id]);
 
   // Handle file drop for the Dropzone
@@ -59,29 +87,16 @@ export default function ShowClasses() {
 
   // Handle submission action
   const handleSubmit = () => {
-
-    // Ensure we have a file to submit
     if (files.length > 0 && resource) {
-      const file = files[0];
-      ResourceManager.submitResource(resource._id, file)
-        .then((submission) => {
-          if (submission) {
-            console.log("Submission successful", submission);
-            setIsSubmitted(true); // Update submission status
-            setShowDropzone(false);
-            setShowDropzone(false);
-            setIsSubmitted(true);
-            
-    setSubmissionTime(submission.updatedAt);
-          } else {
-            setErrorMessage('Submission failed, please try again.');
-            alert('Submission failed, please try again.');
-          }
+      ResourceManager.submitResource(resource._id, files[0])
+        .then((res) => {
+          console.log('Submission successful', res);
+          setIsSubmitted(true);
+          setSubmission(res.data);
+          setFiles([]);
+          setShowDropzone(false);
         })
-        .catch((err) => {
-          console.error("Error submitting resource:", err);
-          setErrorMessage('An error occurred while submitting. Please try again.');
-        });
+        .catch(() => setErrorMessage('Submission failed. Please try again.'));
     }
   };
 
@@ -127,22 +142,22 @@ export default function ShowClasses() {
           </div>
           <div style={{ marginLeft: '20px', marginTop: '50px' }}>
             <h5>Due Date:</h5>
-            <p>{resource?.due_date}</p>
+            <p>{toLondonTime(resource?.due_date)}</p>
           </div>
           <div style={{ marginLeft: '20px', marginTop: '50px' }}>
             <h5>{resource?.resource_type}</h5>
           </div>
           <div style={{ marginLeft: '20px', marginTop: '30px' }}>
-            <a href={resource?.resource_url}>Download File</a>
+            <a href={resource?.resource_url} target='_blank'>View Submission</a>
           </div>
-          <div style={{ marginLeft: '20px', marginTop: '30px' }}>
+          {/* <div style={{ marginLeft: '20px', marginTop: '30px' }}>
             <h5>Total Marks: </h5>
             <p>{resource?.totalMarks}</p>
-          </div>
-          <div style={{ marginLeft: '20px', marginTop: '30px' }}>
+          </div> */}
+          {/* <div style={{ marginLeft: '20px', marginTop: '30px' }}>
             <h5>Obtained Marks: </h5>
-            <p>YET TO GET</p>
-          </div>
+            <p>{submission?.obtained_marks}</p>
+          </div> */}
 
           {
             resource?.submissionRequired === 'Yes' && (
@@ -179,13 +194,13 @@ export default function ShowClasses() {
                   style={{
                     border: '2px dashed #ccc',
                     borderRadius: '10px',
-                    padding: '20px',
+                    // padding: '20px',
                     textAlign: 'center',
                     cursor: 'pointer',
                     position: 'relative',
                     backgroundColor: isDragActive ? '#d1e7ff' : '#f9f9f9',
                     borderColor: isDragActive ? '#0069d9' : '#ccc',
-                    // padding: '100px',
+                    padding: '100px',
                   }}
                 >
                   <input {...getInputProps()} />
@@ -265,11 +280,16 @@ export default function ShowClasses() {
                 </tr>
                 <tr style={{ backgroundColor: '#f1f1f1' }}>
                   <td style={{ fontWeight: 'bold' }}>Submission Time</td>
-                  <td style={{backgroundColor:'#cfefcf'}}>{submissionTime}</td>
+                  <td style={{ backgroundColor: '#cfefcf' }}>{toLondonTimeWithMinutes(submission?.updatedAt)}</td>
                 </tr>
                 <tr style={{ backgroundColor: '#f1f1f1 !important' }}>
                   <td style={{ fontWeight: 'bold',  backgroundColor:'#f7f7f7'}}>Grades</td>
-                  <td style={{backgroundColor:'#f7f7f7'}}>{resource?.obtained_marks}</td>
+                  <td style={{backgroundColor:'#f7f7f7'}}>
+                    {
+                      submission?.status === 'PENDING' ? 'Pending' : submission?.status === 'SUBMITTED' ? 'Submitted' : submission?.status === 'GRADED' ? 'Graded' : 'Rejected'
+                    }
+                    {submission?.obtained_marks}
+                    </td>
                 </tr>
               </tbody>
             </Table>

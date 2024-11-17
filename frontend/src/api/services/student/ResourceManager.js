@@ -42,13 +42,37 @@ const submitResource = async (resourceId, file) => {
     }
 };
 
+const getAllSubmissionsByResourceID = (id) => {
+    const token = getToken();
+    return httpClient.get(`/submission/resource/${id}`, {
+        headers: {
+            "x-auth-token": token,
+        },
+    });
+};
+
+// submit grades
+// Function to submit resource along with file
+const saveMarks = async (data) => {
+    const token = getToken();
+        return await httpClient.put('/submission/grade', data, {
+            headers: {
+                "x-auth-token": token,
+            },
+        });
+
+
+};
+
 
 
 
 
 const exportedObject = {
     getResourceByID,
-    submitResource
+    submitResource,
+    getAllSubmissionsByResourceID,
+    saveMarks
 };
 
 export default exportedObject;

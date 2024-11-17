@@ -1,4 +1,5 @@
 const Resource = require('../../models/Resource');
+const Submission = require('../../models/Submission');
 const Course = require('../../models/Course');
 const cloud = require('../../utils/cloudinaryConfig');
 
@@ -6,10 +7,10 @@ module.exports = {
     // Upload resource
     uploadResource: async (req, res) => {
         try {
-            const { title, description, resource_type, course_id, due_date, submissionRequired } = req.body;
+            const { title, description, resource_type, course_id, due_date, submissionRequired,totalMarks } = req.body;
 
             // Validate required fields
-            if (!title || !description || !resource_type || !course_id || !submissionRequired) {
+            if (!title || !description || !resource_type || !course_id || !submissionRequired ) {
                 return res.status(400).json({ msg: 'Title, description, resource type, course ID, and submission status are required.' });
             }
 
@@ -37,6 +38,7 @@ module.exports = {
                 resource_url: resourceUrl,
                 due_date,
                 submissionRequired,
+                totalMarks
             });
 
             await newResource.save();
@@ -98,13 +100,19 @@ module.exports = {
     getResourceById: async (req, res) => {
         try {
             const { id } = req.params;
+            const userID = req.user.id;
 
             const resource = await Resource.findById(id);
             if (!resource) {
                 return res.status(404).json({ msg: 'Resource not found.' });
             }
 
-            res.status(200).json({ success: true, data: resource });
+            const submission = await Submission.findOne({ resource: id, student_id: userID });
+            if (submission) {
+                return res.status(200).json({ isSubmitted: true, success: true, data: resource, submission: submission });
+            }            
+
+            res.status(200).json({isSubmitted:false, success: true, data: resource });
         } catch (error) {
             console.error('Error fetching resource:', error.message);
             res.status(500).json({ msg: 'Server error.' });

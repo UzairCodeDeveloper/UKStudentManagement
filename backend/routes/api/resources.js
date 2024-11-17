@@ -23,7 +23,7 @@ router.put('/update/:id', volunteerAuth, updateResource); // PUT request to upda
 
 
 // Get and refine resource by ID
-router.get('/:id/refine',    getResourceById);
+router.get('/:id/refine',studentAuth,    getResourceById);
 
 
 // Grade a resource by ID

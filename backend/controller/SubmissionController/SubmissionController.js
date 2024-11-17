@@ -74,7 +74,12 @@ exports.getSubmissionsByResource = async (req, res) => {
             .populate({
                 path: 'student_id', // Path to the user document
                 select: 'roll_number studentData.forename studentData.surname', // Select only the desired fields
-            });
+            })
+            .populate({
+                path:'resource',
+                select: 'title description totalMarks'
+});
+            
 
         if (!submissions.length) {
             return res.status(404).json({ success: false, message: 'No submissions found for this resource' });
@@ -139,7 +144,6 @@ exports.getSubmissionsByStudent = async (req, res) => {
     }
 };
 
-
 // Get Submission by Submission ID
 exports.getSubmissionById = async (req, res) => {
     const { submissionId } = req.params;
@@ -168,6 +172,37 @@ exports.getSubmissionById = async (req, res) => {
         res.status(200).json({ success: true, submission });
     } catch (error) {
         console.error('Error fetching submission by ID:', error.message);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// Update Marks for a Submission (Teacher)
+exports.markSubmissionMarks = async (req, res) => {
+    const {submissionId, obtained_marks } = req.body;
+
+    // Validate required fields
+    if (!submissionId || obtained_marks === undefined) {
+        return res.status(400).json({ success: false, message: 'Submission ID and obtained marks are required' });
+    }
+
+    try {
+        // Find the submission by submissionId and update the obtained_marks
+        const submission = await Submission.findById(submissionId);
+
+        if (!submission) {
+            return res.status(404).json({ success: false, message: 'Submission not found' });
+        }
+
+        // Update the obtained_marks field
+        submission.obtained_marks = obtained_marks;
+        submission.status = 'GRADED'; // Update the status to GRADED
+
+        // Save the updated submission
+        await submission.save();
+
+        res.status(200).json({ success: true, message: 'Marks updated successfully', submission });
+    } catch (error) {
+        console.error('Error marking submission:', error.message);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };

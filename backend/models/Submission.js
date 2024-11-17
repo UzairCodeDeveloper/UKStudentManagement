@@ -22,7 +22,7 @@ const submissionSchema = new Schema({
     },
     status: {
         type: String, 
-        enum: ['PENDING', 'APPROVED', 'REJECTED'], 
+        enum: ['PENDING', 'SUBMITTED','GRADED', 'REJECTED'], 
         default: 'PENDING', 
     },
 }, { timestamps: true });
