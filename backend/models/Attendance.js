@@ -46,6 +46,10 @@ const attendanceSchema = new Schema({
 attendanceSchema.index({ class_id: 1, date: 1 }, { unique: true }); 
 
 
+const Attendance = mongoose.model('Attendance', attendanceSchema);
+module.exports = Attendance;
+
+
 // attendanceSchema.pre('save', async function (next) {
 //   const attendance = this;
 //   const existingAttendance = await mongoose.model('Attendance').findOne({
@@ -60,6 +64,3 @@ attendanceSchema.index({ class_id: 1, date: 1 }, { unique: true });
 
 //   next();
 // });
-
-const Attendance = mongoose.model('Attendance', attendanceSchema);
-module.exports = Attendance;

@@ -20,4 +20,14 @@ router.get('/get/:id', volunteerAuth, getResourceById);
 // Update a resource by ID
 router.put('/update/:id', volunteerAuth, updateResource); // PUT request to update
 
+
+
+// Get and refine resource by ID
+router.get('/:id/refine',    getResourceById);
+
+
+// Grade a resource by ID
+// router.put('/:id/grade', resourceController.gradeResource);
+
+
 module.exports = router;

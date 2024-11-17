@@ -20,9 +20,9 @@ const resourceSchema = new Schema({
     due_date: {
         type: Date
     },
-    submissionRequired:{
-        type:String,
-        required:true
+    submissionRequired: {
+        type: String,
+        required: true
     },
     resource_type: {
         type: String,
@@ -32,6 +32,10 @@ const resourceSchema = new Schema({
     resource_url: {
         type: String,
         // required: true, // This will store the Cloudinary URL
+    },
+    totalMarks: {
+        type: Number,
+        default: 0,
     },
 }, { timestamps: true });
 

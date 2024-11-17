@@ -70,6 +70,10 @@ app.use('/api/attendence', require('./routes/api/attendence'))
 // Teacher Attendance APIs 
 app.use('/api/teacher-attendance', require('./routes/api/teacher-attendanceRoute'));
 
+// Assignment Submission APIs
+app.use('/api/submission', require('./routes/api/submission'));
+
+
 
 // for production
 // Serve static assets in production

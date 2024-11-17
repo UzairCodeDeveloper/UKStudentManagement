@@ -1,24 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
-import { useDropzone } from 'react-dropzone'; // Using react-dropzone for drag-and-drop
+import { useDropzone } from 'react-dropzone'; 
+// import { Table } from 'react-bootstrap';
+import { FaFilePdf, FaFileWord, FaFilePowerpoint, FaFileAlt } from 'react-icons/fa';
+import { AiOutlineFile } from 'react-icons/ai'; 
+import { useParams } from 'react-router-dom';
 import { Table } from 'react-bootstrap'; // Importing the Table component from react-bootstrap
-import { FaFilePdf, FaFileWord, FaFilePowerpoint, FaFileAlt } from 'react-icons/fa'; // Icons for different file types
-import { AiOutlineFile } from 'react-icons/ai'; // File icon for watermark
+import ResourceManager from "../../../../../api/services/student/ResourceManager"
 
 export default function ShowClasses() {
-  const [isSubmitted, setIsSubmitted] = useState(false); // Track if submission has been made
-  const [files, setFiles] = useState([]); // Store files for submission
-  const [showDropzone, setShowDropzone] = useState(false); // To control visibility of dropzone
-  const [submissionTime, setSubmissionTime] = useState(null); // Store submission time
-  const [errorMessage, setErrorMessage] = useState(''); // To store error message if file type is incorrect
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [showDropzone, setShowDropzone] = useState(false);
+  const [submissionTime, setSubmissionTime] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [resource, setResource] = useState(null);
 
+  const params = useParams();
+
+  useEffect(() => {
+    // Fetch resource details based on the provided resource ID from URL
+    ResourceManager.getResourceByID(params.id)
+      .then((res) => {
+        setResource(res.data.data); // Set resource details
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [params.id]);
+
+  // Handle file drop for the Dropzone
   const handleFileDrop = (acceptedFiles) => {
-    setFiles(acceptedFiles); // Handle the files dropped
-    setErrorMessage(''); // Reset error message if files are accepted
+    setFiles(acceptedFiles);
+    setErrorMessage('');
   };
 
   const handleDropRejected = (rejectedFiles) => {
-    // Handle rejected files and show appropriate error message
     rejectedFiles.forEach(file => {
       if (file.errors[0].code === 'file-invalid-type') {
         setErrorMessage('Invalid file type. Please upload PDF, DOCX, or PPTX files only.');
@@ -28,44 +45,53 @@ export default function ShowClasses() {
     });
   };
 
-  // React Dropzone for drag and drop
+  // React Dropzone configuration
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: acceptedFiles => {
-      // Always keep files as an array
-      if (acceptedFiles.length > 0) {
-        const file = acceptedFiles[0]; // Only take the first file
-        if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
-          setErrorMessage('');
-          setFiles([file]); // Set files as an array with one file
-        } else {
-          setErrorMessage('Only image or PDF files are allowed.');
-        }
-      }
-    },
+    onDrop: handleFileDrop,
+    onDropRejected: handleDropRejected,
     accept: {
       'application/pdf': ['.pdf'],
-      // 'image/*': ['.jpeg', '.jpg', '.png']
+      'application/msword': ['.doc', '.docx'],
+      'application/vnd.ms-powerpoint': ['.pptx'],
     },
-    onDropRejected: () => {
-      setErrorMessage('Unsupported file type. Only PDF or image files are allowed.');
-    },
-    multiple: false // Restrict to a single file
+    multiple: false // Only allow one file to be uploaded
   });
 
   // Handle submission action
   const handleSubmit = () => {
-    setIsSubmitted(true);
-    setSubmissionTime(new Date().toLocaleString()); // Record the submission time
-    setShowDropzone(false); // Hide the dropzone after submission
+
+    // Ensure we have a file to submit
+    if (files.length > 0 && resource) {
+      const file = files[0];
+      ResourceManager.submitResource(resource._id, file)
+        .then((submission) => {
+          if (submission) {
+            console.log("Submission successful", submission);
+            setIsSubmitted(true); // Update submission status
+            setShowDropzone(false);
+            setShowDropzone(false);
+            setIsSubmitted(true);
+            
+    setSubmissionTime(submission.updatedAt);
+          } else {
+            setErrorMessage('Submission failed, please try again.');
+            alert('Submission failed, please try again.');
+          }
+        })
+        .catch((err) => {
+          console.error("Error submitting resource:", err);
+          setErrorMessage('An error occurred while submitting. Please try again.');
+        });
+    }
   };
 
   // Handle cancel action
   const handleCancel = () => {
-    setShowDropzone(false); // Hide the dropzone without submitting
-    setFiles([]); // Clear files
+    setShowDropzone(false);
+    setFiles([]);
   };
 
-  // Function to render file type icons based on file extension
+  // Render file type icons based on file extension
   const getFileIcon = (file) => {
     const fileType = file.name.split('.').pop().toLowerCase();
     switch (fileType) {
@@ -89,21 +115,42 @@ export default function ShowClasses() {
           </h6>
         </div>
 
-        {/* Search Bar */}
         <div className="container-fluid admission-header text-center" style={{ marginTop: '30px' }}>
-          <h1>Quran Assignemnt 1</h1>
+          <h1>{resource?.title}</h1>
         </div>
 
         <div style={{ marginTop: '100px' }}>
           <h3 style={{ marginLeft: '20px' }}>Submission Status</h3>
-          <div style={{marginLeft:'20px', marginTop:'50px'}}>
-          <h5>Assignment Description:</h5>
-          <p>Upload the Assignment on Proper Time and In PDF Formate</p>
+          <div style={{ marginLeft: '20px', marginTop: '50px' }}>
+            <h5>Assignment Description:</h5>
+            <p>{resource?.description}</p>
           </div>
-          {!isSubmitted ? (
+          <div style={{ marginLeft: '20px', marginTop: '50px' }}>
+            <h5>Due Date:</h5>
+            <p>{resource?.due_date}</p>
+          </div>
+          <div style={{ marginLeft: '20px', marginTop: '50px' }}>
+            <h5>{resource?.resource_type}</h5>
+          </div>
+          <div style={{ marginLeft: '20px', marginTop: '30px' }}>
+            <a href={resource?.resource_url}>Download File</a>
+          </div>
+          <div style={{ marginLeft: '20px', marginTop: '30px' }}>
+            <h5>Total Marks: </h5>
+            <p>{resource?.totalMarks}</p>
+          </div>
+          <div style={{ marginLeft: '20px', marginTop: '30px' }}>
+            <h5>Obtained Marks: </h5>
+            <p>YET TO GET</p>
+          </div>
+
+          {
+            resource?.submissionRequired === 'Yes' && (
+              <>
+                        {!isSubmitted ? (
             <div>
-              <div style={{ margin: '20px 0', fontSize: '16px',  display:'flex', justifyContent:'center', alignItems:'center', flexWrap:'wrap', flexDirection:'column'}} >
-                <p style={{marginLeft:'20px', color:'red'}}>No submission yet</p>
+              <div style={{ margin: '20px 0', fontSize: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', flexDirection: 'column' }}>
+                <p style={{ marginLeft: '20px', color: 'red' }}>No submission yet</p>
                 <button
                   className="btn btn-primary"
                   onClick={() => setShowDropzone(true)} // Show the dropzone area
@@ -118,15 +165,13 @@ export default function ShowClasses() {
                 </button>
               </div>
 
-              {/* Dropzone with smooth animation and visual feedback */}
               <div
                 style={{
                   transition: 'all 0.5s ease-in-out',
                   opacity: showDropzone ? 1 : 0,
                   transform: showDropzone ? 'translateY(0)' : 'translateY(-20px)',
-                  display: showDropzone ? 'block' : 'none', // Make sure it's removed from layout when hidden
+                  display: showDropzone ? 'block' : 'none',
                   marginTop: '20px',
-                  
                 }}
               >
                 <div
@@ -138,15 +183,12 @@ export default function ShowClasses() {
                     textAlign: 'center',
                     cursor: 'pointer',
                     position: 'relative',
-                    backgroundColor: isDragActive ? '#d1e7ff' : '#f9f9f9', // Change background color when dragging
-                    borderColor: isDragActive ? '#0069d9' : '#ccc', 
-                    // Highlight border on drag
-                    padding:'100px'
+                    backgroundColor: isDragActive ? '#d1e7ff' : '#f9f9f9',
+                    borderColor: isDragActive ? '#0069d9' : '#ccc',
+                    // padding: '100px',
                   }}
                 >
-                  <input {...getInputProps()} 
-                    
-                  />
+                  <input {...getInputProps()} />
                   <p>Drag & Drop files here, or click to select files</p>
                   <ul>
                     {files.map(file => (
@@ -155,15 +197,13 @@ export default function ShowClasses() {
                       </li>
                     ))}
                   </ul>
-
-                  {/* Watermark file icon */}
                   <div
                     style={{
                       position: 'absolute',
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      opacity: 0.2, // Make it look like a watermark
+                      opacity: 0.2,
                       fontSize: '50px',
                       color: '#000',
                     }}
@@ -172,7 +212,6 @@ export default function ShowClasses() {
                   </div>
                 </div>
 
-                {/* Error Message for Invalid File Type */}
                 {errorMessage && (
                   <div style={{
                     color: 'red',
@@ -183,8 +222,7 @@ export default function ShowClasses() {
                   </div>
                 )}
 
-                {/* Cancel and Submit Buttons */}
-                <div style={{ marginTop: '20px', display:'flex', justifyContent:'center', alignItems:'center', flexWrap:'wrap', gap:'20px' }}>
+                <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
                   <button
                     className="btn btn-danger"
                     onClick={handleCancel}
@@ -198,13 +236,12 @@ export default function ShowClasses() {
                     Cancel
                   </button>
                   <button
-                    className="btn btn-success"
+                    className="btn btn-primary"
                     onClick={handleSubmit}
                     style={{
                       padding: '10px 20px',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      display: files.length > 0 ? 'inline-block' : 'none',
                     }}
                   >
                     Submit
@@ -213,30 +250,36 @@ export default function ShowClasses() {
               </div>
             </div>
           ) : (
+            <>
             <div style={{ marginTop: '20px', marginLeft:'20px'}}>
-              {/* Adjusted Table layout with header column on left and values column on right */}
-              <Table bordered hover responsive>
-                <tbody>
-                  <tr style={{ backgroundColor: '#f1f1f1' }}>
-                    <td style={{ fontWeight: 'bold',  background:"#f7f7f7"}}>Submission Status</td>
-                    <td style={{backgroundColor:'#cfefcf'}}>Submitted</td>
-                  </tr>
-                  <tr>
-                    <td style={{ fontWeight: 'bold' }}>Grading Status</td>
-                    <td>Pending</td>
-                  </tr>
-                  <tr style={{ backgroundColor: '#f1f1f1' }}>
-                    <td style={{ fontWeight: 'bold' }}>Submission Time</td>
-                    <td style={{backgroundColor:'#cfefcf'}}>{submissionTime}</td>
-                  </tr>
-                  <tr style={{ backgroundColor: '#f1f1f1 !important' }}>
-                    <td style={{ fontWeight: 'bold',  backgroundColor:'#f7f7f7'}}>Grades</td>
-                    <td style={{backgroundColor:'#f7f7f7'}}>Pending</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
+            {/* Adjusted Table layout with header column on left and values column on right */}
+            <Table bordered hover responsive>
+              <tbody>
+                <tr style={{ backgroundColor: '#f1f1f1' }}>
+                  <td style={{ fontWeight: 'bold',  background:"#f7f7f7"}}>Submission Status</td>
+                  <td style={{backgroundColor:'#cfefcf'}}>Submitted</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold' }}>Grading Status</td>
+                  <td>Pending</td>
+                </tr>
+                <tr style={{ backgroundColor: '#f1f1f1' }}>
+                  <td style={{ fontWeight: 'bold' }}>Submission Time</td>
+                  <td style={{backgroundColor:'#cfefcf'}}>{submissionTime}</td>
+                </tr>
+                <tr style={{ backgroundColor: '#f1f1f1 !important' }}>
+                  <td style={{ fontWeight: 'bold',  backgroundColor:'#f7f7f7'}}>Grades</td>
+                  <td style={{backgroundColor:'#f7f7f7'}}>{resource?.obtained_marks}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </div>
+          </>
           )}
+              </>
+            )
+          }
+
         </div>
       </div>
     </div>
