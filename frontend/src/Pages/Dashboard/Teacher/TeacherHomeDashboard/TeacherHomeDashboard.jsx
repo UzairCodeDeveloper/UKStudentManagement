@@ -46,10 +46,10 @@ export default function TeacherHomeDashboard() {
     // console.log(data)
 
     const [volunteerData] = useState(useSelector((state) => state?.user?.user?.volunteer?.volunteer_details));
-    console.log(volunteerData)
+    // console.log(volunteerData)
     const days_to_commit=volunteerData.days_to_commit;
     const workingAreas=volunteerData.areas_of_working;
-    console.log(days_to_commit)
+    // console.log(days_to_commit)
    
     // useEffect(() => {
     //     // Call the API to get the volunteer data

@@ -45,7 +45,7 @@ export default function TeacherHomeDashboard() {
     // const data = useSelector((state) => state.user.user.volunteer.volunteer_details);
     // console.log(data)
 
-    const studentData = useState(useSelector((state) => state.user.user.user.studentData));
+    const [studentData] = useState(useSelector((state) => state.user.user.user.studentData));
     console.log(studentData)
     // const days_to_commit=volunteerData.days_to_commit;
     // const workingAreas=volunteerData.areas_of_working;
@@ -73,7 +73,7 @@ export default function TeacherHomeDashboard() {
             <div className="left-section">
                 <div className="profile-image">
                     <img src={img} alt="Profile" />
-                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>{studentData.full_name}</h2>
+                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>{studentData?.forename}</h2>
                 </div>
                 <div className="profile-details">
                     
@@ -82,13 +82,13 @@ export default function TeacherHomeDashboard() {
                         <span>Student</span>
                     </div>
                     
-                    {/* <div className="profile-detail-item">
-                        <strong>Father / Husband Name:</strong>
-                        <span>John Doe</span>
-                    </div> */}
                     <div className="profile-detail-item">
-                        <strong>Mobile No:</strong>
-                        <span>{studentData?.forename}</span>
+                        <strong>Father:</strong>
+                        <span>{studentData?.surname}</span>
+                    </div>
+                    <div className="profile-detail-item">
+                        <strong>Family Reg No:</strong>
+                        <span>{studentData?.familyRegNo}</span>
                     </div>
                     <div className="profile-detail-item">
                         <strong>DOB:</strong>
@@ -96,26 +96,16 @@ export default function TeacherHomeDashboard() {
                         
                     </div>
                     <div className="profile-detail-item">
-                        <strong>Home Address:</strong>
-                        <span>{studentData?.address}</span>
+                        <strong>Doctor Name:</strong>
+                        <span>{studentData?.doctorDetails?.doctorName}</span>
                     </div>
-                    <div className="profile-detail-item">
-                        <strong>Commit Days</strong>
-
-                        
-                    </div>
-                    <div className="profile-detail-item">
-                        <strong>Working Areas:</strong>
-                       
-                    </div>
+                    
+                    
                     <div className="profile-detail-item">
                         <strong>Gender:</strong>
                         <span>{studentData?.gender}</span>
                     </div>
-                    <div className="profile-detail-item">
-                        <strong>Postal Code</strong>
-                        <span>{studentData?.postal_code}</span>
-                    </div>
+                   
                     {/* <div className="profile-detail-item">
                         <strong>Blood Group:</strong>
                         <span>O+</span>

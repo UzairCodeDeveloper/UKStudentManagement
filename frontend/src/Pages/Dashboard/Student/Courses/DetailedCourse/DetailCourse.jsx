@@ -29,38 +29,35 @@ export default function DetailCourse() {
   const generateWeeks = (startDate) => {
     const weeks = [];
     if (!startDate) return weeks;
-
+  
     // Calculate the end date as start date + courseDurationMonths * 4 weeks
     const endDate = dayjs(startDate).add(courseDurationMonths, 'month');
-
+  
     // Adjust startDate to the start of the week (you can set it to the start of Monday, for example)
     const firstDayOfWeek = dayjs(startDate).startOf('week'); // Set to the start of the week (Sunday by default)
-
+  
     // Loop over the entire duration (courseDurationMonths * 4 weeks)
     for (let i = 0; i < courseDurationMonths * 4; i++) {
-      const weekStart = firstDayOfWeek.add(i, 'week'); // Adjust to the correct week start
-      if (weekStart.isAfter(endDate)) break; // Stop if we exceed the end date
-
-      const weekEnd = weekStart.add(6, 'day'); // End of the week (7th day)
-
+      const weekStart = firstDayOfWeek.add(i, 'week').startOf('day'); // Ensure week starts at 00:00
+      const weekEnd = weekStart.add(6, 'day').endOf('day'); // Ensure week ends at 23:59:59
+  
       // Initialize an empty tasks array for this week
       const weeklyTasks = [];
-
+  
       // Check tasks for the current week
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         const taskDate = dayjs(task?.due_date);
-
+  
         // Check if task falls within the current week (inclusive)
         if (taskDate.isBetween(weekStart, weekEnd, null, '[]')) {
           weeklyTasks.push({
             id: task._id, // Include the task ID
             title: task.title, // Include the task title
             submissionStatus: task.submissionRequired,
-            // description: task.description,
           });
         }
       });
-
+  
       weeks.push({
         weekStart: weekStart.format('D MMM YYYY'),
         weekEnd: weekEnd.format('D MMM YYYY'),
@@ -72,7 +69,7 @@ export default function DetailCourse() {
     }
     return weeks;
   };
-
+  
 
   // Weeks and end date calculations
   const weeks = startDate ? generateWeeks(startDate) : [];
@@ -254,7 +251,7 @@ export default function DetailCourse() {
                               onClick={(e) => {
                                 e.preventDefault();
                                 // Check the submissionStatus and navigate accordingly
-                                const navigateTo = task.submissionStatus === 'Yes' ? `/submit/${task.id}` : `/resources/${courseData?.course?.course_name}/${task.id}`;
+                                const navigateTo = task.submissionStatus === 'Yes' ? `/submit/${task.id}` : `/resources/${task.id}`;
                                 navigate(navigateTo); // Navigate to the appropriate URL
                               }}
                             >

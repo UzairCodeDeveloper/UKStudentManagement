@@ -49,9 +49,11 @@ export default function ShowClasses() {
     ResourceManager.getResourceByID(params.id)
       .then((res) => {
         setResource(res.data.data); // Set resource details
+        console.log(res.data.data)
         setIsSubmitted(res.data.isSubmitted); // Update submission status
         if (res.data.isSubmitted) {
           setSubmission(res.data.submission); // Set submission details if available
+          console.log(res.data.submission)
         }
       })
       .catch((err) => console.log(err));
@@ -95,6 +97,7 @@ export default function ShowClasses() {
           setSubmission(res.data);
           setFiles([]);
           setShowDropzone(false);
+          window.location.reload();
         })
         .catch(() => setErrorMessage('Submission failed. Please try again.'));
     }
@@ -276,18 +279,31 @@ export default function ShowClasses() {
                 </tr>
                 <tr>
                   <td style={{ fontWeight: 'bold' }}>Grading Status</td>
-                  <td>Pending</td>
+                  <td>{
+                      submission?.status === 'PENDING' ? 'Pending' : submission?.status === 'SUBMITTED' ? 'Submitted' : submission?.status === 'GRADED' ? 'Graded' : 'Pending'
+                    }</td>
                 </tr>
                 <tr style={{ backgroundColor: '#f1f1f1' }}>
                   <td style={{ fontWeight: 'bold' }}>Submission Time</td>
                   <td style={{ backgroundColor: '#cfefcf' }}>{toLondonTimeWithMinutes(submission?.updatedAt)}</td>
                 </tr>
                 <tr style={{ backgroundColor: '#f1f1f1 !important' }}>
+  <td style={{ fontWeight: 'bold', backgroundColor: '#f7f7f7' }}>File</td>
+  <td style={{ backgroundColor: '#f7f7f7' }}>
+    {submission?.submission_url && submission?.submission_url.toLowerCase() !== 'no' ? (
+      <a href={submission.submission_url} target="_blank" rel="noopener noreferrer">
+        Submission
+      </a>
+    ) : (
+      'No Submission'
+    )}
+  </td>
+</tr>
+
+                <tr style={{ backgroundColor: '#f1f1f1 !important' }}>
                   <td style={{ fontWeight: 'bold',  backgroundColor:'#f7f7f7'}}>Grades</td>
                   <td style={{backgroundColor:'#f7f7f7'}}>
-                    {
-                      submission?.status === 'PENDING' ? 'Pending' : submission?.status === 'SUBMITTED' ? 'Submitted' : submission?.status === 'GRADED' ? 'Graded' : 'Rejected'
-                    }
+                    
                     {submission?.obtained_marks}
                     </td>
                 </tr>

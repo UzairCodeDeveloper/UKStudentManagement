@@ -62,12 +62,12 @@ export default function AdminDashboard() {
             </Link>
           </li>
           
-          <li>
+          {/* <li>
           <Link to="/user-profile" className={`sidebar-item ${activeLink === '/user-profile' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/user-profile')}>
               <IoMdSettings className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Settings</span>
             </Link>
-            </li>
+            </li> */}
           <li
             className={`sidebar-item sidebar-item-with-submenu`}
             onClick={() => setIsStudentOpen(!isStudentOpen)}
