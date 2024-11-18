@@ -7,7 +7,7 @@ export default function ShowClasses() {
   const [isSubmitted, setIsSubmitted] = useState(true); // Force submission to be true (remove the button and submission logic)
 
   const param=useParams()
-  const course=param.course
+//   const course=param.course
   const id=param.id
   console.log(id)
   return (
@@ -15,7 +15,7 @@ export default function ShowClasses() {
       <div className="classes-container">
         <div className="header">
           <h6>
-            {course} <span className="sub-header"> - Resource</span>
+            Course <span className="sub-header"> - Resource</span>
           </h6>
         </div>
 

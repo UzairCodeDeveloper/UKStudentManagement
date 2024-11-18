@@ -35,19 +35,17 @@ export default function DetailCourse() {
   
     // Adjust startDate to the start of the week (you can set it to the start of Monday, for example)
     const firstDayOfWeek = dayjs(startDate).startOf('week'); // Set to the start of the week (Sunday by default)
-    
+  
     // Loop over the entire duration (courseDurationMonths * 4 weeks)
     for (let i = 0; i < courseDurationMonths * 4; i++) {
-      const weekStart = firstDayOfWeek.add(i, 'week'); // Adjust to the correct week start
-      if (weekStart.isAfter(endDate)) break; // Stop if we exceed the end date
-  
-      const weekEnd = weekStart.add(6, 'day'); // End of the week (7th day)
+      const weekStart = firstDayOfWeek.add(i, 'week').startOf('day'); // Ensure week starts at 00:00
+      const weekEnd = weekStart.add(6, 'day').endOf('day'); // Ensure week ends at 23:59:59
   
       // Initialize an empty tasks array for this week
       const weeklyTasks = [];
   
       // Check tasks for the current week
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         const taskDate = dayjs(task?.due_date);
   
         // Check if task falls within the current week (inclusive)
@@ -56,7 +54,6 @@ export default function DetailCourse() {
             id: task._id, // Include the task ID
             title: task.title, // Include the task title
             submissionStatus: task.submissionRequired,
-            description: task.description,
           });
         }
       });
@@ -72,6 +69,7 @@ export default function DetailCourse() {
     }
     return weeks;
   };
+  
   
 
 

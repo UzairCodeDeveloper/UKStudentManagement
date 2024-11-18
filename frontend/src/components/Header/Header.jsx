@@ -74,7 +74,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
             className="profileImage"
           />
           <div className={`dropdownMenu ${dropdownOpen ? 'show' : ''}`}>
-            <div className="dropdownItem" onClick={UserProfile}>
+            <div className="dropdownItem" onClick={()=>{navigate('/user-profile')}}>
               <FaUser className="dropdownIcon" /> Account Settings
             </div>
 

@@ -14,6 +14,7 @@ import StudentAttendance from './Attendance/StudentAttendance';
 import SubmissionPortal from './Courses/SubmissionPortal/SubmissionPortal';
 import DetailCourse from './Courses/DetailedCourse/DetailCourse';
 import ResourceOnlyDescription from './Courses/ResourceOnlyDescription.jsx/ResourceOnlyDescription'
+import CourseResources from './Courses/CourseResources/CourseResources'
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -73,12 +74,12 @@ export default function AdminDashboard() {
             </Link>
             </li>
 
-            <li>
+            {/* <li>
             <Link to="/SubmissionPortal" className={`sidebar-item ${activeLink === '/SubmissionPortal' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/SubmissionPortal')}>
               <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>SubmissionPortal</span>
             </Link>
-            </li>
+            </li> */}
             
 
 
@@ -127,7 +128,8 @@ export default function AdminDashboard() {
         <Route path="/SubmissionPortal" element={<SubmissionPortal/>} />
         <Route path="/DetailedCourse/:id" element={<DetailCourse />} />
         <Route path="/submit/:id" element={<SubmissionPortal />} />
-        <Route path="/resources/:course/:id" element={<ResourceOnlyDescription />} />
+        <Route path="/resources/:id" element={<ResourceOnlyDescription />} />
+        <Route path="/courseResources/:id" element={<CourseResources/>} />
         {/* <Route path="/timetable" element={<Timetable />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
