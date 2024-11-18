@@ -1,12 +1,9 @@
 import httpClient from "../../../http-commons";
 import { getToken } from '../../../../util/adminUtil';
 
-
-
-// Get Teacher Attendance Record By Date
+// Fetch attendance records for a specific date
 const getAttendanceRecordByDate = (date) => {
     const token = getToken();
-
     return httpClient.get(`/teacher-attendance/teacher-attendance/${date}`, {
         headers: {
             "x-auth-token": token,
@@ -14,16 +11,12 @@ const getAttendanceRecordByDate = (date) => {
     });
 };
 
-
-
-// MARK ATTENDANCE FOR TEACHER
+// Mark or update attendance for a specific date
 const markAttendance = (data) => {
-    // console.log(data)
-    const token = getToken(); // Get token from Redux state or other source
-    // console.log(data)
+    const token = getToken();
     return httpClient.post(`/teacher-attendance`, data, {
         headers: {
-            "x-auth-token": token, // Pass the token in the headers correctly
+            "x-auth-token": token,
         },
     });
 };

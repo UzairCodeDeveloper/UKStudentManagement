@@ -1,34 +1,19 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Teacher Attendance Schema
-const teacherAttendanceSchema = new Schema({
+const TeacherAttendanceSchema = new Schema({
   date: {
     type: Date,
-    required: true
+    required: true,
+    unique: true,
   },
-  attendance:[
+  attendance: [
     {
-      teacher_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Volunteer',
-        required: true
-      },
-      status: {
-        type: String,
-        enum: ['present', 'absent', 'leave'],
-        required: true
-      },
-      reason_for_leave: {
-        type: String,
-        default: ''
-      }
-    }
-  ]
-}, { timestamps: true });
+      teacher_id: { type: Schema.Types.ObjectId, ref: 'Volunteer' }, // Reference to Volunteer
+      status: { type: String, enum: ['present', 'absent', 'leave'] }, // Status field
+    },
+  ],
+});
 
-teacherAttendanceSchema.index({ teacher_id: 1, date: 1 }, { unique: true }); // Ensure teacher can't have multiple records on the same date
-
-const TeacherAttendance = mongoose.model('TeacherAttendance', teacherAttendanceSchema);
-
+const TeacherAttendance = mongoose.model('TeacherAttendance', TeacherAttendanceSchema);
 module.exports = TeacherAttendance;

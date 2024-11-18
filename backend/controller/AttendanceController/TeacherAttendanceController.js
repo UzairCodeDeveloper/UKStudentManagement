@@ -1,4 +1,5 @@
 const TeacherAttendance = require('../../models/TeacherAttendance');
+const Volunteer = require('../../models/Volunteer');
 
 
 // Controller to mark or update teacher attendance
@@ -37,29 +38,59 @@ exports.markOrUpdateTeacherAttendance = async (req, res) => {
 // Controller to get teacher attendance for a specific date
 exports.getTeacherAttendance = async (req, res) => {
   try {
-    const { date } = req.params;
+    const { date } = req.params; // Get the date from request parameters
 
-    // Find the attendance for the given date
+    // Fetch the attendance for the specified date
     const teacherAttendance = await TeacherAttendance.findOne({ date })
-      .populate('attendance.teacher_id', 'name'); // Assuming "name" is a field in the Volunteer schema
+      .populate({
+        path: 'attendance.teacher_id', // Populate teacher_id from Volunteer schema
+        select: 'volunteer_details.full_name employee_id', // Select only required fields
+      });
 
-    if (!teacherAttendance) {
+    if (teacherAttendance) {
+      // Attendance record exists
+      return res.status(200).json({
+        message: 'Teacher attendance retrieved successfully',
+        attendanceFound: true,
+        data: teacherAttendance.attendance.map(item => ({
+          teacher_id: item.teacher_id._id, // Teacher ID
+          full_name: item.teacher_id.volunteer_details.full_name, // Teacher full name
+          employee_id: item.teacher_id.employee_id, // Employee ID
+          status: item.status, // Attendance status
+        })),
+      });
+    }
+
+    // Attendance record does not exist, list all teachers
+    const allTeachers = await Volunteer.find()
+      .select('volunteer_details.full_name employee_id'); // Select required fields
+
+    if (!allTeachers.length) {
       return res.status(404).json({
-        message: 'Attendance not found for the given date'
+        message: 'No teachers found in the system',
+        attendanceFound: false,
+        data: [],
       });
     }
 
     res.status(200).json({
-      message: 'Teacher attendance retrieved successfully',
-      data: teacherAttendance
+      message: 'No attendance found for the given date. Showing all teachers without attendance status.',
+      attendanceFound: false,
+      data: allTeachers.map(teacher => ({
+        teacher_id: teacher._id,
+        full_name: teacher.volunteer_details.full_name, // Full name from nested field
+        employee_id: teacher.employee_id, // Employee ID
+        status: null, // No attendance status
+      })),
     });
   } catch (error) {
     res.status(500).json({
       message: 'An error occurred while retrieving attendance',
-      error: error.message
+      error: error.message,
     });
   }
 };
+
 
 // Controller to get the attendance of a specific teacher for a specific date
 exports.getSpecificTeacherAttendance = async (req, res) => {
