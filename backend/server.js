@@ -73,6 +73,9 @@ app.use('/api/teacher-attendance', require('./routes/api/teacher-attendanceRoute
 // Assignment Submission APIs
 app.use('/api/submission', require('./routes/api/submission'));
 
+// Timetable APIs
+app.use('/api/time-table', require('./routes/api/timetableRoutes'));
+
 
 
 // for production

@@ -15,6 +15,7 @@ router.get('/student-resources/:course_id', studentAuth, getResourcesByCourse);
 
 // Delete a resource by ID
 router.delete('/:id', volunteerAuth, deleteResource);
+
 router.get('/get/:id', volunteerAuth, getResourceById);
 
 // Update a resource by ID

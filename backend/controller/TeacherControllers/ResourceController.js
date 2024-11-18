@@ -7,10 +7,10 @@ module.exports = {
     // Upload resource
     uploadResource: async (req, res) => {
         try {
-            const { title, description, resource_type, course_id, due_date, submissionRequired,totalMarks } = req.body;
+            const { title, description, resource_type, course_id, due_date, submissionRequired, totalMarks } = req.body;
 
             // Validate required fields
-            if (!title || !description || !resource_type || !course_id || !submissionRequired ) {
+            if (!title || !description || !resource_type || !course_id || !submissionRequired) {
                 return res.status(400).json({ msg: 'Title, description, resource type, course ID, and submission status are required.' });
             }
 
@@ -110,9 +110,9 @@ module.exports = {
             const submission = await Submission.findOne({ resource: id, student_id: userID });
             if (submission) {
                 return res.status(200).json({ isSubmitted: true, success: true, data: resource, submission: submission });
-            }            
+            }
 
-            res.status(200).json({isSubmitted:false, success: true, data: resource });
+            res.status(200).json({ isSubmitted: false, success: true, data: resource });
         } catch (error) {
             console.error('Error fetching resource:', error.message);
             res.status(500).json({ msg: 'Server error.' });

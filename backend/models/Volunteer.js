@@ -49,7 +49,6 @@ const volunteerSchema = new Schema({
         },
         schedule: {
             type: String,
-            
         },
         schedule_detail:{
             type:String
@@ -94,5 +93,6 @@ const volunteerSchema = new Schema({
     }
 }, { timestamps: true });
 
-const Volunteer = mongoose.model('Volunteer', volunteerSchema);
+// Check if the model already exists before defining it
+const Volunteer = mongoose.models.Volunteer || mongoose.model('Volunteer', volunteerSchema);
 module.exports = Volunteer;
