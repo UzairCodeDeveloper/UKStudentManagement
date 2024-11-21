@@ -29,6 +29,7 @@ import EditEmployee from './Employee/EditEmployee/EditEmployee';
 import AddSession from './Session/AddSession';
 import AllSession from './Session/AllSession/AllSession'
 import EditSession from './Session/EditSession/EditSession'
+import EditSubject from './Subjects/EditSubjects/EditSubjects'
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -256,6 +257,7 @@ export default function AdminDashboard() {
         <Route path="/add-class" element={<AddClass />} />
         <Route path="/subjects" element={<AllSubjects />} />
         <Route path="/add-subject" element={<AddSubjects />} />
+        <Route path="/edit-subject/:id" element={<EditSubject />} />
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/student-attendance" element={<StudentAttendence />} />
         <Route path="/employee-attendance" element={<EmployeeAttendence />} />

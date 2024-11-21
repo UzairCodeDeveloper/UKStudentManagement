@@ -110,27 +110,45 @@ export default function DetailCourse() {
   console.log(id)
   useEffect(() => {
     setLoading(true); // Set loading to true before fetching
-    Promise.all([
-      CourseManager.getCourseByIdInstructor(id),
-      CourseManager.getResourcesByCourse(id),
-    ])
-      .then(([courseRes, resourcesRes]) => {
-        console.log(courseRes.data.classDetails.session.start_date);
-        setStartDate(new Date(courseRes.data.classDetails.session.start_date));
-        setCourseData(courseRes.data);
-        const filteredResources = resourcesRes.data.data.filter(resource =>
-          !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
-        );
+    // Fetch the course and resources separately
+CourseManager.getCourseByIdInstructor(id)
+.then(courseRes => {
+  // Set the course data
+  console.log(courseRes.data.classDetails.session.start_date);
+  setStartDate(new Date(courseRes.data.classDetails.session.start_date));
+  setCourseData(courseRes.data);
+})
+.catch(err => {
+  console.error('Error fetching course data:', err);
+  // Optionally handle error case for course fetch
+  setCourseData(null);  // or some fallback value if necessary
+})
+.finally(() => {
+  setLoading(false); // Set loading to false once course data is fetched
+});
 
-        // Set the filtered resources as tasks
-        setTasks(filteredResources); // Store tasks from API response
-      })
-      .catch(err => {
-        console.error(err); // Handle errors here if needed
-      })
-      .finally(() => {
-        setLoading(false); // Set loading to false once fetching is complete
-      });
+// Fetch the resources separately
+CourseManager.getResourcesByCourse(id)
+.then(resourcesRes => {
+  const filteredResources = resourcesRes.data.data.filter(resource =>
+    !['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
+  );
+
+  if (filteredResources.length === 0) {
+    // If no valid resources are found, you can handle it here
+    console.log("No resources found for this course.");
+    setTasks([]);  // or set default task data if required
+  } else {
+    // Otherwise, set the resources as tasks
+    setTasks(filteredResources); 
+  }
+})
+.catch(err => {
+  console.error('Error fetching resources:', err);
+  // Optionally handle error case for resources fetch
+  setTasks([]);  // or some fallback value if needed
+});
+
   }, [id]);
 
   if (loading) {

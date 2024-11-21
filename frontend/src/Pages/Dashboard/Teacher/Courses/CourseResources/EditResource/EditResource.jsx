@@ -32,11 +32,11 @@ export default function AddResource() {
     setLoading(true)
     CourseManager.getResourcebyId(id)
       .then((res) => {
-        console.log(res.data);
-        setResourceTitle(res.data.title);
-        setSelectedResource(res.data.resource_type.toUpperCase()); // Set the resource type to uppercase to match the ids
-        setSelectedDate(res.data.due_date.split('T')[0]);
-        setDescription(res.data.description);
+        console.log(res.data.data);
+        setResourceTitle(res.data.data.title);
+        setSelectedResource(res.data.data.resource_type.toUpperCase()); // Set the resource type to uppercase to match the ids
+        setSelectedDate(res.data.data.due_date.split('T')[0]);
+        setDescription(res.data.data.description);
         setLoading(false)
       })
 

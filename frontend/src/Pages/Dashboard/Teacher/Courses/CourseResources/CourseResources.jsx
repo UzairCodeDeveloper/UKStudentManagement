@@ -69,6 +69,7 @@ export default function ShowStudents() {
 
     function handleDelete(id) {
       // Show confirmation dialog with SweetAlert2
+      alert(id)
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -99,7 +100,7 @@ export default function ShowStudents() {
               // Show error notification using SweetAlert2
               Swal.fire({
                 title: "Error!",
-                text: err.response?.data?.msg || "Something went wrong while deleting the session.",
+                text: err.response?.data?.msg || "Something went wrong while deleting the Resource.",
                 icon: "error",
                 confirmButtonColor: "#d33"
               });

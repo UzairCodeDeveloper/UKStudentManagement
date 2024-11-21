@@ -3,6 +3,7 @@ import { AiOutlineHome, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import Loader from '../../../../../components/Loader/Loader'; // Import the Loader component
 import Swal from 'sweetalert2'; // Ensure you have SweetAlert2 installed and imported
 import CourseManager from "../../../../../api/services/admin/course/courseManager.js"
+import { useNavigate } from 'react-router-dom';
 
 export default function ShowClasses() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,7 +11,7 @@ export default function ShowClasses() {
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
   const [refresh, setRefresh] = useState(false)
-
+  const navigate=useNavigate();
   // useEffect(() => {
   //   // Simulate fetching data with a delay
   //   setTimeout(() => {
@@ -129,7 +130,7 @@ export default function ShowClasses() {
                     {classItem?.instructor?.volunteer_details?.full_name}
                     </td>
                   <td className="status-buttons">
-                    <button className="btn btn-edit" onClick={() => handleEdit(classItem.id)}>
+                    <button className="btn btn-edit" onClick={() => handleEdit(classItem._id)}>
                       <AiOutlineEdit />
                     </button>
                     <button className="btn btn-delete" onClick={() => handleDelete(classItem._id)}>
@@ -147,8 +148,8 @@ export default function ShowClasses() {
 
   // Add your edit and delete functions
   function handleEdit(id) {
-    console.log(`Edit class with ID: ${id}`);
     // Implement edit functionality here
+    navigate(`/edit-subject/${id}`)
   }
 
   

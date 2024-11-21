@@ -17,6 +17,7 @@ export default function EmployeeAttendance() {
     AttendanceManager.getAttendanceRecordByDate(formattedDate)
       .then((response) => {
         const { attendanceFound, data } = response.data;
+        // console.log(response.data)
         if (attendanceFound) {
           setAttendanceData(data); // Populate with fetched attendance data
         } else {
@@ -113,9 +114,9 @@ export default function EmployeeAttendance() {
               className="date-picker"
             />
           </div>
-          <button className="mark-button" onClick={fetchAttendance}>
+          {/* <button className="mark-button" onClick={fetchAttendance}>
             Fetch Records
-          </button>
+          </button> */}
         </div>
 
         {/* Attendance Table with buttons */}
@@ -140,7 +141,7 @@ export default function EmployeeAttendance() {
                         className={`attendance-btn present-btn ${employee.status === "present" ? "active" : ""}`}
                         onClick={() => toggleStatus(employee.teacher_id, "present")}
                       >
-                        Present
+                        Presents
                       </button>
                       {/* Absent Button */}
                       <button

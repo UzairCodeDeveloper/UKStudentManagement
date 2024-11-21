@@ -41,6 +41,7 @@ export default function AddClass() {
     .catch((err)=>{
       console.log(err)
     })
+    
   },[])
 
 
@@ -88,11 +89,11 @@ export default function AddClass() {
   return (
     <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
       <div style={{ backgroundColor: 'white', padding: '10px', marginBottom: '10px', borderRadius: '30px', boxShadow: '0px 0px 1px 0px gray' }}>
-        <h6>Subject <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Add Subject</span></h6>
+        <h6>Subject <span style={{ fontWeight: '400' }}>| <AiOutlineHome className="sidebar-icon" style={{ marginRight: '5px' }} />- Update Subject</span></h6>
       </div>
       <div className={`classContainer ${isLoading ? 'loading' : ''}`}>
         <div className='classBox'>
-          <h5>Add New Subjects</h5>
+          <h5>Update Subjects</h5>
           <form onSubmit={handleSubmit}>
             {/* Select Class Dropdown */}
             <div className='form-group'>
@@ -164,7 +165,7 @@ export default function AddClass() {
             </div>
 */
 }
-            <button type="submit" className='submit-button ' style={{marginTop:'20px,',backgroundColor:'#ffc674', fontWeight:'400', color:'black'}}>Assign Subjects</button>
+            <button type="submit" className='submit-button ' style={{marginTop:'20px,',backgroundColor:'#ffc674', fontWeight:'400', color:'black'}}>Update Subjects</button>
           </form>
         </div>
       </div>

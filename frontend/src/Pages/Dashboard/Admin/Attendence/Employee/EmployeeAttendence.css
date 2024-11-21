@@ -62,7 +62,7 @@
 
 .attendance-table.show {
   opacity: 1;
-  max-height: 500px;
+  /* max-height: 500px; */
 }
 
 table {
@@ -86,28 +86,30 @@ table th, table td {
 
 /* Present Button */
 .attendance-btn.present-btn {
-  background-color: #28a745; /* Green */
-  color: white;
+  /* background-color: #28a745; Green */
+  color: black;
 }
 
 .attendance-btn.present-btn.active {
   background-color: #218838; /* Darker Green when active */
+  color: white;
 }
 
 /* Absent Button */
 .attendance-btn.absent-btn {
-  background-color: #dc3545; /* Red */
-  color: white;
+  /* background-color: #dc3545; Red */
+  color: black;
 }
 
 .attendance-btn.absent-btn.active {
   background-color: #c82333; /* Darker Red when active */
+  color: white;
 }
 
 /* Leave Button */
 .attendance-btn.leave-btn {
-  background-color: #ffc107; /* Yellow */
-  color: white;
+  /* background-color: #ffc107; Yellow */
+  color: black;
 }
 
 .attendance-btn.leave-btn.active {
@@ -116,7 +118,9 @@ table th, table td {
 
 /* Optional: Disable button styles for inactive states */
 .attendance-btn:not(.active) {
-  opacity: 0.5;
+  /* background-color: black; */
+  border: none;
+  opacity: 0.7;
 }
 
 /* Update Section */

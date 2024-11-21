@@ -1,4 +1,4 @@
-import httpClient from "../../http-commons";
+import httpClient from "../../../http-commons";
 import { getToken } from "../../../../util/adminUtil";
 
 
