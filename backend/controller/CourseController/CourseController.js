@@ -184,6 +184,7 @@ const updateCourse = async (req, res) => {
 };
 
 
+
 // Delete a course (soft delete or permanent deletion based on your needs)
 const deleteCourse = async (req, res) => {
     const { id } = req.params;
@@ -289,6 +290,8 @@ const getCourseByIdInstructor = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
+
 
 
 

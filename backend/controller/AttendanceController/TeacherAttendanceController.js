@@ -95,30 +95,64 @@ exports.getTeacherAttendance = async (req, res) => {
 // Controller to get the attendance of a specific teacher for a specific date
 exports.getSpecificTeacherAttendance = async (req, res) => {
   try {
-    const { teacher_id, date } = req.params;
+    const { teacher_id } = req.params;
 
-    // Find the attendance record for the specific teacher on the given date
-    const teacherAttendance = await TeacherAttendance.findOne({
-      date,
+    // Find all attendance records for the specific teacher
+    const teacherAttendance = await TeacherAttendance.find({
       'attendance.teacher_id': teacher_id
     });
 
-    if (!teacherAttendance) {
+    if (!teacherAttendance.length) {
       return res.status(404).json({
-        message: 'Attendance not found for the given teacher and date'
+        message: 'No attendance records found for the given teacher'
       });
     }
 
-    // Extract specific teacher attendance from the array
-    const specificAttendance = teacherAttendance.attendance.find(att => att.teacher_id.toString() === teacher_id);
+    // Extract all attendance entries for the given teacher
+    const specificAttendance = teacherAttendance.map(record =>
+      record.attendance.filter(att => att.teacher_id.toString() === teacher_id)
+    ).flat(); // Flatten the array of arrays
 
     res.status(200).json({
-      message: 'Teacher attendance retrieved successfully',
+      message: 'Teacher attendance records retrieved successfully',
       data: specificAttendance
     });
   } catch (error) {
     res.status(500).json({
-      message: 'An error occurred while retrieving specific teacher attendance',
+      message: 'An error occurred while retrieving teacher attendance records',
+      error: error.message
+    });
+  }
+};
+
+
+exports.getSpecificTeacherAttendanceForTeacherPannel = async (req, res) => {
+  try {
+    const teacher_id  = req.user.id;
+
+    // Find all attendance records for the specific teacher
+    const teacherAttendance = await TeacherAttendance.find({
+      'attendance.teacher_id': teacher_id
+    });
+
+    if (!teacherAttendance.length) {
+      return res.status(404).json({
+        message: 'No attendance records found for the given teacher'
+      });
+    }
+
+    // Extract all attendance entries for the given teacher
+    const specificAttendance = teacherAttendance.map(record =>
+      record.attendance.filter(att => att.teacher_id.toString() === teacher_id)
+    ).flat(); // Flatten the array of arrays
+
+    res.status(200).json({
+      message: 'Teacher attendance records retrieved successfully',
+      data: specificAttendance
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'An error occurred while retrieving teacher attendance records',
       error: error.message
     });
   }

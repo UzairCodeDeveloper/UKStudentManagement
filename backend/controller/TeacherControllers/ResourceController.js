@@ -131,7 +131,7 @@ module.exports = {
 
             // Optionally delete the file from Cloudinary
             if (resource.resource_url) {
-                await cloud.delete(resource.resource_url);
+                // await cloud.delete(resource.resource_url);
             }
 
             await Resource.findByIdAndDelete(id);
