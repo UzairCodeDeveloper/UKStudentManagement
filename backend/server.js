@@ -78,6 +78,9 @@ app.use('/api/submission', require('./routes/api/submission'));
 // Timetable APIs
 app.use('/api/time-table', require('./routes/api/timetableRoutes'));
 
+// Family APIs
+app.use('/api/family', require('./routes/api/family'));
+
 // (async () => {
 //     try {
 //         const email = "21011519-024@uog.edu.pk";

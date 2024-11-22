@@ -2,24 +2,17 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { validationResult } = require("express-validator");
-const moment = require('moment');
 
-// Authorization Controller
-// const { authorizeUser } = require("./AuthorizationController");
-
-// Log Controller
-// const { logAction } = require("./LogController");
-
-// Importing MODEL(s)
+// Importing Models
 const User = require("../../models/User");
 const Role = require("../../models/Role");
 const Enrollment = require("../../models/Enrolment");
-
-
+const Family = require("../../models/Family");
+const Credentials = require("../../models/Credentials");
 
 const registerUser = async (req, res) => {
     const {
-        familyRegNo,
+        familyRegNo,    // Optional
         forename,
         surname,
         gender,
@@ -28,40 +21,68 @@ const registerUser = async (req, res) => {
         doctorDetails,
         guardianDetails,
         interests,
-        class_id // New field to get the class_id
+        class_id,       // New field to get the class_id
+        user_id,        // Existing user ID for the registration
+        role            // Role of the user (student, guardian)
     } = req.body;
-
-    const roleParam = req.params.role;
 
     try {
         // Validate role
-        if (roleParam !== "student" && roleParam !== "guardian") {
-            return res.status(404).json({ errors: [{ msg: "Invalid Role!" }] });
+        if (role !== "student" && role !== "guardian") {
+            return res.status(400).json({ errors: [{ msg: "Invalid Role!" }] });
         }
 
-        // Check if user already exists
-        let user = await User.findOne({ forename, surname, dob }); // Use personal details to check for duplicates
-        if (user) {
-            return res.status(400).json({ errors: [{ msg: "User already exists!" }] });
+        // Handle family logic
+        let family;
+        let isNewFamily = false;
+        let generatedFamilyRegNo = "";
+        let familyPassword = "";
+
+        // Case 1: If familyRegNo is provided, check for the existing family
+        if (familyRegNo) {
+            family = await Family.findOne({ familyRegNo });
+
+            // If family does not exist, create a new family record
+            if (!family) {
+                // Generate new familyRegNo
+                family = new Family({ familyRegNo: `FAM-${Date.now()}` }); // Customize familyRegNo logic if needed
+                await family.save();
+                isNewFamily = true;
+                generatedFamilyRegNo = family.familyRegNo;
+
+                // Generate a random password for the new family
+                familyPassword = Math.random().toString(36).slice(-6);
+            } else {
+                generatedFamilyRegNo = family.familyRegNo; // Use existing familyRegNo
+            }
+        } else {
+            // Case 2: If no familyRegNo is provided, create a new family
+            isNewFamily = true;
+            family = new Family({ familyRegNo: `FAM-${Date.now()}` }); // Customize familyRegNo logic if needed
+            await family.save();
+            generatedFamilyRegNo = family.familyRegNo;
+
+            // Generate a random password for the new family
+            familyPassword = Math.random().toString(36).slice(-6);
         }
 
-        // Find role ObjectId based on role name
-        let roleObj = await Role.findOne({ name: roleParam });
+        // Create role object reference
+        let roleObj = await Role.findOne({ name: role });
         if (!roleObj) {
-            return res.status(400).json({ errors: [{ msg: "This role does not exist in the database!" }] });
+            return res.status(400).json({ errors: [{ msg: "Role not found!" }] });
         }
 
-        // Generate a random alphanumeric password
-        const password = Math.random().toString(36).slice(-6); // 6 characters
+        // Generate a random password for the user
+        const password = Math.random().toString(36).slice(-6);
 
-        // Create new user instance with assigned role ObjectId
-        user = new User({
+        // Create user instance with the provided data
+        const user = new User({
             password,
+            role: roleObj._id,
             isActive: true,
             isVerified: false,
-            role: roleObj._id, // Assign the role ObjectId to the user
             studentData: {
-                familyRegNo,
+                familyRegNo: generatedFamilyRegNo, // Link the familyRegNo to the user
                 forename,
                 surname,
                 gender,
@@ -73,44 +94,67 @@ const registerUser = async (req, res) => {
             }
         });
 
-        // Encrypt password
+        // Encrypt user password
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
 
-        // Save user to database
+        // Save user to the database
         await user.save();
 
-        // Create an entry in the enrollment table
+        // Save credentials to the Credentials table
+        const credentials = new Credentials({
+            username: user.user_id, // Use user_id as username
+            password,
+            student_id: user._id,
+            familyRegNo: family._id, // Link family record
+            isFamilyNumber: isNewFamily // Flag whether this is a new family or not
+        });
+
+        await credentials.save();
+
+        // Create an enrollment entry for the user
         const enrollment = new Enrollment({
-            student_id: user._id, // Reference to the user
-            class_id: class_id, // Assuming you have a class model
-            fee_payment_method: 'monthly', // Default or based on your logic
-            due_date: Date.now(), // You need to define how to calculate due dates
+            student_id: user._id,
+            class_id,
+            fee_payment_method: 'monthly', // Or based on your logic
+            due_date: Date.now(),
             status: 'due',
             enrollment_date: new Date()
         });
 
         await enrollment.save();
 
-        // Remove password from response
-        // user.password = undefined;
+        // Prepare response payload
+        const responsePayload = {
+            msg: "User Registered Successfully",
+            user_id: user.user_id,
+            roll_number: user.roll_number,
+            password,
+            isNewFamily, // Whether this is a new family or not
+            familyRegNo: generatedFamilyRegNo // Return the familyRegNo (new or existing)
+        };
 
-        // Create and return the JWT payload
+        // If it's a new family, include the generated family password
+        if (isNewFamily) {
+            responsePayload.familyPassword = familyPassword; // Include the family password for new families
+        }
+
+        // Create and return JWT token
         const payload = {
             user: {
                 id: user.id,
-                user_id: user.user_id, // Include user_id in the payload
-                roll_number: user.roll_number // Include roll_number in the payload if needed
-            },
+                user_id: user.user_id,
+                roll_number: user.roll_number
+            }
         };
 
         jwt.sign(
             payload,
             config.get("jwtSecret"),
-            { expiresIn: 9999999999999999 }, // Consider adjusting expiration
+            { expiresIn: 360000 }, // Adjust the expiration time if needed
             (err, token) => {
                 if (err) throw err;
-                res.json({ msg: "User Registered Successfully", token, user_id: user.user_id, roll_number: user.roll_number, password: password });
+                res.json({ ...responsePayload, token });
             }
         );
     } catch (err) {
@@ -118,6 +162,8 @@ const registerUser = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
+
 
 const loginUser = async (req, res) => {
     try {
