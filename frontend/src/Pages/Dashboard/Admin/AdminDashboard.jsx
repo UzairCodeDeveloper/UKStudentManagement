@@ -30,6 +30,7 @@ import AddSession from './Session/AddSession';
 import AllSession from './Session/AllSession/AllSession'
 import EditSession from './Session/EditSession/EditSession'
 import EditSubject from './Subjects/EditSubjects/EditSubjects'
+import Announcement from './Announcement/Announcement';
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -233,6 +234,13 @@ export default function AdminDashboard() {
               <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Timetable</span>
             </Link>
           </li>
+
+          <li>
+            <Link to="/announcement" className={`sidebar-item ${activeLink === '/announcement' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/announcement')}>
+              <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Announcement</span>
+            </Link>
+          </li>
           {/* <li>
             <Link to="/fees" className={`sidebar-item ${activeLink === '/fees' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/fees')}>
@@ -268,6 +276,7 @@ export default function AdminDashboard() {
         <Route path="/employees/edit/:id" element={<EditEmployee/>} />
         <Route path="/add-session" element={<AddSession />} />
         <Route path="/sessions" element={<AllSession />} />
+        <Route path="/announcement" element={<Announcement/>} />
         <Route path="/sessions/edit/:id" element={<EditSession />} />
         <Route path="/fees" element={<div className="content">Fees Management Content</div>} />
         <Route path="*" element={<AdminHomeDashbboard/>} />

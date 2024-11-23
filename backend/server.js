@@ -76,7 +76,7 @@ app.use('/api/submission', require('./routes/api/submission'));
 // Timetable APIs
 app.use('/api/time-table', require('./routes/api/timetableRoutes'));
 
-
+app.use('/api/announcement', require('./routes/api/announcement'))
 
 // for production
 // Serve static assets in production

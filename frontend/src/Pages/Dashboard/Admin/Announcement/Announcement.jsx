@@ -3,6 +3,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import '../Classes/AddClass/AddClass.css'; // Ensure you have this CSS file for styles
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS for Toastify
+import AnnouncementApi from '../../../../api/services/admin/Announcement/AnnouncementManager';
 
 export default function AddAnnouncement() {
     const [title, setTitle] = useState('');
@@ -12,6 +13,17 @@ export default function AddAnnouncement() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const data={
+             title, date, description, announcementTo 
+        }
+        AnnouncementApi.createAnnouncement(data).
+        then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
 
         // Log the values
         console.log({ title, date, description, announcementTo });
