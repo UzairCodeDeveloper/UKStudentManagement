@@ -14,7 +14,7 @@ const {
   getCourseByIdInstructor,
 } = require("../../controller/CourseController/CourseController");
 
-const {getAllStudentCourses} = require("../../controller/StudentController/CourseStudentController");
+const { getAllStudentCourses } = require("../../controller/StudentController/CourseStudentController");
 
 // @route POST /api/courses
 // @desc Create a new course
