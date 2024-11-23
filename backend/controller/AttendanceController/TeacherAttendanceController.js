@@ -62,7 +62,7 @@ exports.getTeacherAttendance = async (req, res) => {
     }
 
     // Attendance record does not exist, list all teachers
-    const allTeachers = await Volunteer.find()
+    const allTeachers = await Volunteer.find({is_active:true})
       .select('volunteer_details.full_name employee_id'); // Select required fields
 
     if (!allTeachers.length) {
