@@ -120,7 +120,7 @@ exports.familyLogin = async (req, res) => {
             { expiresIn: "1h" }, // Token expires in 1 hour
             (err, token) => {
                 if (err) throw err;
-                res.json({ msg: "Login successful", token });
+                res.json({ msg: "Login successful", token,familyRegNo });
             }
         );
     } catch (err) {
@@ -156,23 +156,23 @@ exports.getStudentsByFamily = async (req, res) => {
 
 exports.getAttendanceByStudentId = async (req, res) => {
     try {
-        const { student_id } = req.params;
+        const { studentId } = req.params;
 
         // Validate student_id format
-        if (!mongoose.Types.ObjectId.isValid(student_id)) {
+        if (!mongoose.Types.ObjectId.isValid(studentId)) {
             return res.status(400).json({ message: "Invalid student ID format" });
         }
 
         // Fetch attendance records where the student_id exists in the attendance array
         const attendanceRecords = await Attendance.find({
-            "attendance.student_id": student_id, // Match documents where the student_id exists in attendance array
+            "attendance.student_id": studentId, // Match documents where the student_id exists in attendance array
         }).lean(); // Convert to plain JS objects for easier manipulation
 
         // Filter attendance array to include only the specific student_id
         const filteredAttendance = attendanceRecords.map((record) => ({
             ...record,
             attendance: record.attendance.filter(
-                (entry) => entry.student_id.toString() === student_id
+                (entry) => entry.student_id.toString() === studentId
             ),
         }));
 
@@ -216,7 +216,7 @@ exports.addAbsentReason = async (req, res) => {
 
         res.status(200).json({
             message: 'Absent reason updated successfully',
-            attendance: attendanceRecord
+            // attendance: attendanceRecord
         });
     } catch (err) {
         console.error(err.message);

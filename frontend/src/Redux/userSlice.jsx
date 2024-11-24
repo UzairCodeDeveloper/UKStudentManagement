@@ -8,6 +8,7 @@ const userslice = createSlice({
     adminLogin: false,
     teacherLogin: false,
     studentLogin: false,
+    familyLogin: false,
     user: null, // Use "user" consistently
     token: null,
   },
@@ -37,15 +38,25 @@ const userslice = createSlice({
       state.teacherLogin = false;
       state.adminLogin = false;
     },
+    setFamilyUser: (state, action) => {
+      state.user = action.payload;
+      state.loggedIn = true;
+      state.familyLogin = true;
+      state.adminLogin = false;
+      state.teacherLogin = false;
+      state.studentLogin = false;
+    },
     logoutUser: (state) => {
       state.user = null;
       state.loggedIn = false;
       state.adminLogin = false;
       state.teacherLogin = false;
       state.studentLogin = false;
+      state.familyLogin = false;
     },
   },
 });
 
-export const { getuser, setUser, logoutUser, setAdminUser ,setStudentUser,setTeacherUser} = userslice.actions;
+export const { getuser, setUser, logoutUser, setAdminUser, setStudentUser, setTeacherUser, setFamilyUser } = userslice.actions;
+
 export default userslice.reducer;

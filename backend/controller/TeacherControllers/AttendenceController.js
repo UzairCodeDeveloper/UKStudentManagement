@@ -136,12 +136,18 @@ exports.markAttendance = async (req, res) => {
             return res.status(400).json({ msg: `Each student's status must be one of: ${validStatuses.join(', ')}.` });
         }
 
+        // Ensure behaviour_marks defaults to 0 if not provided
+        const enrichedAttendance = attendance.map((item) => ({
+            ...item,
+            behaviour_marks: item.behaviour_marks ?? 0, // Add default value if not present
+        }));
+
         // Check if attendance has already been marked for the class and date
         let existingAttendance = await Attendance.findOne({ class_id, date: new Date(date) });
 
         if (existingAttendance) {
             // If attendance exists, update it
-            existingAttendance.attendance = attendance; // Update attendance array with new data
+            existingAttendance.attendance = enrichedAttendance; // Update attendance array with new data
             await existingAttendance.save();
 
             return res.status(200).json({ msg: 'Attendance updated successfully', data: existingAttendance });
@@ -151,7 +157,7 @@ exports.markAttendance = async (req, res) => {
                 class_id,
                 date: new Date(date),  // Ensure the date is stored as a Date object
                 marked: 'true',        // Mark it as true (attendance taken)
-                attendance
+                attendance: enrichedAttendance,
             });
 
             // Save the new attendance record
@@ -159,7 +165,7 @@ exports.markAttendance = async (req, res) => {
 
             return res.status(201).json({ msg: 'Attendance marked successfully', data: newAttendance });
         }
-        
+
     } catch (error) {
         console.error('Error marking attendance:', error.message);
         res.status(500).json({ msg: 'Server Error' });
