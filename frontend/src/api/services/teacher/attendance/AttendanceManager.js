@@ -23,13 +23,20 @@ const getAttendanceRecordByClassAndDate = (class_id,date) => {
     });
 };
 
-
+const getAttendance = () => {
+    const token = getToken();
+    return httpClient.get('/teacher-attendance/search-by-teacher', {
+        headers: {
+            "x-auth-token": token,
+        },
+    });
+};
 
 // MARK ATTENDANCE
 const markAttendance = (data) => {
-    console.log(data)
+    // console.log(data)
     const token = getToken(); // Get token from Redux state or other source
-    console.log(data)
+    // console.log(data)
     return httpClient.post(`/attendence/markattendance`, data, {
         headers: {
             "x-auth-token": token, // Pass the token in the headers correctly
@@ -40,7 +47,8 @@ const markAttendance = (data) => {
 const exportedObject = {
     getAllAssignedClasses,
     getAttendanceRecordByClassAndDate,
-    markAttendance
+    markAttendance,
+    getAttendance
 };
 
 export default exportedObject;

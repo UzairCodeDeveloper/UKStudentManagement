@@ -121,7 +121,8 @@ const getCourseById = async (req, res) => {
 // Update a course by ID
 const updateCourse = async (req, res) => {
     const { id } = req.params;
-    const { course_name, course_description, class_id, volunteer_id } = req.body;
+    const { course_name, class_id, volunteer_id } = req.body;
+    
 
     try {
         // Validate Course ID
@@ -130,7 +131,7 @@ const updateCourse = async (req, res) => {
         }
 
         // Validate input fields
-        if (!course_name && !course_description && !class_id && !volunteer_id) {
+        if (!course_name  && !class_id && !volunteer_id) {
             return res.status(400).json({ msg: 'At least one field must be provided for update' });
         }
 
@@ -153,7 +154,7 @@ const updateCourse = async (req, res) => {
             {
                 $set: {
                     course_name: course_name || undefined,
-                    course_description: course_description || undefined,
+                    // course_description: course_description || undefined,
                     class_id: class_id || undefined,
                     instructor_id: volunteer_id || undefined,  // Update instructor if volunteer exists
                 },

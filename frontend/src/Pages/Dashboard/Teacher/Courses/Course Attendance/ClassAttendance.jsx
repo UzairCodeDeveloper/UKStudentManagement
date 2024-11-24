@@ -54,7 +54,7 @@ export default function StudentAttendance() {
 
   const handleUpdateAttendance = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
-  
+
     const attendancePayload = {
       class_id: selectedClass,
       date: dateString,
@@ -63,10 +63,10 @@ export default function StudentAttendance() {
         status: student.status
       }))
     };
-  
+
     // Show loading toast
     const loadingToast = toast.loading("Marking attendance, please wait...");
-  
+
     AttendanceManager.markAttendance(attendancePayload)
       .then((response) => {
         // Display success toast and remove the loading toast
@@ -86,13 +86,13 @@ export default function StudentAttendance() {
           autoClose: 3000, // Auto close after 3 seconds
         });
       });
-  
+
     // Reset form
     setSelectedDate(new Date());
     setAttendanceData([]);
     setIsAttendanceMarked(false);
   };
-  
+
   const handleStatusChange = (roll_no, newStatus) => {
     const updatedData = attendanceData.map(student =>
       student.roll_no === roll_no
@@ -141,14 +141,14 @@ export default function StudentAttendance() {
                 <div className="form-group">
                   <label htmlFor="date-picker">Select Date:</label>
                   <DatePicker
-  id="date-picker"
-  selected={selectedDate}
-  onChange={(date) => setSelectedDate(date)}
-  dateFormat="MMMM d, yyyy"
-  maxDate={new Date()}
-  className="date-picker"
-  filterDate={(date) => date.getDay() !== 0} // Disable Sundays (0 represents Sunday)
- />
+                    id="date-picker"
+                    selected={selectedDate}
+                    onChange={(date) => setSelectedDate(date)}
+                    dateFormat="MMMM d, yyyy"
+                    maxDate={new Date()}
+                    className="date-picker"
+                    filterDate={(date) => date.getDay() !== 0} // Disable Sundays (0 represents Sunday)
+                  />
                 </div>
 
                 <button className="mark-button" onClick={handleFetchRecords}>Fetch Records</button>

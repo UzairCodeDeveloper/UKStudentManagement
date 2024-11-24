@@ -62,8 +62,57 @@
 
 .attendance-table.show {
   opacity: 1;
-  /* max-height: 500px; */
+  max-height: 500px; /* Optional: Limit table size */
+  overflow: hidden; /* Initially hide scrollbar */
+  position: relative; /* Ensure the scrollbar is positioned correctly */
+  transition: max-height 0.3s ease, opacity 0.3s ease; /* Smooth transition */
 }
+
+/* Show scrollbar only on hover or when the table is focused */
+.attendance-table.show:hover,
+.attendance-table.show:focus-within {
+  overflow-y: scroll; /* Show vertical scrollbar on hover or focus */
+}
+
+/* Custom scrollbar styling for WebKit browsers */
+.attendance-table.show::-webkit-scrollbar {
+  width: 0; /* Hidden by default */
+  transition: width 0.3s ease; /* Smooth transition for scrollbar visibility */
+}
+
+.attendance-table.show:hover::-webkit-scrollbar,
+.attendance-table.show:focus-within::-webkit-scrollbar {
+  width: 8px; /* Visible scrollbar width on hover or focus */
+}
+
+/* Custom scrollbar track (background) */
+.attendance-table.show::-webkit-scrollbar-track {
+  background: transparent; /* Make the track invisible */
+  border-radius: 8px;
+}
+
+/* Custom scrollbar thumb (the draggable part) */
+.attendance-table.show::-webkit-scrollbar-thumb {
+  background: #3498db; /* Thumb color */
+  border-radius: 8px;
+  transition: background-color 0.3s ease; /* Smooth color change on hover */
+}
+
+.attendance-table.show::-webkit-scrollbar-thumb:hover {
+  background: #2980b9; /* Darker thumb color on hover */
+}
+
+/* For Firefox */
+.attendance-table.show {
+  scrollbar-width: none; /* Hidden scrollbar by default */
+}
+
+.attendance-table.show:hover,
+.attendance-table.show:focus-within {
+  scrollbar-width: thin; /* Thin scrollbar when hovered or focused */
+  scrollbar-color: #3498db transparent; /* Thumb color and track */
+}
+
 
 table {
   width: 100%;

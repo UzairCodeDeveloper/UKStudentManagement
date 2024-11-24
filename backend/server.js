@@ -79,6 +79,25 @@ app.use('/api/submission', require('./routes/api/submission'));
 app.use('/api/time-table', require('./routes/api/timetableRoutes'));
 
 
+// Family APIs
+app.use('/api/family', require('./routes/api/family'));
+
+// (async () => {
+//     try {
+//         const email = "21011519-024@uog.edu.pk";
+//         const userId = "testUser123";
+//         const password = "testPass123";
+//         const guardianId = "guardian123";
+//         const guardianPassword = "guardianPass123";
+//         const familyNumber = "FAMILY123";
+
+//         await sendWelcomeEmail(email, userId, password, guardianId, guardianPassword, familyNumber);
+//         console.log("Test email sent successfully.");
+//     } catch (error) {
+//         console.error("Error testing email function:", error.message);
+//     }
+// })();
+
 
 // for production
 // Serve static assets in production

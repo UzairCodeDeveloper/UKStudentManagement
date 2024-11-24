@@ -36,23 +36,81 @@ exports.markOrUpdateTeacherAttendance = async (req, res) => {
 };
 
 // Controller to get teacher attendance for a specific date
+// exports.getTeacherAttendance = async (req, res) => {
+//   try {
+//     const { date } = req.params; // Get the date from request parameters
+
+//     // Fetch the attendance for the specified date
+//     const teacherAttendance = await TeacherAttendance.findOne({ date })
+//       .populate({
+//         path: 'attendance.teacher_id', // Populate teacher_id from Volunteer schema
+//         select: 'volunteer_details.full_name employee_id', // Select only required fields
+//       });
+
+//     if (teacherAttendance) {
+//       // Attendance record exists
+//       return res.status(200).json({
+//         message: 'Teacher attendance retrieved successfully',
+//         attendanceFound: true,
+//         data: teacherAttendance.attendance.map(item => ({
+//           teacher_id: item.teacher_id._id, // Teacher ID
+//           full_name: item.teacher_id.volunteer_details.full_name, // Teacher full name
+//           employee_id: item.teacher_id.employee_id, // Employee ID
+//           status: item.status, // Attendance status
+//         })),
+//       });
+//     }
+
+//     // Attendance record does not exist, list all teachers
+//     const allTeachers = await Volunteer.find({is_active:true})
+//       .select('volunteer_details.full_name employee_id'); // Select required fields
+
+//     if (!allTeachers.length) {
+//       return res.status(404).json({
+//         message: 'No teachers found in the system',
+//         attendanceFound: false,
+//         data: [],
+//       });
+//     }
+
+//     res.status(200).json({
+//       message: 'No attendance found for the given date. Showing all teachers without attendance status.',
+//       attendanceFound: false,
+//       data: allTeachers.map(teacher => ({
+//         teacher_id: teacher._id,
+//         full_name: teacher.volunteer_details.full_name, // Full name from nested field
+//         employee_id: teacher.employee_id, // Employee ID
+//         status: null, // No attendance status
+//       })),
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: 'An error occurred while retrieving attendance',
+//       error: error.message,
+//     });
+//   }
+// };
+
 exports.getTeacherAttendance = async (req, res) => {
   try {
     const { date } = req.params; // Get the date from request parameters
 
-    // Fetch the attendance for the specified date
+    // Fetch attendance for the specific date
     const teacherAttendance = await TeacherAttendance.findOne({ date })
       .populate({
         path: 'attendance.teacher_id', // Populate teacher_id from Volunteer schema
-        select: 'volunteer_details.full_name employee_id', // Select only required fields
+        match: { 'volunteer_details.is_active': true }, // Match only active teachers
+        select: 'volunteer_details.full_name employee_id volunteer_details.is_active', // Select required fields
       });
 
     if (teacherAttendance) {
-      // Attendance record exists
+      // Attendance record exists, filter out inactive employees
+      const activeAttendance = teacherAttendance.attendance.filter(item => item.teacher_id);
+
       return res.status(200).json({
         message: 'Teacher attendance retrieved successfully',
         attendanceFound: true,
-        data: teacherAttendance.attendance.map(item => ({
+        data: activeAttendance.map(item => ({
           teacher_id: item.teacher_id._id, // Teacher ID
           full_name: item.teacher_id.volunteer_details.full_name, // Teacher full name
           employee_id: item.teacher_id.employee_id, // Employee ID
@@ -61,22 +119,25 @@ exports.getTeacherAttendance = async (req, res) => {
       });
     }
 
-    // Attendance record does not exist, list all teachers
-    const allTeachers = await Volunteer.find({is_active:true})
-      .select('volunteer_details.full_name employee_id'); // Select required fields
+    // Attendance record does not exist, list all active teachers
+    const activeTeachers = await Volunteer.find({ 'volunteer_details.is_active': true })
+      .select('volunteer_details.full_name employee_id volunteer_details.is_active'); // Select required fields
 
-    if (!allTeachers.length) {
+    // Debugging logs
+    console.log('Active Teachers:', activeTeachers);
+
+    if (!activeTeachers.length) {
       return res.status(404).json({
-        message: 'No teachers found in the system',
+        message: 'No active teachers found in the system',
         attendanceFound: false,
         data: [],
       });
     }
 
     res.status(200).json({
-      message: 'No attendance found for the given date. Showing all teachers without attendance status.',
+      message: 'No attendance found for the given date. Showing all active teachers without attendance status.',
       attendanceFound: false,
-      data: allTeachers.map(teacher => ({
+      data: activeTeachers.map(teacher => ({
         teacher_id: teacher._id,
         full_name: teacher.volunteer_details.full_name, // Full name from nested field
         employee_id: teacher.employee_id, // Employee ID
@@ -84,6 +145,7 @@ exports.getTeacherAttendance = async (req, res) => {
       })),
     });
   } catch (error) {
+    console.error('Error occurred:', error); // Debugging error
     res.status(500).json({
       message: 'An error occurred while retrieving attendance',
       error: error.message,
@@ -126,9 +188,42 @@ exports.getSpecificTeacherAttendance = async (req, res) => {
 };
 
 
+// exports.getSpecificTeacherAttendanceForTeacherPannel = async (req, res) => {
+//   try {
+//     const teacher_id  = req.user.id;
+
+//     // Find all attendance records for the specific teacher
+//     const teacherAttendance = await TeacherAttendance.find({
+//       'attendance.teacher_id': teacher_id
+//     });
+
+//     if (!teacherAttendance.length) {
+//       return res.status(404).json({
+//         message: 'No attendance records found for the given teacher'
+//       });
+//     }
+
+//     // Extract all attendance entries for the given teacher
+//     const specificAttendance = teacherAttendance.map(record =>
+//       record.attendance.filter(att => att.teacher_id.toString() === teacher_id)
+//     ).flat(); // Flatten the array of arrays
+
+//     res.status(200).json({
+//       message: 'Teacher attendance records retrieved successfullysss',
+//       data: specificAttendance
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: 'An error occurred while retrieving teacher attendance records',
+//       error: error.message
+//     });
+//   }
+// };
+
+
 exports.getSpecificTeacherAttendanceForTeacherPannel = async (req, res) => {
   try {
-    const teacher_id  = req.user.id;
+    const teacher_id = req.user.id;
 
     // Find all attendance records for the specific teacher
     const teacherAttendance = await TeacherAttendance.find({
@@ -141,9 +236,16 @@ exports.getSpecificTeacherAttendanceForTeacherPannel = async (req, res) => {
       });
     }
 
-    // Extract all attendance entries for the given teacher
+    // Extract the required fields from attendance entries
     const specificAttendance = teacherAttendance.map(record =>
-      record.attendance.filter(att => att.teacher_id.toString() === teacher_id)
+      record.attendance
+        .filter(att => att.teacher_id.toString() === teacher_id)
+        .map(att => ({
+          date: record.date, // Include the date from the parent record
+          teacher_id: att.teacher_id, // Include teacher ID
+          _id: att._id, // Include attendance record ID
+          status: att.status // Include attendance status
+        }))
     ).flat(); // Flatten the array of arrays
 
     res.status(200).json({
