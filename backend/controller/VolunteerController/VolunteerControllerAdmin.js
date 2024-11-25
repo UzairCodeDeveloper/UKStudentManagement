@@ -80,7 +80,7 @@ const createVolunteer = async (req, res) => {
 
 // Volunteer Login
 const loginVolunteer = async (req, res) => {
-    console.log(req)
+    // console.log(req)
     try {
         // Extract employee_id and password from request body
         const { employee_id, password } = req.body;
@@ -126,7 +126,8 @@ const loginVolunteer = async (req, res) => {
                     token,
                     volunteer: {
                         employee_id: volunteer.employee_id,
-                        volunteer_details: volunteer.volunteer_details
+                        volunteer_details: volunteer.volunteer_details,
+                        volunteer_id:volunteer._id
                     }
                 });
             }
