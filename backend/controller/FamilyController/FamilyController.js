@@ -147,9 +147,14 @@ exports.getStudentsByFamily = async (req, res) => {
             return res.status(400).json({ msg: 'Family data is missing or token is invalid' });
         }
 
-        // Now it's safe to use req.family.id
-        const students = await User.find({ 'studentData.familyRegNo': req.family.familyRegNo });
-        res.json(students);
+        // Fetch students based on the family registration number
+        const students = await User.find(
+            { 'studentData.familyRegNo': req.family.familyRegNo }, 
+            '_id studentData forename surname roll_number'
+        );
+
+        // Return the students with the required fields
+        res.json({ students });
     } catch (err) {
         console.error(err);
         res.status(500).json({ msg: 'Server error' });

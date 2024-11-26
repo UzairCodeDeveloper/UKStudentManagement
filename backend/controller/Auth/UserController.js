@@ -175,7 +175,7 @@ const loginUser = async (req, res) => {
         const { user_id, password } = req.body;
 
         // Find user by user_id
-        const user = await User.findOne({ user_id });
+        const user = await User.findOne({ user_id }).lean();
 
         if (!user) {
             return res.status(400).json({ errors: [{ msg: "User not found" }] });
@@ -193,11 +193,11 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ errors: [{ msg: "Incorrect password" }] });
         }
 
-        // Remove password from the user object before sending the response
-        user.password = undefined;
+        // Prepare user object for response by omitting sensitive fields
+        delete user.password; // Remove password field for security
 
         // Prepare JWT payload
-        const payload = { user: { id: user.id } };
+        const payload = { user: { id: user._id } };
 
         // Sign JWT
         jwt.sign(
@@ -206,7 +206,15 @@ const loginUser = async (req, res) => {
             { expiresIn: 360000 },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, user });
+
+                // Send response with token and user data
+                res.json({
+                    token,
+                    user: {
+                        _id: user._id, // Explicitly include _id
+                        ...user       // Include the rest of the user fields
+                    }
+                });
             }
         );
     } catch (err) {
@@ -214,6 +222,7 @@ const loginUser = async (req, res) => {
         res.status(500).send({ errors: [{ msg: "Server Error" }] });
     }
 };
+
 
 const updatePassword = async (req, res) => {
     const { userId, newPassword } = req.body;
