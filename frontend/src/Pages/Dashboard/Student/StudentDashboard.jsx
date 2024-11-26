@@ -15,6 +15,7 @@ import SubmissionPortal from './Courses/SubmissionPortal/SubmissionPortal';
 import DetailCourse from './Courses/DetailedCourse/DetailCourse';
 import ResourceOnlyDescription from './Courses/ResourceOnlyDescription.jsx/ResourceOnlyDescription'
 import CourseResources from './Courses/CourseResources/CourseResources'
+import Timetable from './Timetable/Timetable'
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -130,8 +131,8 @@ export default function AdminDashboard() {
         <Route path="/submit/:id" element={<SubmissionPortal />} />
         <Route path="/resources/:id" element={<ResourceOnlyDescription />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
-        {/* <Route path="/timetable" element={<Timetable />} />
-        <Route path="/courseResources/:id" element={<CourseResources/>} />
+        <Route path="/timetable" element={<Timetable />} />
+        {/* <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />
         <Route path="/courseattendance" element={<CourseAttendance/>} />

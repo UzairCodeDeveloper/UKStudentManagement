@@ -16,9 +16,9 @@ export default function AddResource() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [totalMarks, setTotalMarks] = useState("5")
   const resources = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'];
-  const submission= ['No', 'Yes']
+  const submission = ['No', 'Yes']
   const params = useParams();
   const id = params.id;
 
@@ -30,23 +30,27 @@ export default function AddResource() {
       title: resourceTitle,
       description, // Include description in the submission
       course_id: id,
-      due_date: selectedDate, 
-      pdf: uploadedFile ,// Single file upload
-      submissionRequired
+      due_date: selectedDate,
+      pdf: uploadedFile,// Single file upload
+      submissionRequired,
+      totalMarks:totalMarks
     };
     // console.log(resourceData)
     setLoading(true);
     CourseManager.uploadResource(resourceData)
       .then((response) => {
         setLoading(true);
-        console.log('Resource uploaded successfully:', response.data);
+        // console.log('Resource uploaded successfully:', response.data);
         alert("Resource assigned successfully");
         setLoading(false)
         // Reset fields after successful submission
-        // setResourceTitle('');
-        // setDescription('');
-        // setSelectedResource('');
-        // setSelectedDate('');
+        setResourceTitle('');
+        setDescription('');
+        setSelectedResource('');
+        setSelectedDate('');
+        setTotalMarks('');
+        setResourceTitle('')
+        setsubmissionRequired('')
         setUploadedFile(null);
       })
       .catch((error) => {
@@ -160,13 +164,13 @@ export default function AddResource() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="4"
-                  style={{border:'none'}}
+                  style={{ border: 'none' }}
                 />
               </div>
             </div>
-            
 
-            <div className='form-group' style={{marginTop:'20px'}}>
+
+            <div className='form-group' style={{ marginTop: '20px' }}>
               <label htmlFor="selectClass" className="field-label required-bg">Student Submission*</label>
               <div className="input-wrapper">
                 <select
@@ -175,7 +179,7 @@ export default function AddResource() {
                   value={submissionRequired}
                   onChange={(e) => setsubmissionRequired(e.target.value)}
                   required
-                  
+
                 >
                   {/* <option value="">Select</option> */}
                   {submission.map((cls, index) => (
@@ -184,6 +188,25 @@ export default function AddResource() {
                 </select>
               </div>
             </div>
+
+
+            {/* {submissionRequired === 'Yes' && (
+              <div className="form-group AddClassFormGroup">
+                <label htmlFor={`subjectName`} className="field-label required-bg">
+                  Total Marks*
+                </label>
+                <div className="input-wrapper">
+                  <input
+                    type="text"
+                    id={`subjectName`}
+                    className="form-input"
+                    placeholder="Enter Marks"
+                    value={totalMarks}
+                    onChange={(e) => setTotalMarks(e.target.value)}
+                  />
+                </div>
+              </div>
+            )} */}
 
             <div className="form-group" style={{ marginTop: '20px' }}>
               <label className="field-label required-bg">Upload Resource (PDF/Image)*</label>

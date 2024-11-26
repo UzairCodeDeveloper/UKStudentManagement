@@ -11,7 +11,9 @@ export default function ShowClasses() {
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [totalMarks,setTotalMarks]=useState('')
   const params = useParams();
+  
 
   useEffect(() => {
     setLoading(true);
@@ -19,6 +21,7 @@ export default function ShowClasses() {
       .then((response) => {
         console.log(response.data.submissions);
         setSubmissions(response.data.submissions);
+        console.log(response.data)
         setLoading(false);
       })
       .catch((error) => {
@@ -26,6 +29,9 @@ export default function ShowClasses() {
         setLoading(false);
       });
   }, [refresh, params.id]);
+  if (loading) {
+    return <Loader />; // Show the loader if loading
+  }
 
   const filteredSubmissions = submissions
     .filter(

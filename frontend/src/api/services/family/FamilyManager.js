@@ -1,5 +1,5 @@
 import httpClient from "../../http-commons";
-// import { getToken } from '../../../util/adminUtil';
+import { getToken } from '../../../util/adminUtil';
 
 
 
@@ -10,9 +10,33 @@ const loginFamily = (data) => {
     });
 };
 
+const getfamilystudents = () => {
+    const token = getToken();
+
+    return httpClient.get("/family/getfam/students", {
+        headers: {
+            "x-auth-token": token,
+        },
+    });
+};
+
+const getStudentCoursePercentage = (studentId) => {
+    const token = getToken();
+    return httpClient.get(`/family/percentage/${studentId}`, {
+      headers: {
+        "x-auth-token": token,
+      },
+    });
+  };
+  
+ 
+  
+
 const exportedObject = {
 
-    loginFamily
+    loginFamily,
+    getfamilystudents,
+    getStudentCoursePercentage
 };
 
 export default exportedObject;

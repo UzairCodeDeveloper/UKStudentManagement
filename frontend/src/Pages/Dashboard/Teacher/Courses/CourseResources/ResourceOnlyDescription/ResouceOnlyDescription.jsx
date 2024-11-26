@@ -1,14 +1,44 @@
-import { useState} from 'react';
+import { useEffect, useState} from 'react';
 import { Table } from 'react-bootstrap'; // Importing the Table component from react-bootstrap
 import { useParams } from 'react-router-dom';
-
+import ResourceManager from '../../../../../../api/services/teacher/course/courseManager'
+import Loader from '../../../../../../components/Loader/Loader';
 export default function ShowClasses() {
   const [submissionTime, setSubmissionTime] = useState('2024-11-17 10:00 AM'); // Store submission time, you can replace this with actual time
   const [isSubmitted, setIsSubmitted] = useState(true); // Force submission to be true (remove the button and submission logic)
-
+  const [description,setDescription]=useState('')
+  const [fileLink, setFileLink]=useState('')
+  const [title,settitle]=useState('')
+  const [loading, setLoading] = useState(true); // State to track loading
+  const [filetitle,setfileTitle]=useState("Submitted File")
   const param=useParams()
   const course=param.course
   const id =param.id
+
+  useEffect(()=>{
+      ResourceManager.getResourcebyId(id)
+      .then((res)=>{
+        // console.log(res.data)
+        setDescription(res.data.data.description)
+        setSubmissionTime( new Date(res.data.data.createdAt).toLocaleDateString())
+        if (res.data.data.resource_url) {
+          setFileLink(res.data.data.resource_url); // Set the file link
+          setfileTitle("Resource File"); // Set a title for the link
+        } else {
+          setfileTitle("No File"); // Indicate no file is available
+          setFileLink(""); // Clear the file link if no file is present
+        }
+        settitle(res.data.data.title)
+        setLoading(false)
+      })
+      .catch((err)=>{
+        console.log(err)
+        setLoading(false);
+      })
+  },[])
+  if (loading) {
+    return <Loader />; // Show the loader if loading
+  }
   return (
     <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
       <div className="classes-container">
@@ -20,14 +50,14 @@ export default function ShowClasses() {
 
         {/* Search Bar */}
         <div className="container-fluid admission-header text-center" style={{ marginTop: '30px' }}>
-          <h1>Quran Assignment 1</h1>
+          <h1>{title}</h1>
         </div>
 
         <div style={{ marginTop: '100px' }}>
           
           <div style={{ marginLeft: '20px', marginTop: '50px' }}>
             <h5>Assignment Description:</h5>
-            <p>Upload the Assignment on Proper Time and In PDF Format</p>
+            <p>{description}</p>
           </div>
           <h3 style={{ marginLeft: '20px', marginTop:'50px' }}>Submission Status</h3>
 
@@ -43,7 +73,7 @@ export default function ShowClasses() {
                   </tr>
                   <tr>
                     <td style={{ fontWeight: 'bold' }}>File</td>
-                    <td>Pending</td>
+                    <td><a href={fileLink} target='_blank' style={{textDecoration:'underlined'}}>{filetitle}</a></td>
                   </tr>
                   <tr style={{ backgroundColor: '#f1f1f1' }}>
                     <td style={{ fontWeight: 'bold' }}>Submission Time</td>

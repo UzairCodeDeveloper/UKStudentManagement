@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
         interests,
         class_id,       // New field to get the class_id
         user_id,        // Existing user ID for the registration
-        role            // Role of the user (student, guardian)
+        role           // Role of the user (student, guardian)
     } = req.body;
 
     try {

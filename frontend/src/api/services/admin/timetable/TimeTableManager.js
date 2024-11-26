@@ -18,8 +18,25 @@ const createTimetable = (data) => {
 
 // GET API: Get timetable by class (Token not required)
 const getTimetableByClass = (classId) => {
-    return httpClient.get(`/time-table/class/${classId}`);
+    const token = getToken(); 
+  return httpClient.get(`/time-table/class/${classId}`,{
+     headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+    // return httpClient.get(`/time-table/class/${classId}`);
 };
+
+const getTimetableforStudentByClass = (classId) => {
+    const token = getToken(); 
+  return httpClient.get(`/time-table/classstudent/${classId}`,{
+     headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+    // return httpClient.get(`/time-table/class/${classId}`);
+};
+
 
 // GET API: Get timetable by teacher (Token not required)
 const getTimetableByTeacher = (teacherId) => {
@@ -44,6 +61,7 @@ const exportedObject = {
     getTimetableByClass,
     getTimetableByTeacher,
     deleteTimetable,
+    getTimetableforStudentByClass
 };
 
 export default exportedObject;

@@ -7,6 +7,7 @@ import AttendanceManager from "../../../../../api/services/teacher/attendance/At
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../../../../../components/Loader/Loader'; // Import your Loader component
+import Swal from "sweetalert2"; // Import SweetAlert
 
 export default function StudentAttendance() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -14,13 +15,11 @@ export default function StudentAttendance() {
   const [isAttendanceMarked, setIsAttendanceMarked] = useState(false);
   const [selectedClass, setSelectedClass] = useState('');
   const [classes, setClasses] = useState([]);
-  const [loading, setLoading] = useState(true); // Loader state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set loading state to true when the page is loaded
     setLoading(true);
 
-    // Fetch classes
     AttendanceManager.getAllAssignedClasses()
       .then((response) => {
         setClasses(response.data);
@@ -30,19 +29,20 @@ export default function StudentAttendance() {
         console.log(error);
       })
       .finally(() => {
-        // After classes are fetched, set loading to false
         setLoading(false);
       });
   }, []);
 
   const handleFetchRecords = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
-
+  
     AttendanceManager.getAttendanceRecordByClassAndDate(selectedClass, dateString)
       .then((response) => {
+        console.log("Fetched Attendance Data: ", response.data.data); // Add this log to check the structure
         const updatedData = response.data.data.map(student => ({
           ...student,
-          status: student.status === 'present' ? 'present' : 'absent'
+          status: student.status === 'present' ? 'present' : 'absent',
+          behaviourMarks: student.behaviourMarks || '', // Ensure behaviourMarks exists
         }));
         setAttendanceData(updatedData);
         setIsAttendanceMarked(true);
@@ -51,6 +51,7 @@ export default function StudentAttendance() {
         console.log(error);
       });
   };
+  
 
   const handleUpdateAttendance = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
@@ -60,34 +61,31 @@ export default function StudentAttendance() {
       date: dateString,
       attendance: attendanceData.map(student => ({
         student_id: student.student_id,
-        status: student.status
+        status: student.status,
+        behaviour_marks: student.behaviourMarks
       }))
     };
 
-    // Show loading toast
     const loadingToast = toast.loading("Marking attendance, please wait...");
 
     AttendanceManager.markAttendance(attendancePayload)
       .then((response) => {
-        // Display success toast and remove the loading toast
         toast.update(loadingToast, {
           render: "Attendance marked successfully!",
           type: "success",
           isLoading: false,
-          autoClose: 3000, // Auto close after 3 seconds
+          autoClose: 3000,
         });
       })
       .catch((err) => {
-        // Display error toast and remove the loading toast
         toast.update(loadingToast, {
           render: "Failed to mark attendance. Please try again.",
           type: "error",
           isLoading: false,
-          autoClose: 3000, // Auto close after 3 seconds
+          autoClose: 3000,
         });
       });
 
-    // Reset form
     setSelectedDate(new Date());
     setAttendanceData([]);
     setIsAttendanceMarked(false);
@@ -97,6 +95,24 @@ export default function StudentAttendance() {
     const updatedData = attendanceData.map(student =>
       student.roll_no === roll_no
         ? { ...student, status: newStatus === 'P' ? 'present' : 'absent' }
+        : student
+    );
+    setAttendanceData(updatedData);
+  };
+
+  const handleBehaviourMarksChange = (roll_no, value) => {
+    if (value < 0 || value > 5) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Marks",
+        text: "Behaviour marks must be between 0 and 5.",
+      });
+      return;
+    }
+
+    const updatedData = attendanceData.map(student =>
+      student.roll_no === roll_no
+        ? { ...student, behaviourMarks: value }
         : student
     );
     setAttendanceData(updatedData);
@@ -147,7 +163,7 @@ export default function StudentAttendance() {
                     dateFormat="MMMM d, yyyy"
                     maxDate={new Date()}
                     className="date-picker"
-                    filterDate={(date) => date.getDay() !== 0} // Disable Sundays (0 represents Sunday)
+                    filterDate={(date) => date.getDay() !== 0}
                   />
                 </div>
 
@@ -162,7 +178,7 @@ export default function StudentAttendance() {
                     <th>Roll No</th>
                     <th>Name</th>
                     <th>Status</th>
-                    <th>Marked By</th>
+                    <th>Behaviour Marks</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,7 +210,19 @@ export default function StudentAttendance() {
                           </button>
                         </div>
                       </td>
-                      <td>{student.markedBy || 'Not marked'}</td>
+                      <td>
+                        <div className="behaviour-marks">
+                          <input
+                            type="number"
+                            value={student.behaviourMarks}
+                            onChange={(e) => handleBehaviourMarksChange(student.roll_no, e.target.value)}
+                            min="0"
+                            max="5"
+                            className="marks-input"
+                          />
+                          
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

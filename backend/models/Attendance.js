@@ -36,8 +36,10 @@ const attendanceSchema = new Schema({
       },
       behaviour_marks: {
         type: Number,
+        min: 0,
+        max: 15, // Maximum of 5 for each field aggregated
         default: 0
-    }
+      }
   }
   ]
 },{ timestamps: true });

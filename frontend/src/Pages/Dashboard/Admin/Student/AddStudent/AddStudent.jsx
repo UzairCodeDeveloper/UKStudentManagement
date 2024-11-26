@@ -76,7 +76,8 @@ export default function AddStudent() {
       surname,
       gender,
       dob, // Ensure this is in "YYYY-MM-DD" format
-      class_id: classes, 
+      class_id: classes,
+      role:'student', 
       msuExamCertificate: selectedCertificates,
       doctorDetails: {
           doctorName,

@@ -1,5 +1,6 @@
 import { Pie } from 'react-chartjs-2';
 import img from './person.png';
+import { useEffect, useState } from 'react';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -9,8 +10,9 @@ import {
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import calendar styles
 import './StudentReport.css';
-
-import { useState } from 'react';
+import familyManager from '../../../../api/services/family/FamilyManager'
+import { useParams } from 'react-router-dom';
+import Loader from '../../../../components/Loader/Loader';
 
 // Register the necessary chart components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -41,6 +43,11 @@ const behavioralStatus = {
     percentage: 85, // Example percentage
 };
 
+    // const params=useParams();
+    // const id=params.id
+
+
+
 // Determine the emoji based on the behavioral percentage
 const getBehavioralEmoji = (percentage) => {
     if (percentage >= 90) return "😁";
@@ -64,21 +71,67 @@ const getStars = (performance) => {
 };
 
 export default function TeacherHomeDashboard() {
+    const [student, setStudent] = useState(null);
+    const [loading, setLoading] = useState(true); // State to track loading
+    const params=useParams()
+    const id=params.id
+    useEffect(() => {
+        // Fetch all students
+        familyManager.getfamilystudents()
+          .then((res) => {
+            console.log(res.data); // Inspect the response structure
+            const students = res.data; // Assuming `res.data` is an array of objects
+    
+            // Find the student with the matching ID
+            const foundStudent = students.find((stu) => stu._id === id);
+            
+            if (foundStudent) {
+                console.log(foundStudent)
+              setStudent(foundStudent); // Store the specific student's data
+            } else {
+              console.error('Student not found');
+            }
+          })
+          .catch((err) => {
+            console.error('Error fetching students:', err);
+          })
+          .finally(() => {
+            setLoading(false); // Stop loading
+          });
+      }, [id]);
+      
+
+      useEffect(()=>{
+        familyManager.getStudentCoursePercentage('6740d7a9a939071bb8e6f099')
+        .then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+      },[])
+
+
+
+      if (loading) {
+        return <Loader />; // Show the loader if loading
+      }
     return (
         <div className="dashboard-container">
+       
             {/* Left Side: Profile Section */}
             <div className="left-section">
                 <div className="profile-image">
                     <img src={img} alt="Profile" />
-                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>Ali</h2>
+                    <h2 style={{ color: '#fa8b95', fontSize: '1.2rem', marginTop: '20px' }}>{student.studentData.forename}</h2>
                 </div>
                 <div className="profile-details">
                     <div className="profile-detail-item"><strong>Role:</strong><span>Student</span></div>
-                    <div className="profile-detail-item"><strong>Mobile No:</strong><span>9308590238</span></div>
-                    <div className="profile-detail-item"><strong>DOB:</strong><span>12/12/2002</span></div>
-                    <div className="profile-detail-item"><strong>Home Address:</strong><span>UK</span></div>
-                    <div className="profile-detail-item"><strong>Gender:</strong><span>Male</span></div>
-                    <div className="profile-detail-item"><strong>Postal Code:</strong><span>50342</span></div>
+                    <div className="profile-detail-item"><strong>User Id</strong><span>{student.user_id}</span></div>
+                    <div className="profile-detail-item"><strong>Family No</strong><span>{student.studentData.familyRegNo}</span></div>
+                    <div className="profile-detail-item"><strong>DOB:</strong><span>{new Date(student.studentData.dob).toLocaleDateString()}</span></div>
+                    <div className="profile-detail-item"><strong>Doctor Name</strong><span>{student.studentData.doctorDetails.doctorName}</span></div>
+                    <div className="profile-detail-item"><strong>Gender:</strong><span>{student.studentData.gender}</span></div>
                 </div>
             </div>
 

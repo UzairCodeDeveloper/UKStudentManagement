@@ -8,7 +8,7 @@ import UserProfile from '../../../components/UserProfile/UserProfile';
 import FamilyHomeDashboard from './FamilyHomeDashboard/FamilyHomeDashboard';
 import StudentReport from './StudentReport/StudentReport'
 import { PiStudentFill } from "react-icons/pi";
-
+import FamilyManager from '../../../api/services/family/FamilyManager'
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -27,6 +27,16 @@ export default function AdminDashboard() {
       { id: 4, name: 'Jamshed' }
     ];
 
+
+    useEffect(()=>{
+      FamilyManager.getfamilystudents().then
+      ((res)=>{
+        console.log(res.data)
+      })
+      .catch((err)=>[
+        console.log(err)
+      ])
+    })
     return (
       <div className={`sidebar ${isSidebarOpen ? 'hidden ' : 'open'}`}>
         <ul>
@@ -37,14 +47,7 @@ export default function AdminDashboard() {
             </Link>
           </li>
 
-          {familyMembers.map(member => (
-            <li key={member.id}>
-              <Link to={`/user-profile/${member.id}`} className={`sidebar-item ${activeLink === `/user-profile/${member.id}` ? 'active' : ''}`} 
-                  onClick={() => setActiveLink(`/user-profile/${member.id}`)}>
-                  <PiStudentFill className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>{member.name}</span>
-              </Link>
-            </li>
-          ))}
+          
 
           <li>
             <Link to="/settings" className={`sidebar-item ${activeLink === '/settings' ? 'active' : ''}`} 
@@ -61,7 +64,7 @@ export default function AdminDashboard() {
     return (
       <Routes>
         <Route path="/" element={<FamilyHomeDashboard />} />
-        <Route path="/user-profile/:id" element={<StudentReport/>} />
+        <Route path="/studentReport/:id" element={<StudentReport/>} />
         <Route path="/settings" element={<UserProfile role='Family' />} />
         <Route path="*" element={<FamilyHomeDashboard />} />
       </Routes>

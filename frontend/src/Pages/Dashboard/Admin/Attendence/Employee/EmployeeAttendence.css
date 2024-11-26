@@ -114,6 +114,44 @@
 }
 
 
+/* Tooltip for the Behaviour Marks column header */
+.tooltip-header {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 22px; /* Slightly bigger font size for visibility */
+  color: white; /* White color for the '?' */
+  background-color: #007bff; /* Blue background for visibility */
+  border-radius: 50%; /* Make the '?' circular */
+  padding: 5px 10px; /* Padding to make the '?' more prominent */
+  font-weight: bold;
+  margin-left: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for better contrast */
+}
+
+.tooltip-text {
+  visibility: hidden;
+  background-color: #333; /* Dark background for tooltip */
+  color: white;
+  text-align: center;
+  padding: 8px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%; /* Position above the '?' */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  width: 200px; /* Tooltip width */
+}
+
+.tooltip-header:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+
 table {
   width: 100%;
   border-collapse: collapse;

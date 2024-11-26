@@ -8,23 +8,23 @@ export default function ShowClasses() {
   const [searchDay, setSearchDay] = useState(''); // State for selected day
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
-  const [id] = useState(useSelector((state) => state?.user?.user?.volunteer?.volunteer_id));
+//   const [id] = useState(useSelector((state) => state?.user?.user?.volunteer?.volunteer_id));
   
-  console.log(id);
+//   console.log(id);
 
   useEffect(() => {
     // Fetch timetable data by teacher
-    TimeTableManager.getTimetableByTeacher(id)
+    TimeTableManager.getTimetableforStudentByClass("67164d973165b35daaee4575")
       .then((res) => {
         const apiData = res.data.data;
-
+            console.log(apiData)
         // Transform API response into a usable format
         const formattedClasses = [];
         for (const [day, dayClasses] of Object.entries(apiData)) {
           dayClasses.forEach((classItem) => {
             formattedClasses.push({
               id: classItem._id,
-              class_name: classItem.class_id?.class_name || "N/A",
+              teacher:classItem.teacher?.volunteer_details?.full_name || "N/A",
               subject: classItem.course?.course_name || "N/A",
               timing: `${classItem.start_time} - ${classItem.end_time}`,
               day: day
@@ -38,7 +38,7 @@ export default function ShowClasses() {
         console.log(err);
         setLoading(false); // Ensure loading stops even if there's an error
       });
-  }, [id]);
+  }, []);
 
   // Function to get today's day name
   const getToday = () => {
@@ -67,13 +67,13 @@ export default function ShowClasses() {
       <div className="classes-container">
         <div className="header">
           <h6>
-            TimeTable <span className="sub-header"><AiOutlineHome className="sidebar-icon" />- All Classes</span>
+            TimeTable <span className="sub-header"><AiOutlineHome className="sidebar-icon" />- Student</span>
           </h6>
         </div>
 
         {/* Search Bar */}
         <div className="container-fluid admission-header text-center" style={{ marginTop: '30px' }}>
-          <h1>Teacher's TimeTable</h1>
+          <h1>Class TimeTable</h1>
         </div>
 
         {/* Select Day */}
@@ -101,8 +101,9 @@ export default function ShowClasses() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Class Name</th>
+                
                 <th>Subject</th>
+                <th>Teacher</th>
                 <th>Timing</th>
                 <th>Day</th>
               </tr>
@@ -116,8 +117,8 @@ export default function ShowClasses() {
                 filteredClasses.map((classItem, index) => (
                   <tr key={classItem.id}>
                     <td>{index + 1}</td> {/* Dynamic row number */}
-                    <td>{classItem.class_name}</td>
                     <td>{classItem.subject}</td>
+                    <td>{classItem.teacher}</td>
                     <td>{classItem.timing}</td>
                     <td>{classItem.day}</td>
                   </tr>

@@ -31,5 +31,6 @@ router.get('/attendance/:studentId', familyAuth, familyController.getAttendanceB
 // Add absent reason by attendance ID and student ID
 router.put('/attendance/:attendanceId/student/:studentId/absent-reason', familyAuth, familyController.addAbsentReason);
 
-
+// GET: Fetch percentage for a student
+router.get("/percentage/:studentId", familyAuth, familyController.getStudentPercentage);
 module.exports = router;
