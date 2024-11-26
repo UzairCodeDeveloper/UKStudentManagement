@@ -193,6 +193,12 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ errors: [{ msg: "Incorrect password" }] });
         }
 
+        // Retrieve class_id from Enrolment table
+        const enrolment = await Enrollment.findOne({ student_id: user._id }).select('class_id').lean();
+        if (!enrolment) {
+            return res.status(404).json({ errors: [{ msg: "No enrolment found for the student" }] });
+        }
+
         // Prepare user object for response by omitting sensitive fields
         delete user.password; // Remove password field for security
 
@@ -207,12 +213,13 @@ const loginUser = async (req, res) => {
             (err, token) => {
                 if (err) throw err;
 
-                // Send response with token and user data
+                // Send response with token, user data, and class_id
                 res.json({
                     token,
                     user: {
                         _id: user._id, // Explicitly include _id
-                        ...user       // Include the rest of the user fields
+                        ...user,       // Include the rest of the user fields
+                        class_id: enrolment.class_id // Include class_id from Enrolment table
                     }
                 });
             }
@@ -222,6 +229,7 @@ const loginUser = async (req, res) => {
         res.status(500).send({ errors: [{ msg: "Server Error" }] });
     }
 };
+
 
 
 const updatePassword = async (req, res) => {
