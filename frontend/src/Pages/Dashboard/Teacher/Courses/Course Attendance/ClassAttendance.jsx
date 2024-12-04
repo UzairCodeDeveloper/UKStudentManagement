@@ -35,7 +35,8 @@ export default function StudentAttendance() {
 
   const handleFetchRecords = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
-  
+    console.log(selectedClass)
+
     AttendanceManager.getAttendanceRecordByClassAndDate(selectedClass, dateString)
       .then((response) => {
         console.log("Fetched Attendance Data: ", response.data.data); // Add this log to check the structure
@@ -43,6 +44,8 @@ export default function StudentAttendance() {
           ...student,
           status: student.status === 'present' ? 'present' : 'absent',
           behaviourMarks: student.behaviourMarks || '', // Ensure behaviourMarks exists
+          knowledge: student.knowledge || '', // Ensure attitude exists
+          resilience: student.resilience || '' // Ensure resilience exists
         }));
         setAttendanceData(updatedData);
         setIsAttendanceMarked(true);
@@ -51,7 +54,6 @@ export default function StudentAttendance() {
         console.log(error);
       });
   };
-  
 
   const handleUpdateAttendance = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
@@ -62,7 +64,9 @@ export default function StudentAttendance() {
       attendance: attendanceData.map(student => ({
         student_id: student.student_id,
         status: student.status,
-        behaviour_marks: student.behaviourMarks
+        behaviour_marks: student.behaviourMarks,
+        knowledge: student.knowledge,
+        resilience: student.resilience
       }))
     };
 
@@ -100,19 +104,19 @@ export default function StudentAttendance() {
     setAttendanceData(updatedData);
   };
 
-  const handleBehaviourMarksChange = (roll_no, value) => {
+  const handleMarksChange = (roll_no, field, value) => {
     if (value < 0 || value > 5) {
       Swal.fire({
         icon: "error",
         title: "Invalid Marks",
-        text: "Behaviour marks must be between 0 and 5.",
+        text: "Marks must be between 0 and 5.",
       });
       return;
     }
 
     const updatedData = attendanceData.map(student =>
       student.roll_no === roll_no
-        ? { ...student, behaviourMarks: value }
+        ? { ...student, [field]: value }
         : student
     );
     setAttendanceData(updatedData);
@@ -127,7 +131,6 @@ export default function StudentAttendance() {
       ) : (
         <div className="classes-container">
           <ToastContainer position="top-center" />
-
           <>
             <div className="header">
               <h6>
@@ -178,7 +181,9 @@ export default function StudentAttendance() {
                     <th>Roll No</th>
                     <th>Name</th>
                     <th>Status</th>
-                    <th>Behaviour Marks</th>
+                    <th>Attitude</th>
+                    <th>knowledge</th>
+                    <th>Resilience</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -215,12 +220,35 @@ export default function StudentAttendance() {
                           <input
                             type="number"
                             value={student.behaviourMarks}
-                            onChange={(e) => handleBehaviourMarksChange(student.roll_no, e.target.value)}
+                            onChange={(e) => handleMarksChange(student.roll_no, 'behaviourMarks', e.target.value)}
                             min="0"
                             max="5"
                             className="marks-input"
                           />
-                          
+                        </div>
+                      </td>
+                      <td>
+                        <div className="attitude">
+                          <input
+                            type="number"
+                            value={student.knowledge}
+                            onChange={(e) => handleMarksChange(student.roll_no, 'knowledge', e.target.value)}
+                            min="0"
+                            max="5"
+                            className="marks-input"
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="resilience">
+                          <input
+                            type="number"
+                            value={student.resilience}
+                            onChange={(e) => handleMarksChange(student.roll_no, 'resilience', e.target.value)}
+                            min="0"
+                            max="5"
+                            className="marks-input"
+                          />
                         </div>
                       </td>
                     </tr>
@@ -230,8 +258,8 @@ export default function StudentAttendance() {
             </div>
 
             {isAttendanceMarked && (
-              <div className="update-section">
-                <button className="update-button" onClick={handleUpdateAttendance}>Update Attendance</button>
+              <div className="attendance-actions">
+                <button className="mark-attendance-btn" onClick={handleUpdateAttendance}>Mark Attendance</button>
               </div>
             )}
           </>

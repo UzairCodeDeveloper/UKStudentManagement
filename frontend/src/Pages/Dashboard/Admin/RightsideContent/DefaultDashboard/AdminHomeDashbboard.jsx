@@ -27,7 +27,7 @@ export default function AdminHomeDashbboard() {
 
   // Data for the attendance chart
   const data = {
-    labels: ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'],
+    labels: ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5','Class 6',"Class 7", "Class 8"],
     datasets: [
       {
         label: 'Attendance for Today',
@@ -36,7 +36,7 @@ export default function AdminHomeDashbboard() {
         borderWidth: 1,
         hoverBackgroundColor: '#3498db',
         hoverBorderColor: '#ffffff',
-        data: [25, 30, 22, 28, 26], // Dummy data for attendance
+        data: [25, 30, 22, 28, 26,34,56,34], // Dummy data for attendance
       }
     ]
   };

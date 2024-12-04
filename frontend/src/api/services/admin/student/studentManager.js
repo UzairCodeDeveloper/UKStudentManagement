@@ -4,6 +4,15 @@ import { getToken } from '../../../../util/adminUtil';
 
 
 
+const getAllFamilyNo = () => {
+  const token = getToken(); 
+  return httpClient.get("/family",{
+     headers: {
+      "x-auth-token": token, // Pass the token in the headers
+    },
+  });
+};
+
 // GET ALL Students
 const getAllStudents = () => {
   const token = getToken(); // Get token from Redux state or other source
@@ -73,7 +82,8 @@ const exportedObject = {
     getAllStudents,
     deleteStudent,
     editStudent,
-    geStudentById
+    geStudentById,
+    getAllFamilyNo
 };
 
 

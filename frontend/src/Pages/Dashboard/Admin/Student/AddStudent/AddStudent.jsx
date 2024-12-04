@@ -7,7 +7,7 @@ import ClassManager from "../../../../../api/services/admin/class/classManager"
 
 import StudentServices from "../../../../../api/services/admin/student/studentManager";
 import Loader from '../../../../../components/Loader/Loader';
-
+import Swal from "sweetalert2";
 export default function AddStudent() {
   // State variables for each input
   const [forename, setForename] = useState('');
@@ -16,6 +16,9 @@ export default function AddStudent() {
   const [dob, setDob] = useState('');
   const [classes, setClasses] = useState('');
   const [familyRegNo, setFamilyRegNo]=useState('')
+  const [familyRegNoData, setFamilyRegNoData] = useState([]); // Store the dropdown data
+  const [selectedOption, setSelectedOption] = useState(""); // Track dropdown selection
+  const [isAddingNew, setIsAddingNew] = useState(false); // Toggle "New" input visibility
   // Doctor details
   const [doctorName, setDoctorName] = useState('');
   const [doctorAddress, setDoctorAddress] = useState('');
@@ -112,37 +115,48 @@ export default function AddStudent() {
   // console.log(selectedCertificates)
   
  console.log(studentData)
-StudentServices.createStudent(studentData)
-  .then((res) => {
-    // Stop loading spinner or indicator
-    setLoading(false);
 
-    
+ StudentServices.createStudent(studentData)
+ .then((res) => {
+   // Stop loading spinner or indicator
+   setLoading(false);
 
-    // Show success toast notification
-    toast.success("Student added successfully", {
-      position: "top-center",  // Position set as a string
-    });
-    resetForm();
-  })
-  .catch((err) => {
-    // Stop loading spinner or indicator
-    setLoading(false);
+   // Extract the response data
+   const { user_id, password, familyRegNo, familyPassword, isNewFamily } = res.data;
 
-    // Log error message
-    const errorMsg = err.response?.data?.msg || "Error occurred";
-    
+   // Build the message for SweetAlert
+   const alertMessage = `
+     <strong>Student ID:</strong> ${user_id} <br />
+     <strong>Password:</strong> ${password} <br />
+     ${isNewFamily ? `<strong>Family ID:</strong> ${familyRegNo} <br />
+     <strong>Family Password:</strong> ${familyPassword} <br />` : ""}
+   `;
 
-    // Show error toast notification
-    toast.error(errorMsg, {
-      position: "top-center",  // Position set as a string
-    });
-  });
+   // Show SweetAlert with the response data
+   Swal.fire({
+     title: "Student Added Successfully!",
+     html: alertMessage, // Display the HTML content
+     icon: "success",
+     confirmButtonText: "OK",
+   });
+
+   // Reset the form
+   resetForm();
+ })
+ .catch((err) => {
+   // Stop loading spinner or indicator
+   setLoading(false);
+
+   // Log error message
+   const errorMsg = err.response?.data?.msg || "Error occurred";
+
+   // Show error toast notification
+   toast.error(errorMsg, {
+     position: "top-center",
+   });
+ });
 
 
-
-    // Reset the form after submission (optional)
-    // resetForm();
   };
 
   const resetForm = () => {
@@ -223,6 +237,40 @@ StudentServices.createStudent(studentData)
     })
   },[])
 
+  useEffect(() => {
+    // Fetch familyRegNo data from API
+    StudentServices.getAllFamilyNo()
+      .then((res) => {
+        const families = res.data.families.map((family) => family.familyRegNo);
+        setFamilyRegNoData(families);
+
+        // Set the last familyRegNo as default selected option
+        if (families.length > 0) {
+          setSelectedOption(families[families.length - 1]);
+          setFamilyRegNo(families[families.length - 1]); // Default value for familyRegNo
+        }
+      })
+      .catch((err) => {
+        console.log("Error fetching familyRegNo:", err);
+      });
+  }, []);
+
+  const handleSelectChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "New") {
+      // Show the input field for new Family RegNo
+      setIsAddingNew(true);
+      setFamilyRegNo(""); // Clear the value for manual input
+    } else {
+      // Use selected Family RegNo from dropdown
+      setIsAddingNew(false);
+      setFamilyRegNo(value); // Update Family RegNo with selected value
+    }
+
+    setSelectedOption(value);
+  };
+
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -250,19 +298,43 @@ StudentServices.createStudent(studentData)
           
 
 
-          <div className="form-group">
-              <label className="field-label required-bg">Family Reg No*</label>
-              <div className="input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Enter Registration No"
-                  className="form-input"
-                  value={familyRegNo}
-                  onChange={(e) => setFamilyRegNo(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
+          {/* Dropdown to select Family RegNo */}
+      <div className="form-group">
+        <label className="field-label required-bg">Family Reg No*</label>
+        <div className="input-wrapper">
+          <select
+            className="form-input"
+            value={selectedOption}
+            onChange={handleSelectChange}
+            required
+          >
+            {/* <option value="">Select Family Reg No</option> */}
+            {familyRegNoData.map((regNo, index) => (
+              <option key={index} value={regNo}>
+                {regNo}
+              </option>
+            ))}
+            <option value="New">New</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Input field for adding new Family RegNo */}
+      {isAddingNew && (
+        <div className="form-group">
+          <label className="field-label required-bg">Enter New Family Reg No*</label>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              placeholder="Enter Registration No"
+              className="form-input"
+              value={familyRegNo}
+              onChange={(e) => setFamilyRegNo(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+      )}
             {/* Forename */}
             <div className="form-group">
               <label className="field-label required-bg">Forename*</label>

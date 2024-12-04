@@ -16,7 +16,7 @@ const announcementSchema = new Schema({
     },
     announcementTo: {
         type: String,
-        enum: ['All', 'Student', 'Teacher'],
+        enum: ['ALL', 'STUDENT', 'TEACHER','FAMILY'],
         required: true,
     },
     course: {

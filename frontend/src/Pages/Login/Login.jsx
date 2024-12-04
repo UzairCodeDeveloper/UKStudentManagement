@@ -26,15 +26,16 @@ export default function Login() {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     const { username, password } = data; // Destructure the data for easier access
 
     // Regular expressions to check the format of user ID
     const isStudentID = /^\d{4}-\d{3}$/.test(username); // Format: 2024-102
     const isVolunteerID = /^\d{4}$/.test(username); // Format: 0003
     const isAdminID = /^[a-zA-Z]+$/.test(username); // Format: superAdmin
-    const isFamilyID = /^FAM-\d{4}-\d{4}$/.test(username); // Format: FAM-2024-0001
-
+    // const isFamilyID = /^FAM-\d{4}-\d{4}$/.test(username); // Format: FAM-2024-0001
+    // const isFamilyID = username.match(/^ISM\d{3}$/);
+    const isFamilyID = /^(FAM-\d{4}-\d{4}|ISM\d{3})$/.test(username);
     if (isAdminID) {
       // Call Admin API
       AdminUserServices.signInAdmin(data)
@@ -78,7 +79,7 @@ export default function Login() {
       const data = { familyRegNo: username, password }; // Ensure the correct key for family login
       FamilyManager.loginFamily(data)
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           dispatch(setFamilyUser(response.data)); // Use the correct action for family login
         })
         .catch((error) => {

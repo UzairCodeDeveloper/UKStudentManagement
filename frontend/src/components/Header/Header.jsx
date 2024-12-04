@@ -61,7 +61,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
           <IoIosNotifications style={{ color: 'white' }} />
           <div className={`notificationDropdown ${notificationDropdownOpen ? 'show' : ''}`}>
             {/* Dummy Notification Data */}
-            <div className="notificationItem">New message from John Doe</div>
+            <div className="notificationItem" onClick={()=>{navigate('/#event')}}>New message from John Doe</div>
             <div className="notificationItem">Your profile was updated</div>
             <div className="notificationItem">You have a new follower</div>
           </div>

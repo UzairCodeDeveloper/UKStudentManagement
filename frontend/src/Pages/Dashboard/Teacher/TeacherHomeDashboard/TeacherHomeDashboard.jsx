@@ -11,10 +11,11 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Import calendar styles
 import './TeacherHomeDashboard.css';
 
+import AnnouncementApi from '../../../../api/services/teacher/Announcement/AnnouncementManager'
 import VolunteerServices from "../../../../api/services/admin/volunteer/volunteerManager"
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-
+import Loader from '../../../../components/Loader/Loader';
 
 // Register the necessary chart components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -41,14 +42,39 @@ const events = [
     
 ];
 
+
+
+
 export default function TeacherHomeDashboard() {
     // const data = useSelector((state) => state.user.user.volunteer.volunteer_details);
     // console.log(data)
 
     const [volunteerData] = useState(useSelector((state) => state?.user?.user?.volunteer?.volunteer_details));
-    
+    const [event,setEvent]=useState([]);
     const days_to_commit=volunteerData.days_to_commit;
     const workingAreas=volunteerData.areas_of_working;
+    const [loading, setLoading] = useState(true);
+
+    useEffect(()=>{
+        setLoading(true);
+        AnnouncementApi.getAnnouncement()
+        .then((res)=>{
+            // console.log(res.data.data)
+            setEvent(res.data.data)
+            setLoading(false);
+        })
+        .catch((err)=>{
+            console.log(err)
+            setLoading(true);
+        })
+    },[])
+
+
+
+    if (loading) {
+        return <Loader />; // Show the loader if loading
+      }
+
     // console.log(days_to_commit)
    
     // useEffect(() => {
@@ -193,11 +219,11 @@ export default function TeacherHomeDashboard() {
                                 Events & Announcements
                             </h5>
                             <ul style={{ listStyleType: 'none', padding: 0, height:'300px', overflow:'auto' }}>
-                                {events.map(event => (
-                                    <li key={event.id}>
+                                {event.map(event => (
+                                    <li key={event._id}>
                                         <h6 style={{ margin: '0', color: '#3498db' }}>{event.title}</h6>
                                         <p style={{ margin: '5px 0', color: '#666' }}>{event.description}</p>
-                                        <p style={{ margin: '0', color: '#999', fontSize: '12px' }}>{event.date}</p>
+                                        <p style={{ margin: '0', color: '#999', fontSize: '12px' }}>{new Date(event.date).toLocaleDateString()}</p>
                                     </li>
                                 ))}
                             </ul>

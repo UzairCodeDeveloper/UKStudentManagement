@@ -53,7 +53,10 @@ familySchema.pre('save', async function(next) {
     await regEntry.save();
 
     // Set the familyRegNo
-    this.familyRegNo = `FAM-${currentYear}-${String(regEntry.reg_number).padStart(4, '0')}`; // Format: FAM-YYYY-####
+    const prefix = "ISM"; // Desired prefix
+const regNumber = regEntry.reg_number; // Registration number
+const formattedRegNo = `${prefix}${String(regNumber).padStart(3, "0")}`; // Format: ISM###
+this.familyRegNo = formattedRegNo;
     
     // Set password if not provided
     if (!this.password) {

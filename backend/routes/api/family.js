@@ -33,4 +33,8 @@ router.put('/attendance/:attendanceId/student/:studentId/absent-reason', familyA
 
 // GET: Fetch percentage for a student
 router.get("/percentage/:studentId", familyAuth, familyController.getStudentPercentage);
+
+
+router.put('/getabsentees',familyAuth, familyController.checkAbsentees);
+router.put('/updatereasonforleave',familyAuth, familyController.updateReasonOfLeave);
 module.exports = router;

@@ -23,7 +23,7 @@ import EmployeeAttendence from './Attendence/Employee/EmployeeAttendence';
 import AllEmployee from './Employee/AllEmployee/AllEmployee';
 import AddEmployee from './Employee/AddEmployee/AddEmployee';
 import UserProfile from '../../../components/UserProfile/UserProfile';
-import { ImProfile } from "react-icons/im";
+import { MdGrade } from "react-icons/md";
 import EditStudent from './Student/EditStudent/EditStudent';
 import EditEmployee from './Employee/EditEmployee/EditEmployee';
 import AddSession from './Session/AddSession';
@@ -31,6 +31,10 @@ import AllSession from './Session/AllSession/AllSession'
 import EditSession from './Session/EditSession/EditSession'
 import EditSubject from './Subjects/EditSubjects/EditSubjects'
 import Announcement from './Announcement/Announcement';
+import FeesManagement from './FeesManagement/FeesManagement'
+import { TfiAnnouncement } from "react-icons/tfi";
+import AddGrading from './Grading/AddGrading';
+import AllGrading from './Grading/AllGrading';
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -51,6 +55,7 @@ export default function AdminDashboard() {
     const [isAttendenceOpen, setIsAttendenceOpen] = useState(false);
     const [activeLink, setActiveLink] = useState('/');
     const [isSessionOpen, setIsSessionOpen] = useState(false);
+    const [isGradesOpen, setIsGradesOpen] = useState(false);
     
     
      // State for active link
@@ -198,7 +203,31 @@ export default function AdminDashboard() {
           </ul>
 
 
-
+          <li
+            className={`sidebar-item sidebar-item-with-submenu`}
+            onClick={() => setIsGradesOpen(!isGradesOpen)}
+          >
+            <div>
+              <MdGrade className="sidebar-icon" style={{ marginRight: '10px' }} /> Grades
+            </div>
+            <span className="sidebar-toggle">
+              {isGradesOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
+            </span>
+          </li>
+          <ul className={`sub-menu ${isGradesOpen ? 'open' : ''}`}>
+            <li>
+              <Link to="/grades" className={`sub-menu-item ${activeLink === '/grades' ? 'active' : ''}`} 
+                onClick={() => setActiveLink('/grades')}>
+                All Grades
+              </Link>
+            </li>
+            <li>
+              <Link to="/add-grades" className={`sub-menu-item ${activeLink === '/add-grades' ? 'active' : ''}`} 
+                onClick={() => setActiveLink('/add-grades')} >
+                Add Grades
+              </Link>
+            </li>
+          </ul>
 
 
 
@@ -228,6 +257,16 @@ export default function AdminDashboard() {
             </li>
           </ul>
 
+
+            
+
+
+
+
+
+
+
+
           <li>
             <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/timetable')}>
@@ -238,10 +277,11 @@ export default function AdminDashboard() {
           <li>
             <Link to="/announcement" className={`sidebar-item ${activeLink === '/announcement' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/announcement')}>
-              <CiViewTimeline className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Announcement</span>
+              <TfiAnnouncement className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Announcement</span>
             </Link>
           </li>
-          {/* <li>
+          
+          <li>
             <Link to="/fees" className={`sidebar-item ${activeLink === '/fees' ? 'active' : ''}`} 
               onClick={() => setActiveLink('/fees')}>
               <BiBriefcase className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Fees</span>
@@ -249,7 +289,7 @@ export default function AdminDashboard() {
 
 
             
-          </li> */}
+          </li>
         </ul>
       </div>
     );
@@ -278,7 +318,10 @@ export default function AdminDashboard() {
         <Route path="/sessions" element={<AllSession />} />
         <Route path="/announcement" element={<Announcement/>} />
         <Route path="/sessions/edit/:id" element={<EditSession />} />
-        <Route path="/fees" element={<div className="content">Fees Management Content</div>} />
+        <Route path="/fees" element={<FeesManagement/>} />
+        <Route path="/grades" element={<AllGrading />} />
+        <Route path="/add-grades" element={<AddGrading />} />
+
         <Route path="*" element={<AdminHomeDashbboard/>} />
       </Routes>
     );

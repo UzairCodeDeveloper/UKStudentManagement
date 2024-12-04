@@ -39,6 +39,18 @@ const attendanceSchema = new Schema({
         min: 0,
         max: 15, // Maximum of 5 for each field aggregated
         default: 0
+      },
+      knowledge: {
+        type: Number,
+        min: 0,
+        max: 15, // Maximum of 5 for each field aggregated
+        default: 0
+      },
+      resilience: {
+        type: Number,
+        min: 0,
+        max: 15, // Maximum of 5 for each field aggregated
+        default: 0
       }
   }
   ]

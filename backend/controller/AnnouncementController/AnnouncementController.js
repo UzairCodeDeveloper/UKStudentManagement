@@ -39,6 +39,79 @@ module.exports = {
         }
     },
 
+     getAnnouncementsForTeachers: async (req, res) => {
+        try {
+            // Get current date, month, and year
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth(); // 0-based index for months
+            const currentYear = currentDate.getFullYear();
+    
+            // Create start and end dates for the month
+            const startOfMonth = new Date(currentYear, currentMonth, 1);
+            const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+    
+            // Query the database for announcements in the current month/year and targeted to ALL or TEACHER
+            const announcements = await Announcement.find({
+                date: { $gte: startOfMonth, $lte: endOfMonth },
+                announcementTo: { $in: ['ALL', 'TEACHER'] },
+            }).sort({ date: -1 });
+    
+            // Respond with the fetched announcements
+            res.status(200).json({ success: true, data: announcements });
+        } catch (error) {
+            console.error('Error fetching announcements for teachers:', error.message);
+            res.status(500).json({ msg: 'Server Error' });
+        }
+    },
+    getAnnouncementsForFamily: async (req, res) => {
+        try {
+            // Get current date, month, and year
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth(); // 0-based index for months
+            const currentYear = currentDate.getFullYear();
+    
+            // Create start and end dates for the month
+            const startOfMonth = new Date(currentYear, currentMonth, 1);
+            const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+    
+            // Query the database for announcements in the current month/year and targeted to ALL or TEACHER
+            const announcements = await Announcement.find({
+                date: { $gte: startOfMonth, $lte: endOfMonth },
+                announcementTo: { $in: ['ALL', 'FAMILY'] },
+            }).sort({ date: -1 });
+    
+            // Respond with the fetched announcements
+            res.status(200).json({ success: true, data: announcements });
+        } catch (error) {
+            console.error('Error fetching announcements for teachers:', error.message);
+            res.status(500).json({ msg: 'Server Error' });
+        }
+    },
+    getAnnouncementsForStudent: async (req, res) => {
+        try {
+            // Get current date, month, and year
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth(); // 0-based index for months
+            const currentYear = currentDate.getFullYear();
+    
+            // Create start and end dates for the month
+            const startOfMonth = new Date(currentYear, currentMonth, 1);
+            const endOfMonth = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+    
+            // Query the database for announcements in the current month/year and targeted to ALL or TEACHER
+            const announcements = await Announcement.find({
+                date: { $gte: startOfMonth, $lte: endOfMonth },
+                announcementTo: { $in: ['ALL', 'STUDENT'] },
+            }).sort({ date: -1 });
+    
+            // Respond with the fetched announcements
+            res.status(200).json({ success: true, data: announcements });
+        } catch (error) {
+            console.error('Error fetching announcements for teachers:', error.message);
+            res.status(500).json({ msg: 'Server Error' });
+        }
+    },
+
     // Delete Announcement by ID
     deleteAnnouncement: async (req, res) => {
         try {

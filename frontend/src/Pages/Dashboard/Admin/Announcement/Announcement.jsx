@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import '../Classes/AddClass/AddClass.css'; // Ensure you have this CSS file for styles
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,7 +9,7 @@ export default function AddAnnouncement() {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
-    const [announcementTo, setAnnouncementTo] = useState('All');
+    const [announcementTo, setAnnouncementTo] = useState('ALL');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -33,6 +33,8 @@ export default function AddAnnouncement() {
         toast.success("Announcement Added Successfully");
     };
 
+
+    
     return (
         <div style={{ height: '100%', padding: '20px', backgroundColor: "#f6f7fb", overflow: "auto" }}>
             <div style={{ backgroundColor: 'white', padding: '10px', marginBottom: '10px', borderRadius: '30px', boxShadow: '0px 0px 1px 0px gray' }}>
@@ -100,9 +102,10 @@ export default function AddAnnouncement() {
                                     onChange={(e) => setAnnouncementTo(e.target.value)}
                                     required
                                 >
-                                    <option value="All">All</option>
-                                    <option value="Student">Student</option>
-                                    <option value="Teacher">Teacher</option>
+                                    <option value="All">ALL</option>
+                                    <option value="STUDENT">STUDENT</option>
+                                    <option value="TEACHER">TEACHER</option>
+                                    <option value="FAMILY">FAMILY</option>
                                 </select>
                             </div>
                         </div>

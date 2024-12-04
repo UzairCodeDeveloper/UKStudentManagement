@@ -19,24 +19,19 @@ export default function AdminDashboard() {
   const Sidebar = () => {
     const [activeLink, setActiveLink] = useState('/');
     
-    // Dummy data for family members
-    const familyMembers = [
-      { id: 1, name: 'Ali' },
-      { id: 2, name: 'Sara' },
-      { id: 3, name: 'Ahmed' },
-      { id: 4, name: 'Jamshed' }
-    ];
+   
 
 
     useEffect(()=>{
       FamilyManager.getfamilystudents().then
       ((res)=>{
-        console.log(res.data)
+        // console.log(res.data)
       })
       .catch((err)=>[
         console.log(err)
       ])
-    })
+    },[])
+    
     return (
       <div className={`sidebar ${isSidebarOpen ? 'hidden ' : 'open'}`}>
         <ul>
