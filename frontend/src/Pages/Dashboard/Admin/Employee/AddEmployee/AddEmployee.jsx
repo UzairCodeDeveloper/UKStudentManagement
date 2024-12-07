@@ -1,7 +1,7 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { AiOutlineHome } from "react-icons/ai";
 import ClassManager from "../.././../../../api/services/admin/volunteer/volunteerManager"
-
+import Swal from "sweetalert2";
 export default function AddStudent() {
     // State variables for each input
     const [FullName, setFullName] = useState('');
@@ -9,25 +9,25 @@ export default function AddStudent() {
     const [gender, setGender] = useState('');
     const [dob, setDob] = useState('');
     const [FullAddress, setFullAddress] = useState('')
-    const [MonthlyCommit,setMonthlyCommit]=useState(false)
+    const [MonthlyCommit, setMonthlyCommit] = useState(false)
     const [PostCode, setPostCode] = useState('')
-    
+
     // Voluntering  details
-    
+
     const [WorkingCommit, setWorkingCommit] = useState('');
-    
+
     const [Schedule, setSchedule] = useState('');
-    
+
     const [PreviousTeachingExperience, setPreviousTeachingExperience] = useState(false);
-    
+
     const [ScheduleDetail, setScheduleDetail] = useState('')
     const [PreviousExperienceDetail, setPreviousExperienceDetail] = useState('')
-    const [BriefExperienceDetail,setBriefExperienceDetail]=useState('')
-    const [firstAidCertificate,setFirstAidCertificate]=useState(false)
+    const [BriefExperienceDetail, setBriefExperienceDetail] = useState('')
+    const [firstAidCertificate, setFirstAidCertificate] = useState(false)
     const [interestInJoining, setInterestInJoining] = useState(false);
-  const [alreadyTeacher, setAlreadyTeacher] = useState(false);
+    const [alreadyTeacher, setAlreadyTeacher] = useState(false);
     const [FirstAid, setFirstAid] = useState(false);
-    
+
     const [error, setError] = useState('');
 
     // Handle form submission
@@ -35,11 +35,11 @@ export default function AddStudent() {
         e.preventDefault();
 
         // Basic validation
-        
-        if (!interestInJoining|| !alreadyTeacher) {
+
+        if (!interestInJoining || !alreadyTeacher) {
             alert('Please agree to all terms and conditions.');
             return;
-          }
+        }
         // If validation passes, you can handle your submission logic here
         const volunteerData = {
             volunteer_details: {
@@ -51,7 +51,7 @@ export default function AddStudent() {
                 postal_code: PostCode,
                 working_commitment: WorkingCommit,
                 schedule: Schedule,
-                schedule_detail:ScheduleDetail,
+                schedule_detail: ScheduleDetail,
                 days_to_commit: DaystoCommit,
                 areas_of_working: Areasofworking,
                 age_group: AgeGroup,
@@ -67,25 +67,47 @@ export default function AddStudent() {
             interest_in_joining: interestInJoining,
         };
 
-          console.log(volunteerData);
+        console.log(volunteerData);
 
-          ClassManager.createNewVolunteer(volunteerData)
-          .then((res)=>{
-            console.log(res.data)
-                    resetform();
-            alert("Volunteer added successfully")
+        ClassManager.createNewVolunteer(volunteerData)
+            .then((res) => {
+                console.log(res.data.volunteer)
+
+
+                const {employee_id,password} = res.data.volunteer;
+
+                // Build the message for SweetAlert
+                const alertMessage = `
+                 <strong>Volunteer ID:</strong> ${employee_id} <br />
+                 <strong>Password:</strong> ${password} <br />
+                
+                 `;
+
+                // Show SweetAlert with the response data
+                Swal.fire({
+                    title: "Volunteer Added Successfully!",
+                    html: alertMessage, // Display the HTML content
+                    icon: "success",
+                    confirmButtonText: "OK",
+                });
+
+
+
+
+                resetform();
+                // alert("Volunteer added successfully")
             })
-            .catch((err)=>{
-            console.log(err.response.data.msg)
-            alert(err.response.data.msg)
-            setError(err.response.data.msg)
+            .catch((err) => {
+                console.log(err.response.data.msg)
+                alert(err.response.data.msg)
+                setError(err.response.data.msg)
             })
-        
+
         // Reset the form after submission (optional)
 
 
-        
-        
+
+
     };
 
     const resetform = () => {
@@ -107,13 +129,13 @@ export default function AddStudent() {
         setBriefExperienceDetail('');
         setMonthlyCommit(false)
     };
-    
+
 
     const [selectedCertificates, setSelectedCertificates] = useState([]);
     const [DaystoCommit, setDaystoCommit] = useState([]);
     const [Areasofworking, setAreasofworking] = useState([]);
     const [AgeGroup, setAgeGroup] = useState([]);
-    
+
 
     const DaystoCommitSchedule = [
         { id: 'Monday Evening', label: 'Monday Evening' },
@@ -197,12 +219,12 @@ export default function AddStudent() {
         }
     };
 
-    const weeklycommitments=(e)=>{
-        if(e.target.value==="No"){
+    const weeklycommitments = (e) => {
+        if (e.target.value === "No") {
             setWorkingCommit(e.target.value)
             setMonthlyCommit(true)
         }
-        else{
+        else {
             setWorkingCommit(e.target.value)
         }
     }
@@ -345,25 +367,25 @@ export default function AddStudent() {
 
 
                         {MonthlyCommit && (
-    <div className="form-group">
-        <label className="field-label required-bg">Schedule*</label>
-        <div className="input-wrapper">
-            <select
-                className="form-input"
-                value={Schedule}
-                onChange={(e) => setSchedule(e.target.value)}
-                required
-            >
-                <option value="">Select</option>
-                <option value="Fortnightly">Fortnightly</option>
-                <option value="Monthly">Monthly</option>
-            </select>
-        </div>
-    </div>
-)}
+                            <div className="form-group">
+                                <label className="field-label required-bg">Schedule*</label>
+                                <div className="input-wrapper">
+                                    <select
+                                        className="form-input"
+                                        value={Schedule}
+                                        onChange={(e) => setSchedule(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Select</option>
+                                        <option value="Fortnightly">Fortnightly</option>
+                                        <option value="Monthly">Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        )}
 
 
-                       
+
 
                         {(Schedule === "Fortnightly" || Schedule === "Monthly") && (
                             <div className="form-group">
@@ -396,10 +418,10 @@ export default function AddStudent() {
                                         onChange={handleCheckboxDaystoCommitChange}
                                         className="btn-check"
                                         autoComplete="off"
-                                        
+
 
                                     />
-                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
+                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{ border: '2px solid #7b5fed' }}>
                                         {certificate.label}
                                     </label>
                                 </div>
@@ -425,7 +447,7 @@ export default function AddStudent() {
                                         autoComplete="off"
 
                                     />
-                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
+                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{ border: '2px solid #7b5fed' }}>
                                         {certificate.label}
                                     </label>
                                 </div>
@@ -452,7 +474,7 @@ export default function AddStudent() {
                                         autoComplete="off"
 
                                     />
-                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{border:'2px solid #7b5fed'}}>
+                                    <label htmlFor={certificate.id} className="btn btn-outline-primary" style={{ border: '2px solid #7b5fed' }}>
                                         {certificate.label}
                                     </label>
                                 </div>
@@ -525,7 +547,7 @@ export default function AddStudent() {
                                 <div className="input-wrapper">
                                     <input style={{ fontSize: '10px', }}
                                         type="file"
-                                        
+
                                         className="form-input"
                                         onChange={(e) => setFirstAidCertificate(e.target.files[0])} // Handle file input
                                     />
@@ -537,75 +559,75 @@ export default function AddStudent() {
 
 
 
-                        
+
                     </div>
-                    <div className="form-group" style={{marginTop:"20px"}}>
-              <label className="field-label required-bg">Brief Details*</label>
-              <div className="input-wrapper">
-                <textarea
-                  type="text"
-                  placeholder="Enter Detail"
-                  className="form-input"
-                  value={BriefExperienceDetail}
-                  onChange={(e) => setBriefExperienceDetail(e.target.value)}
-                  style={{height:'40px', borderRadius:"20px", padding:'6px 8px'}}
-                  required
-                />
-              </div>
-            </div>
+                    <div className="form-group" style={{ marginTop: "20px" }}>
+                        <label className="field-label required-bg">Brief Details*</label>
+                        <div className="input-wrapper">
+                            <textarea
+                                type="text"
+                                placeholder="Enter Detail"
+                                className="form-input"
+                                value={BriefExperienceDetail}
+                                onChange={(e) => setBriefExperienceDetail(e.target.value)}
+                                style={{ height: '40px', borderRadius: "20px", padding: '6px 8px' }}
+                                required
+                            />
+                        </div>
+                    </div>
                 </div>
 
 
 
-                
 
-                       
-            
-    
-        {/* Already a teacher / volunteer */}
-        <div className="form-section">
-      <h4><span className="section-number">4</span> Terms and Conditions</h4>
-      <div className="form-section-container">
 
-        {/* Expressing interest */}
-        <div className="form-group">
-          <h6 className="question-text">
-            <input 
-              type="checkbox" 
-              checked={interestInJoining} 
-              onChange={(e) => setInterestInJoining(e.target.checked)} 
-              required
-            />
-            <span style={{ marginLeft: '10px' }}>
-              I am expressing my interest to join IMAM Organisation UK
-            </span>
-          </h6>
-        </div>
 
-        {/* Already a teacher / volunteer */}
-        <div className="form-group">
-          <h6 className="question-text">
-            <input 
-              type="checkbox" 
-              checked={alreadyTeacher} 
-              onChange={(e) => setAlreadyTeacher(e.target.checked)} 
-              required
-            />
-            <span style={{ marginLeft: '10px' }}>
-              I am already a teacher / volunteer and have been requested to complete this form.
-            </span>
-          </h6>
-          <h6 className="question-text">
-            I understand the admission is subject to payment of fees. I also understand the fee is payable regardless of the student's absenteeism.
-            <br />
-            Please sign to confirm below:
-          </h6>
-        </div>
 
-        {/* Submit Button */}
-       
-      </div>
-    </div>
+
+                {/* Already a teacher / volunteer */}
+                <div className="form-section">
+                    <h4><span className="section-number">4</span> Terms and Conditions</h4>
+                    <div className="form-section-container">
+
+                        {/* Expressing interest */}
+                        <div className="form-group">
+                            <h6 className="question-text">
+                                <input
+                                    type="checkbox"
+                                    checked={interestInJoining}
+                                    onChange={(e) => setInterestInJoining(e.target.checked)}
+                                    required
+                                />
+                                <span style={{ marginLeft: '10px' }}>
+                                    I am expressing my interest to join IMAM Organisation UK
+                                </span>
+                            </h6>
+                        </div>
+
+                        {/* Already a teacher / volunteer */}
+                        <div className="form-group">
+                            <h6 className="question-text">
+                                <input
+                                    type="checkbox"
+                                    checked={alreadyTeacher}
+                                    onChange={(e) => setAlreadyTeacher(e.target.checked)}
+                                    required
+                                />
+                                <span style={{ marginLeft: '10px' }}>
+                                    I am already a teacher / volunteer and have been requested to complete this form.
+                                </span>
+                            </h6>
+                            <h6 className="question-text">
+                                I understand the admission is subject to payment of fees. I also understand the fee is payable regardless of the student's absenteeism.
+                                <br />
+                                Please sign to confirm below:
+                            </h6>
+                        </div>
+
+                        {/* Submit Button */}
+
+                    </div>
+                </div>
 
                 {/* Submit Button */}
                 <button type="submit" className="submit-button btn btn-primary">Submit</button>

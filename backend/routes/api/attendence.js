@@ -7,6 +7,7 @@ const studentAuth = require("../../middleware/studentAuth")
 const { FetchAttendanceRecord,getAttendanceRecordsForInstructor, getEnrolledStudentsInClass,markAttendance,getUserAttendance
     // createAttendance, getStudentAttendance, updateAttendance, deleteAttendance
 } = require('../../controller/TeacherControllers/AttendenceController');  // Adjust path according to your structure
+const adminAuth = require('../../middleware/adminAuth');
 
 
 // 1. Get classes of the instructor is assiged to
@@ -17,6 +18,9 @@ router.get('/fetchrecords/:class_id/:date', teacherAuth, FetchAttendanceRecord);
 
 // 3. Route to mark attendance
 router.post('/markattendance', teacherAuth, markAttendance);
+
+
+router.post('/markstudentattendanceadmin', adminAuth, markAttendance);
 
 router.get('/get-my-attendance/', studentAuth, getUserAttendance);
 

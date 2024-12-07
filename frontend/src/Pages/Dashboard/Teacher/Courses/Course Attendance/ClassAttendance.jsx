@@ -36,14 +36,14 @@ export default function StudentAttendance() {
   const handleFetchRecords = () => {
     const dateString = selectedDate.toISOString().split('T')[0];
     console.log(selectedClass)
-
+    console.log(dateString)
     AttendanceManager.getAttendanceRecordByClassAndDate(selectedClass, dateString)
       .then((response) => {
-        console.log("Fetched Attendance Data: ", response.data.data); // Add this log to check the structure
+        // console.log("Fetched Attendance Data: ", response.data.data);
         const updatedData = response.data.data.map(student => ({
           ...student,
           status: student.status === 'present' ? 'present' : 'absent',
-          behaviourMarks: student.behaviourMarks || '', // Ensure behaviourMarks exists
+          behaviourMarks: student.behaviour_marks || '', // Ensure behaviourMarks exists
           knowledge: student.knowledge || '', // Ensure attitude exists
           resilience: student.resilience || '' // Ensure resilience exists
         }));
@@ -56,8 +56,31 @@ export default function StudentAttendance() {
   };
 
   const handleUpdateAttendance = () => {
+    // Check if all required fields are filled
+    const incompleteEntries = attendanceData.some(student => 
+      !student.status || 
+      student.behaviourMarks === '' || 
+      student.knowledge === '' || 
+      student.resilience === '' ||
+      student.behaviourMarks < 0 || 
+      student.behaviourMarks > 5 || 
+      student.knowledge < 0 || 
+      student.knowledge > 5 || 
+      student.resilience < 0 || 
+      student.resilience > 5
+    );
+  
+    if (incompleteEntries) {
+      Swal.fire({
+        icon: "error",
+        title: "Incomplete or Invalid Data",
+        text: "Please ensure all fields are filled and marked ",
+      });
+      return; // Prevent further execution if validation fails
+    }
+  
     const dateString = selectedDate.toISOString().split('T')[0];
-
+  
     const attendancePayload = {
       class_id: selectedClass,
       date: dateString,
@@ -66,12 +89,12 @@ export default function StudentAttendance() {
         status: student.status,
         behaviour_marks: student.behaviourMarks,
         knowledge: student.knowledge,
-        resilience: student.resilience
-      }))
+        resilience: student.resilience,
+      })),
     };
-
+  
     const loadingToast = toast.loading("Marking attendance, please wait...");
-
+  
     AttendanceManager.markAttendance(attendancePayload)
       .then((response) => {
         toast.update(loadingToast, {
@@ -89,12 +112,13 @@ export default function StudentAttendance() {
           autoClose: 3000,
         });
       });
-
+  
+    // Reset state after successful update
     setSelectedDate(new Date());
     setAttendanceData([]);
     setIsAttendanceMarked(false);
   };
-
+  
   const handleStatusChange = (roll_no, newStatus) => {
     const updatedData = attendanceData.map(student =>
       student.roll_no === roll_no
@@ -258,8 +282,8 @@ export default function StudentAttendance() {
             </div>
 
             {isAttendanceMarked && (
-              <div className="attendance-actions">
-                <button className="mark-attendance-btn" onClick={handleUpdateAttendance}>Mark Attendance</button>
+              <div className="attendance-actions" style={{display:'flex', justifyContent:'center'}}>
+              <button className="update-button" style={{backgroundColor:"#28a745"}} onClick={handleUpdateAttendance}>Update Attendance</button>
               </div>
             )}
           </>

@@ -2,12 +2,15 @@
 .attendance-table {
     max-height: 0;
     opacity: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow-y: auto;
+    overflow-x: auto;
     transition: all 0.5s ease;
   }
   
   .attendance-table.show {
     max-height: 1000px;
+    overflow-x: auto;
     opacity: 1;
   }
   

@@ -83,12 +83,12 @@ exports.getTimetableByClass = async (req, res) => {
 
     const timetables = await Timetable.find({ class_id }).populate('course teacher');
 
-    if (!timetables.length) {
-      return res.status(404).json({
-        success: false,
-        message: 'No timetable found for this class.'
-      });
-    }
+    // if (!timetables.length) {
+    //   return res.status(200).json({
+    //     success: false,
+    //     message: 'No timetable found for this class.'
+    //   });
+    // }
 
     // Group timetables by day_of_week
     const groupedTimetables = timetables.reduce((acc, timetable) => {

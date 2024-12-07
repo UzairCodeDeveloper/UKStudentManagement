@@ -17,7 +17,7 @@ export default function EmployeeAttendance() {
     AttendanceManager.getAttendanceRecordByDate(formattedDate)
       .then((response) => {
         const { attendanceFound, data } = response.data;
-        console.log(response.data)
+        // console.log(response.data)
         if (attendanceFound) {
           setAttendanceData(data); // Populate with fetched attendance data
         } else {

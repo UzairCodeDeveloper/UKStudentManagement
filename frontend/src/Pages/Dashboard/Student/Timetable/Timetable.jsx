@@ -8,16 +8,16 @@ export default function ShowClasses() {
   const [searchDay, setSearchDay] = useState(''); // State for selected day
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
-  const [id] = useState(useSelector((state) => state?.user?.user));
+  const [id] = useState(useSelector((state) => state?.user?.user?.user?.class_id));
   
-  console.log(id);
+  // console.log(id);
 
   useEffect(() => {
     // Fetch timetable data by teacher
-    TimeTableManager.getTimetableforStudentByClass("67164d973165b35daaee4575")
+    TimeTableManager.getTimetableforStudentByClass(id)
       .then((res) => {
         const apiData = res.data.data;
-            console.log(apiData)
+            // console.log(apiData)
         // Transform API response into a usable format
         const formattedClasses = [];
         for (const [day, dayClasses] of Object.entries(apiData)) {

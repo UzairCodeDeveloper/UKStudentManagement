@@ -37,14 +37,7 @@ export default function CoursesDashboard() {
       "https://img.freepik.com/premium-photo/gray-triangle-low-polygon-grey-geometric-triangular-polygonal-abstract-mosaic-background-3d-rendering-illustration_51464-607.jpg",
       "https://cdn.vectorstock.com/i/500p/19/76/blue-triangle-abstract-background-vector-1581976.jpg",
     "https://img.freepik.com/free-vector/coloured-polygonal-background-design_1164-49.jpg",
-    "https://example.com/image3.jpg",
-    "https://example.com/image4.jpg",
-    "https://example.com/image5.jpg",
-    "https://example.com/image6.jpg",
-    "https://example.com/image7.jpg",
-    "https://example.com/image8.jpg",
-    "https://example.com/image9.jpg",
-    "https://example.com/image10.jpg"
+   
   ];
 
   return (

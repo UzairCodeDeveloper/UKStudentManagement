@@ -51,7 +51,7 @@ export default function AddClass() {
       volunteer_id: selectedTeacher,
     };
     // console.log(data)
-     console.log('Selected Teacher APi: '+selectedTeacher)
+    //  console.log('Selected Teacher APi: '+selectedTeacher)
     CourseManager.UpdateCourse(courseId,data)
       .then(() => {
         alert("Subject updated successfully");

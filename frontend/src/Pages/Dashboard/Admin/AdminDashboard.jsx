@@ -35,6 +35,7 @@ import FeesManagement from './FeesManagement/FeesManagement'
 import { TfiAnnouncement } from "react-icons/tfi";
 import AddGrading from './Grading/AddGrading';
 import AllGrading from './Grading/AllGrading';
+import Password from './Password/Password';
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -56,6 +57,7 @@ export default function AdminDashboard() {
     const [activeLink, setActiveLink] = useState('/');
     const [isSessionOpen, setIsSessionOpen] = useState(false);
     const [isGradesOpen, setIsGradesOpen] = useState(false);
+    const [isPassOpen, setIsPassOpen] = useState(false);
     
     
      // State for active link
@@ -290,6 +292,15 @@ export default function AdminDashboard() {
 
             
           </li>
+          <li>
+            <Link to="/security" className={`sidebar-item ${activeLink === '/security' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/security')}>
+              <BiBriefcase className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Passwords</span>
+            </Link>
+
+
+            
+          </li>
         </ul>
       </div>
     );
@@ -321,6 +332,7 @@ export default function AdminDashboard() {
         <Route path="/fees" element={<FeesManagement/>} />
         <Route path="/grades" element={<AllGrading />} />
         <Route path="/add-grades" element={<AddGrading />} />
+        <Route path="/security" element={<Password />} />
 
         <Route path="*" element={<AdminHomeDashbboard/>} />
       </Routes>

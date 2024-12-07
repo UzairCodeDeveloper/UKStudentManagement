@@ -72,7 +72,7 @@ exports.FetchAttendanceRecord = async (req, res) => {
         if (attendance) {
             // If attendance exists, return the attendance data
             const formattedAttendance = attendance.attendance.map(record => {
-                const { student_id, status } = record;
+                const { student_id, status,resilience,knowledge,behaviour_marks } = record;
                 const { forename, surname, guardianDetails, roll_number } = student_id.studentData;
 
                 return {
@@ -83,7 +83,10 @@ exports.FetchAttendanceRecord = async (req, res) => {
                     surname,                      // Student's last name
                     fatherName: guardianDetails.guardianName,  // Father's/guardian's name
                     status,                       // Attendance status (present, absent, leave)
-                    student_id: student_id._id    // Student's unique ID
+                    student_id: student_id._id,   // Student's unique ID
+                    resilience,
+                    knowledge,
+                    behaviour_marks
                 };
             });
 

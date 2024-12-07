@@ -87,6 +87,11 @@ app.use('/api/fees', require('./routes/api/fees'));
 
 //Grading
 app.use('/api/grading', require('./routes/api/grading'));
+
+
+//Grading
+app.use('/api/password', require('./routes/api/password'));
+
 // Family APIs
 app.use('/api/family', require('./routes/api/family'));
 

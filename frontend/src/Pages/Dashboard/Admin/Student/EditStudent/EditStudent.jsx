@@ -11,7 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditStudent() {
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   // State variables for each input
   const[familyRegNo,setFamilyRegNo]=useState('');
   const [forename, setForename] = useState("");
@@ -128,7 +128,7 @@ export default function EditStudent() {
       }
     };
   
-    console.log(studentData);
+    // console.log(studentData);
 
     StudentServices.editStudent(id, studentData)
   .then((res) => {
@@ -141,13 +141,10 @@ export default function EditStudent() {
     navigate("/students");
   })
   .catch((err) => {
-    const errorMsg = err.response?.data?.msg || "Error occurred";
+    const errorMsg = err.response?.data?.msg || "No updates are made";
 
-    // Log the error message to the console
-    console.error(errorMsg);
-
-    // Show error toast notification
-    toast.error(errorMsg, {
+    
+    toast.info(errorMsg, {
       position: "top-center",  // Position set as a string
     });
 
@@ -250,7 +247,7 @@ useEffect(() => {
   StudentServices.geStudentById(id)
   .then((response) => {
     const studentData = response.data.studentData;
-    console.log(studentData)
+    // console.log(studentData)
     // Mapping the response data to state variables
     setFamilyRegNo(studentData.familyRegNo || '');
     setForename(studentData.forename || '');
@@ -258,7 +255,7 @@ useEffect(() => {
     setGender(studentData.gender || '');
     setDob(studentData.dob ? new Date(studentData.dob).toISOString().split('T')[0] : '');
     // setMsuExamCertificate(studentData.msuExamCertificate || []);
-    console.log(studentData.msuExamCertificate)
+    // console.log(studentData.msuExamCertificate)
     setSelectedCertificates(studentData.msuExamCertificate)
     // Doctor Details
     const { doctorDetails } = studentData;
@@ -347,7 +344,7 @@ useEffect(() => {
       </div>
 
       {/* Error Message */}
-      {error && <div className="error-message">{error}</div>}
+      {/* {error && <div className="error-message">{error}</div>} */}
 
       <form onSubmit={handleSubmit}>
         {/* Student Information Section */}

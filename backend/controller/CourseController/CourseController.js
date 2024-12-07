@@ -119,10 +119,11 @@ const getCourseById = async (req, res) => {
 };
 
 // Update a course by ID
+const mongoose = require('mongoose'); // For ObjectId conversion
+
 const updateCourse = async (req, res) => {
     const { id } = req.params;
     const { course_name, class_id, volunteer_id } = req.body;
-    
 
     try {
         // Validate Course ID
@@ -131,18 +132,18 @@ const updateCourse = async (req, res) => {
         }
 
         // Validate input fields
-        if (!course_name  && !class_id && !volunteer_id) {
+        if (!course_name && !class_id && !volunteer_id) {
             return res.status(400).json({ msg: 'At least one field must be provided for update' });
         }
 
+        // Convert class_id and volunteer_id to ObjectId if provided
+        let classObjectId = class_id ? new mongoose.Types.ObjectId(class_id) : undefined;
+        let volunteerObjectId = volunteer_id ? new mongoose.Types.ObjectId(volunteer_id) : undefined;
+
         // Check if volunteer exists (if provided)
         let volunteerExists = null;
-        if (volunteer_id) {
-            if (!volunteer_id.match(/^[0-9a-fA-F]{24}$/)) {
-                return res.status(400).json({ msg: 'Invalid volunteer ID' });
-            }
-
-            volunteerExists = await Volunteer.findById(volunteer_id);
+        if (volunteerObjectId) {
+            volunteerExists = await Volunteer.findById(volunteerObjectId);
             if (!volunteerExists) {
                 return res.status(404).json({ msg: 'Volunteer (Instructor) not found' });
             }
@@ -154,18 +155,18 @@ const updateCourse = async (req, res) => {
             {
                 $set: {
                     course_name: course_name || undefined,
-                    // course_description: course_description || undefined,
-                    class_id: class_id || undefined,
-                    instructor_id: volunteer_id || undefined,  // Update instructor if volunteer exists
+                    class_id: classObjectId, // Ensure ObjectId type is used
+                    instructor: volunteerObjectId, // Ensure ObjectId type is used
                 },
             },
-            { new: true, runValidators: true }  // Return updated course and apply validators
-        ).populate('class_id')
+            { new: true, runValidators: true } // Return updated course and apply validators
+        )
+        .populate('class_id')
         .populate({
             path: 'instructor', 
-            select: 'volunteer_details.full_name'  // Only fetch the full_name from the volunteer details
+            select: 'volunteer_details.full_name', // Only fetch the full_name from the volunteer details
         })
-        .lean(); // Populate class and instructor details
+        .lean();
 
         // Check if the course exists
         if (!updatedCourse) {
@@ -183,6 +184,7 @@ const updateCourse = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
 
 
 

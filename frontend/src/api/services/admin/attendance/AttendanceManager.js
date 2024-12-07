@@ -11,19 +11,44 @@ const getAttendanceRecordByDate = (date) => {
     });
 };
 
-// Mark or update attendance for a specific date
-const markAttendance = (data) => {
+const getAttendanceRecordByClassAndDate = (class_id,date) => {
     const token = getToken();
-    return httpClient.post(`/teacher-attendance`, data, {
+
+    return httpClient.get(`/teacher-attendance/fetchrecords/${class_id}/${date}`, {
         headers: {
             "x-auth-token": token,
         },
     });
 };
 
+
+
+// Mark or Teacher update attendance for a specific date
+const markAttendance = (data) => {
+    const token = getToken();
+    return httpClient.post(`/teacher-attendance/markteacherattendanceadmin`, data, {
+        headers: {
+            "x-auth-token": token,
+        },
+    });
+};
+
+const markStudentAttendance = (data) => {
+    // console.log(data)
+    const token = getToken(); // Get token from Redux state or other source
+    // console.log(data)
+    return httpClient.post(`/attendence/markstudentattendanceadmin`, data, {
+        headers: {
+            "x-auth-token": token, // Pass the token in the headers correctly
+        },
+    });
+};
+
 const exportedObject = {
     getAttendanceRecordByDate,
-    markAttendance
+    markAttendance,
+    getAttendanceRecordByClassAndDate,
+    markStudentAttendance
 };
 
 export default exportedObject;
