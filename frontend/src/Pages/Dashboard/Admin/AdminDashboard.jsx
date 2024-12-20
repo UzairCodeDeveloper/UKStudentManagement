@@ -36,6 +36,8 @@ import { TfiAnnouncement } from "react-icons/tfi";
 import AddGrading from './Grading/AddGrading';
 import AllGrading from './Grading/AllGrading';
 import Password from './Password/Password';
+import { FaMarker } from "react-icons/fa";
+import StudentAbsentReason from './Attendence/StudentReason/StudentAbsentReason';
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -257,6 +259,7 @@ export default function AdminDashboard() {
                 Employee Attendance
               </Link>
             </li>
+            
           </ul>
 
 
@@ -267,7 +270,12 @@ export default function AdminDashboard() {
 
 
 
-
+          <li>
+            <Link to="/reasons" className={`sidebar-item ${activeLink === '/reasons' ? 'active' : ''}`} 
+              onClick={() => setActiveLink('/reasons')}>
+              <FaMarker className="sidebar-icon" style={{ marginRight: '10px' }} /> <span>Reasons</span>
+            </Link>
+          </li>
 
           <li>
             <Link to="/timetable" className={`sidebar-item ${activeLink === '/timetable' ? 'active' : ''}`} 
@@ -333,6 +341,7 @@ export default function AdminDashboard() {
         <Route path="/grades" element={<AllGrading />} />
         <Route path="/add-grades" element={<AddGrading />} />
         <Route path="/security" element={<Password />} />
+        <Route path="/reasons" element={<StudentAbsentReason />} />
 
         <Route path="*" element={<AdminHomeDashbboard/>} />
       </Routes>

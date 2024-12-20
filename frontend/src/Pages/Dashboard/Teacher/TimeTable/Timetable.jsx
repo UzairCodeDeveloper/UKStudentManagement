@@ -80,7 +80,7 @@ export default function ShowClasses() {
         <div className="search-filter" style={{ marginTop: '50px' }}>
           <span style={{ fontWeight: '600', marginRight: '20px' }}>Select Day </span>
           <select value={searchDay} onChange={(e) => setSearchDay(e.target.value)} className="sort-select">
-            <option value="">All Days</option>
+          <option value="">Select a Day</option>
             {daysOfWeek.map((day, index) => (
               <option key={index} value={day}>{day}</option>
             ))}

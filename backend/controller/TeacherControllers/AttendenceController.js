@@ -133,7 +133,7 @@ exports.markAttendance = async (req, res) => {
             return res.status(400).json({ msg: 'Attendance data is required and should be a non-empty array.' });
         }
 
-        const validStatuses = ['present', 'absent', 'leave'];
+        const validStatuses = ['present', 'absent', 'late'];
         const invalidStatus = attendance.some(item => !validStatuses.includes(item.status));
         if (invalidStatus) {
             return res.status(400).json({ msg: `Each student's status must be one of: ${validStatuses.join(', ')}.` });

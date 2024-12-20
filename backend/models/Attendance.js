@@ -27,7 +27,7 @@ const attendanceSchema = new Schema({
       },
       status: {
         type: String,
-        enum: ['present', 'absent', 'leave'], 
+        enum: ['present', 'absent', 'late'], 
         required: true
       },
       reason_for_leave: {

@@ -274,10 +274,9 @@ export default function TeacherHomeDashboard() {
                             {/* <p style={{ fontWeight: 'bold', textAlign: 'center', color: '#666' }}>{behaviorPercentage.toFixed(2)}%</p> */}
                         </div>
                         <div>
-
-                            <p style={{ fontWeight: 'bold', textAlign: 'center', color: '#666' }}>Knowledge: {knowledgeMarksPercentage}%</p>
                             <p style={{ fontWeight: 'bold', textAlign: 'center', color: '#666' }}>Attitude: {behaviorMarksPercentage}%</p>
                             <p style={{ fontWeight: 'bold', textAlign: 'center', color: '#666' }}>Resilience: {resilienceMarksPercentage}%</p>
+                            <p style={{ fontWeight: 'bold', textAlign: 'center', color: '#666' }}>Knowledge: {knowledgeMarksPercentage}%</p>
                         </div>
                     </div>
                     {/* Grades Section */}

@@ -9,22 +9,21 @@ export default function ShowClasses() {
   const [loading, setLoading] = useState(true); // State to track loading
   const [classes, setClasses] = useState([]); // State for classes
   const [id] = useState(useSelector((state) => state?.user?.user?.user?.class_id));
-  
-  // console.log(id);
 
   useEffect(() => {
     // Fetch timetable data by teacher
     TimeTableManager.getTimetableforStudentByClass(id)
       .then((res) => {
         const apiData = res.data.data;
-            // console.log(apiData)
+        console.log(apiData);
+
         // Transform API response into a usable format
         const formattedClasses = [];
         for (const [day, dayClasses] of Object.entries(apiData)) {
           dayClasses.forEach((classItem) => {
             formattedClasses.push({
               id: classItem._id,
-              teacher:classItem.teacher?.volunteer_details?.full_name || "N/A",
+              teacher: classItem.teacher?.volunteer_details?.full_name || "N/A",
               subject: classItem.course?.course_name || "N/A",
               timing: `${classItem.start_time} - ${classItem.end_time}`,
               day: day
@@ -38,7 +37,7 @@ export default function ShowClasses() {
         console.log(err);
         setLoading(false); // Ensure loading stops even if there's an error
       });
-  }, []);
+  }, [id]);
 
   // Function to get today's day name
   const getToday = () => {
@@ -54,7 +53,7 @@ export default function ShowClasses() {
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   // Filter classes based on selected day
-  const filteredClasses = searchDay
+  const filteredClasses = searchDay && searchDay !== ""
     ? classes.filter(classItem => classItem.day.toLowerCase() === searchDay.toLowerCase())
     : classes;
 
@@ -80,7 +79,7 @@ export default function ShowClasses() {
         <div className="search-filter" style={{ marginTop: '50px' }}>
           <span style={{ fontWeight: '600', marginRight: '20px' }}>Select Day </span>
           <select value={searchDay} onChange={(e) => setSearchDay(e.target.value)} className="sort-select">
-            <option value="">All Days</option>
+            <option value="">Select a Day</option> {/* Option to select no day */}
             {daysOfWeek.map((day, index) => (
               <option key={index} value={day}>{day}</option>
             ))}
@@ -101,7 +100,6 @@ export default function ShowClasses() {
             <thead>
               <tr>
                 <th>#</th>
-                
                 <th>Subject</th>
                 <th>Teacher</th>
                 <th>Timing</th>

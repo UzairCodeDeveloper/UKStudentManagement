@@ -67,7 +67,7 @@ export default function AddStudent() {
     e.preventDefault();
 
     // Basic validation
-    if (!forename || !surname || !gender || !dob || !doctorName || !doctorAddress || !gpSurgeryContact  || !guardianName || !relationToChild || !guardianAddress || !primaryContactNumber || !primaryContactNumber || !familyRegNo || !email) {
+    if (!forename || !surname || !gender || !dob || !doctorName || !doctorAddress || !gpSurgeryContact  || !guardianName || !relationToChild || !guardianAddress || !primaryContactNumber || !primaryContactNumber  || !email) {
       setError('Please fill in all required fields.');
       return;
     }

@@ -16,6 +16,7 @@ import DetailCourse from './Courses/DetailedCourse/DetailCourse';
 import ResourceOnlyDescription from './Courses/ResourceOnlyDescription.jsx/ResourceOnlyDescription'
 import CourseResources from './Courses/CourseResources/CourseResources'
 import Timetable from './Timetable/Timetable'
+import CourseHandouts from './Courses/CourseHandouts/CourseHandouts';
 export default function AdminDashboard() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -132,6 +133,7 @@ export default function AdminDashboard() {
         <Route path="/resources/:id" element={<ResourceOnlyDescription />} />
         <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/timetable" element={<Timetable />} />
+        <Route path="/handouts/:id" element={<CourseHandouts/>} />
         {/* <Route path="/courseResources/:id" element={<CourseResources/>} />
         <Route path="/addresource/:id" element={<AddResource/>} />
         <Route path="/courseResources/edit/:id" element={<EditResource/>} />

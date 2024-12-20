@@ -4,7 +4,7 @@ const teacherAttendanceController = require('../../controller/AttendanceControll
 const auth = require('../../middleware/adminAuth');
 const volunteerAuth = require('../../middleware/volunteerAuth');
 const adminAuth = require('../../middleware/adminAuth');
-const {FetchAttendanceRecord} =require('../../controller/AttendanceController/StudentAttendanceController')
+const {FetchAttendanceRecord,FetchReasonForLeave} =require('../../controller/AttendanceController/StudentAttendanceController')
 // Route to mark or update teacher attendance
 // POST /api/teacher-attendance
 router.post('/', teacherAttendanceController.markOrUpdateTeacherAttendance);
@@ -16,6 +16,8 @@ router.get('/teacher-attendance/:date',adminAuth, teacherAttendanceController.ge
 router.get('/search-by-teacher/:teacher_id',adminAuth, teacherAttendanceController.getSpecificTeacherAttendance);
 
 router.get('/fetchrecords/:class_id/:date', adminAuth, FetchAttendanceRecord);
+
+router.get('/fetchreasons/:class_id/:date', adminAuth, FetchReasonForLeave);
 
 
 router.get('/search-by-teacher',volunteerAuth, teacherAttendanceController.getSpecificTeacherAttendanceForTeacherPannel);

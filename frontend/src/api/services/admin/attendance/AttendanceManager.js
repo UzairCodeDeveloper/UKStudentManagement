@@ -22,6 +22,17 @@ const getAttendanceRecordByClassAndDate = (class_id,date) => {
 };
 
 
+const getReasonRecordByClassAndDate = (class_id,date) => {
+    const token = getToken();
+
+    return httpClient.get(`/teacher-attendance/fetchreasons/${class_id}/${date}`, {
+        headers: {
+            "x-auth-token": token,
+        },
+    });
+};
+
+
 
 // Mark or Teacher update attendance for a specific date
 const markAttendance = (data) => {
@@ -48,7 +59,8 @@ const exportedObject = {
     getAttendanceRecordByDate,
     markAttendance,
     getAttendanceRecordByClassAndDate,
-    markStudentAttendance
+    markStudentAttendance,
+    getReasonRecordByClassAndDate
 };
 
 export default exportedObject;

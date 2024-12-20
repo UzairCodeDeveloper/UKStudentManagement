@@ -85,11 +85,11 @@ export default function AdminHomeDashbboard() {
       
       familyManager.getAbsentees(studentIds)
         .then((res) => {
-          // console.log(res);
+          console.log(res);
 
           // Process the absentee data to group by studentId
           const groupedAbsentees = res.data.reduce((acc, record) => {
-            const { studentId, absentDate, attendanceId } = record;
+            const { studentId, absentDate, attendanceId, status } = record;
 
             // If studentId is not in the accumulator, initialize it
             if (!acc[studentId]) {
@@ -100,7 +100,7 @@ export default function AdminHomeDashbboard() {
             }
 
             // Add the absentDate and attendanceId to the student's absenteeRecords
-            acc[studentId].absenteeRecords.push({ attendanceId, absentDate });
+            acc[studentId].absenteeRecords.push({ attendanceId, absentDate, status });
 
             return acc;
           }, {});
@@ -447,17 +447,17 @@ export default function AdminHomeDashbboard() {
             {absenteesData.map(absentee => (
               <div key={absentee.studentId} style={{ marginBottom: '10px' }}>
                 <h6>{children.find(child => child.id === absentee.studentId)?.name}</h6>
-                <p>Absent Dates: {absentee.absenteeRecords.map(record => {
+                <p>Dates: {absentee.absenteeRecords.map(record => {
                   const d = new Date(record.absentDate);
                   const formattedDate = d.toLocaleDateString('en-US', {
                     year: '2-digit', // 2-digit year format (e.g., '24' for 2024)
                     month: '2-digit', // 2-digit month (e.g., '10' for October)
                     day: '2-digit', // 2-digit day (e.g., '11')
                   });
+                  const status=record.status
+                  //const dayName = d.toLocaleDateString('en-US', { weekday: 'long' }); // Get the full weekday name (e.g., 'Monday')
 
-                  const dayName = d.toLocaleDateString('en-US', { weekday: 'long' }); // Get the full weekday name (e.g., 'Monday')
-
-                  return `${formattedDate} (${dayName})`;
+                  return `${formattedDate} (${status}) `;
                 }).join(', ')}</p>
 
                 <input

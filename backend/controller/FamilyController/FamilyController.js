@@ -295,45 +295,46 @@ exports.checkAbsentees = async (req, res) => {
       const absenteeRecords = await Attendance.aggregate([
         {
           $match: {
-            'attendance.student_id': { $in: studentObjectIds },  // Match the student IDs in the attendance records
-            'attendance.status': 'absent',  // Ensure the attendance status is 'absent'
-            'attendance.reason_for_leave': { $in: [null, ''] }  // Reason for leave is null or empty
+            'attendance.student_id': { $in: studentObjectIds },
+            'attendance.status': { $in: ['absent', 'late'] }, // Check for both absent and late
+            'attendance.reason_for_leave': { $in: [null, ''] } // Reason is null or empty
           }
         },
         {
-          $unwind: '$attendance'  // Unwind the attendance array to access each student's attendance
+          $unwind: '$attendance' // Unwind the attendance array
         },
         {
           $match: {
-            'attendance.status': 'absent',  // Ensure the status is absent for the student
-            'attendance.reason_for_leave': { $in: [null, ''] }  // Ensure reason for leave is empty or null
-          }
-        },
-        {
-          $match: {
-            'attendance.student_id': { $in: studentObjectIds }  // Filter only for provided student IDs
+            'attendance.student_id': { $in: studentObjectIds },
+            'attendance.status': { $in: ['absent', 'late'] }, // Check for both absent and late
+            'attendance.reason_for_leave': { $in: [null, ''] } // Reason is null or empty
           }
         },
         {
           $lookup: {
-            from: 'users',  // Assuming you have a 'users' collection for student data
+            from: 'users', // Assuming the collection for student details is 'users'
             localField: 'attendance.student_id',
             foreignField: '_id',
             as: 'student'
           }
         },
         {
-          $unwind: '$student'  // Unwind the student array after lookup
+          $unwind: '$student' // Unwind the student array
         },
         {
           $project: {
-            studentId: '$attendance.student_id',  // Return the student ID
-            studentName: { $concat: ['$student.firstName', ' ', '$student.lastName'] },  // Concatenate first and last name
-            attendanceId: '$_id',  // Attendance record ID
-            absentDate: '$date'  // Assuming 'date' is the field storing the absence date
+            studentId: '$attendance.student_id', // Student ID
+            studentName: { $concat: ['$student.firstName', ' ', '$student.lastName'] }, // Full name
+            attendanceId: '$_id', // Attendance record ID
+            absentDate: '$date', // Date of absence/late
+            status: '$attendance.status' // Status (absent/late)
           }
+        },
+        {
+          $sort: { absentDate: -1 } // Sort by the date, most recent first
         }
       ]);
+      
   
       // If no absentee records found, return a 404 error
       if (absenteeRecords.length === 0) {

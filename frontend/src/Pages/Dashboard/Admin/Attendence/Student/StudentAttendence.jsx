@@ -40,10 +40,14 @@ export default function StudentAttendance() {
     console.log(dateString)
     AttendanceManager.getAttendanceRecordByClassAndDate(selectedClass, dateString)
       .then((response) => {
-        // console.log("Fetched Attendance Data: ", response.data.data);
+        console.log("Fetched Attendance Data: ", response.data.data);
         const updatedData = response.data.data.map(student => ({
           ...student,
-          status: student.status === 'present' ? 'present' : 'absent',
+          status:student.status === 'present'
+          ? 'present'
+          : student.status === 'late'
+            ? 'late'
+            : 'absent',
           behaviourMarks: student.behaviour_marks || '', // Ensure behaviourMarks exists
           knowledge: student.knowledge || '', // Ensure attitude exists
           resilience: student.resilience || '' // Ensure resilience exists
@@ -123,7 +127,14 @@ export default function StudentAttendance() {
   const handleStatusChange = (roll_no, newStatus) => {
     const updatedData = attendanceData.map(student =>
       student.roll_no === roll_no
-        ? { ...student, status: newStatus === 'P' ? 'present' : 'absent' }
+        ? {
+            ...student,
+            status:
+              newStatus === 'P' ? 'present' :
+              newStatus === 'A' ? 'absent' :
+              newStatus === 'L' ? 'late' :
+              'unknown' // Optional: handle unexpected newStatus values
+          }
         : student
     );
     setAttendanceData(updatedData);
@@ -207,8 +218,8 @@ export default function StudentAttendance() {
                     <th>Name</th>
                     <th>Status</th>
                     <th>Attitude</th>
-                    <th>knowledge</th>
                     <th>Resilience</th>
+                    <th>knowledge</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -227,6 +238,17 @@ export default function StudentAttendance() {
                             onClick={() => handleStatusChange(student.roll_no, 'P')}
                           >
                             P
+                          </button>
+
+                          <button
+                            className={`status-btn ${student.status === 'late' ? 'active' : ''}`}
+                            style={{
+                              backgroundColor: student.status === 'late' ? '#f1c40f' : 'transparent',
+                              color: student.status === 'late' ? 'white' : 'black'
+                            }}
+                            onClick={() => handleStatusChange(student.roll_no, 'L')}
+                          >
+                            L
                           </button>
                           <button
                             className={`status-btn ${student.status === 'absent' ? 'active' : ''}`}
@@ -253,11 +275,11 @@ export default function StudentAttendance() {
                         </div>
                       </td>
                       <td>
-                        <div className="attitude">
+                        <div className="resilience">
                           <input
                             type="number"
-                            value={student.knowledge}
-                            onChange={(e) => handleMarksChange(student.roll_no, 'knowledge', e.target.value)}
+                            value={student.resilience}
+                            onChange={(e) => handleMarksChange(student.roll_no, 'resilience', e.target.value)}
                             min="0"
                             max="5"
                             className="marks-input"
@@ -265,11 +287,11 @@ export default function StudentAttendance() {
                         </div>
                       </td>
                       <td>
-                        <div className="resilience">
+                        <div className="attitude">
                           <input
                             type="number"
-                            value={student.resilience}
-                            onChange={(e) => handleMarksChange(student.roll_no, 'resilience', e.target.value)}
+                            value={student.knowledge}
+                            onChange={(e) => handleMarksChange(student.roll_no, 'knowledge', e.target.value)}
                             min="0"
                             max="5"
                             className="marks-input"

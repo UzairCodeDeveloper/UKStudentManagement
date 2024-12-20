@@ -7,7 +7,8 @@ import { AiOutlineFile } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 import { Table } from 'react-bootstrap'; // Importing the Table component from react-bootstrap
 import ResourceManager from "../../../../../api/services/student/ResourceManager"
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function ShowClasses() {
   function toLondonTimeWithMinutes(dateString) {
     if (!dateString) return '';
@@ -90,8 +91,19 @@ export default function ShowClasses() {
   // Handle submission action
   const handleSubmit = () => {
     if (files.length > 0 && resource) {
+      // Display a loading toast while the submission is being processed
+      const loadingToastId = toast.loading('Submitting your resource, please wait...');
+  
       ResourceManager.submitResource(resource._id, files[0])
         .then((res) => {
+          // Update the toast on success
+          toast.update(loadingToastId, {
+            render: 'Submission successful!',
+            type: 'success',
+            isLoading: false,
+            autoClose: 3000, // Auto close after 3 seconds
+          });
+  
           console.log('Submission successful', res);
           setIsSubmitted(true);
           setSubmission(res.data);
@@ -99,7 +111,22 @@ export default function ShowClasses() {
           setShowDropzone(false);
           window.location.reload();
         })
-        .catch(() => setErrorMessage('Submission failed. Please try again.'));
+        .catch(() => {
+          // Update the toast on failure
+          toast.update(loadingToastId, {
+            render: 'Submission failed. Please try again.',
+            type: 'error',
+            isLoading: false,
+            autoClose: 3000, // Auto close after 3 seconds
+          });
+  
+          setErrorMessage('Submission failed. Please try again.');
+        });
+    } else {
+      // Show a warning toast if no files or resource are selected
+      toast.warn('Please select a resource and upload a file before submitting.', {
+        autoClose: 3000,
+      });
     }
   };
 
