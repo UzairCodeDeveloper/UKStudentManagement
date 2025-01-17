@@ -2,52 +2,134 @@ const Resource = require('../../models/Resource');
 const Submission = require('../../models/Submission');
 const Course = require('../../models/Course');
 const cloud = require('../../utils/cloudinaryConfig');
+const { uploadToS3,getPreSignedUrl } = require("../../utils/AwsConfig"); // Import S3 utility
 
 module.exports = {
     // Upload resource
+    // uploadResource: async (req, res) => {
+    //     try {
+    //         const { title, description, resource_type, course_id, due_date, submissionRequired, totalMarks } = req.body;
+
+    //         // Validate required fields
+    //         if (!title || !description || !resource_type || !course_id || !submissionRequired) {
+    //             return res.status(400).json({ msg: 'Title, description, resource type, course ID, and submission status are required.' });
+    //         }
+
+    //         const validResourceTypes = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'];
+    //         if (!validResourceTypes.includes(resource_type)) {
+    //             return res.status(400).json({ msg: 'Invalid resource type. Use one of: BOOK, ASSIGNMENT, SYLLABUS, HOMEWORK, OTHERS.' });
+    //         }
+
+    //         const course = await Course.findById(course_id);
+    //         if (!course) {
+    //             return res.status(404).json({ msg: 'Course not found.' });
+    //         }
+
+    //         let resourceUrl = null;
+    //         if (req.file) {
+    //             const result = await cloud.uploads(req.file.path);
+    //             resourceUrl = result.url;
+    //         }
+
+    //         const newResource = new Resource({
+    //             course: course_id,
+    //             title,
+    //             description,
+    //             resource_type,
+    //             resource_url: resourceUrl,
+    //             due_date,
+    //             submissionRequired,
+    //             totalMarks
+    //         });
+
+    //         await newResource.save();
+    //         res.status(201).json({ success: true, data: newResource });
+    //     } catch (error) {
+    //         console.error('Error uploading resource:', error.message);
+    //         res.status(500).json({ msg: 'Server error.' });
+    //     }
+    // },
+    
+
     uploadResource: async (req, res) => {
         try {
             const { title, description, resource_type, course_id, due_date, submissionRequired, totalMarks } = req.body;
-
+    
             // Validate required fields
             if (!title || !description || !resource_type || !course_id || !submissionRequired) {
-                return res.status(400).json({ msg: 'Title, description, resource type, course ID, and submission status are required.' });
+                return res.status(400).json({ msg: "Title, description, resource type, course ID, and submission status are required." });
             }
-
-            const validResourceTypes = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'];
+    
+            const validResourceTypes = ["BOOK", "ASSIGNMENT", "SYLLABUS", "HOMEWORK",,"QUIZ", "OTHERS"];
             if (!validResourceTypes.includes(resource_type)) {
-                return res.status(400).json({ msg: 'Invalid resource type. Use one of: BOOK, ASSIGNMENT, SYLLABUS, HOMEWORK, OTHERS.' });
+                return res.status(400).json({ msg: "Invalid resource type. Use one of: BOOK, ASSIGNMENT, SYLLABUS, HOMEWORK, OTHERS." });
             }
-
-            const course = await Course.findById(course_id);
+    
+            // Find course by ID
+            const course = await Course.findById(course_id).populate('class_id'); // Populate to get the class document
             if (!course) {
-                return res.status(404).json({ msg: 'Course not found.' });
+                return res.status(404).json({ msg: "Course not found." });
             }
-
-            let resourceUrl = null;
+    
+            // Get course_name and class_name
+            const courseName = course.course_name;
+            const className = course.class_id.class_name; // Assuming 'class_name' exists in the class document
+    
+            let resourceKey = null;
+    
+            // Check and upload file
             if (req.file) {
-                const result = await cloud.uploads(req.file.path);
-                resourceUrl = result.url;
+                const uploadParams = {
+                    file: req.file,
+                    courseName,
+                    className,
+                };
+    
+                // Pass courseName and className to S3 upload function
+                const result = await uploadToS3(req.file,className,courseName,title,"Teacher");
+                resourceKey = result.key; // Store the S3 key, not the URL
             }
-
+    
+            // Save resource in the database
             const newResource = new Resource({
                 course: course_id,
                 title,
                 description,
                 resource_type,
-                resource_url: resourceUrl,
+                resource_url: resourceKey, // Save key for future access
                 due_date,
                 submissionRequired,
-                totalMarks
+                totalMarks,
             });
-
+    
             await newResource.save();
             res.status(201).json({ success: true, data: newResource });
         } catch (error) {
-            console.error('Error uploading resource:', error.message);
-            res.status(500).json({ msg: 'Server error.' });
+            console.error("Error uploading resource:", error.message);
+            res.status(500).json({ msg: "Server error." });
         }
     },
+    
+
+getPreSignedUrlController: async (req, res) => {
+    try {
+        const { fileKey } = req.body; // Extract fileKey from request body
+        if (!fileKey) {
+            return res.status(400).json({ message: 'File key is required' });
+        }
+        const preSignedUrl = await getPreSignedUrl(fileKey); // Generate pre-signed URL
+        res.status(200).json({ success: true, message: 'Pre-signed URL generated successfully', preSignedUrl });
+    } catch (error) {
+        console.error('Error generating pre-signed URL:', error);
+        res.status(500).json({ success: false, message: 'Error generating pre-signed URL', error: error.message });
+    }
+},
+
+
+
+
+
+
 
     // Update resource
     updateResource: async (req, res) => {

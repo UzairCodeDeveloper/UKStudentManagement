@@ -22,6 +22,13 @@ export default function ShowClasses() {
         setDescription(res.data.data.description)
         setSubmissionTime( new Date(res.data.data.createdAt).toLocaleDateString())
         if (res.data.data.resource_url) {
+          ResourceManager.getPreSignedUrl(res.data.data.resource_url).
+          then((res)=>{
+            setFileLink(res.data.preSignedUrl)
+          })
+          .catch((err)=>{
+            console.log(err)
+          })
           setFileLink(res.data.data.resource_url); // Set the file link
           setfileTitle("Resource File"); // Set a title for the link
         } else {

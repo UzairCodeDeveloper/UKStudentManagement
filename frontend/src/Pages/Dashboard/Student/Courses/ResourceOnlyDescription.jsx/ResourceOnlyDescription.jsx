@@ -2,6 +2,7 @@ import { useEffect, useState} from 'react';
 import { Table } from 'react-bootstrap'; // Importing the Table component from react-bootstrap
 import { useParams } from 'react-router-dom';
 import ResourceManager from "../../../../../api/services/student/ResourceManager"
+import CourseManager from '../../../../../api/services/student/CourseManager'
 import Loader from '../../../../../components/Loader/Loader';
 export default function ShowClasses() {
   const [submissionTime, setSubmissionTime] = useState('2024-11-17 10:00 AM'); // Store submission time, you can replace this with actual time
@@ -24,7 +25,13 @@ export default function ShowClasses() {
         setSubmissionTime( new Date(res.data.data.createdAt).toLocaleDateString())
         // setFileLink(res.data.data.resource_url)
         if (res.data.data.resource_url) {
-          setFileLink(res.data.data.resource_url); // Set the file link
+          CourseManager.getPreSignedUrl(res.data.data.resource_url).
+          then((res)=>{
+            setFileLink(res.data.preSignedUrl)
+          })
+          .catch((err)=>{
+            console.log(err)
+          })
           setfileTitle("Resource File"); // Set a title for the link
         } else {
           setfileTitle("No File"); // Indicate no file is available

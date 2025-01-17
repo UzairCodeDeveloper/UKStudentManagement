@@ -12,9 +12,9 @@ const {
 const { pdfUpload } = require('../../config/multerConfigPdf'); 
 const studentAuth = require('../../middleware/studentAuth');  
 const teacherAuth = require('../../middleware/volunteerAuth'); 
-
+const {upload} =require("../../utils/FileMulter")
 // Add a submission (Student)
-router.post('/submit', studentAuth, pdfUpload.single('file'), addSubmission);
+router.post('/submit', studentAuth, upload.single('file'), addSubmission);
 
 // Get all submissions for a resource (Teacher)
 router.get('/resource/:resourceId', teacherAuth, getSubmissionsByResource);

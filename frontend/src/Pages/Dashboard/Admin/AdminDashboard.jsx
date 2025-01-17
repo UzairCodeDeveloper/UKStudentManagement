@@ -38,6 +38,9 @@ import AllGrading from './Grading/AllGrading';
 import Password from './Password/Password';
 import { FaMarker } from "react-icons/fa";
 import StudentAbsentReason from './Attendence/StudentReason/StudentAbsentReason';
+import ClassPerformance from './Reports/ClassPerformance'
+import StudentPerformance from './Reports/StudentPerformance/StudentPerformance'
+import StudentDetailedPerformance from './Reports/StudentPerformance/StudentDetailedPerformance'
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -56,6 +59,7 @@ export default function AdminDashboard() {
     const [isClassOpen, setIsClassOpen] = useState(false);
     const [isSubjectOpen, setIsSubjectOpen] = useState(false);
     const [isAttendenceOpen, setIsAttendenceOpen] = useState(false);
+    const [isReportOpen, setIsReportOpen] = useState(false);
     const [activeLink, setActiveLink] = useState('/');
     const [isSessionOpen, setIsSessionOpen] = useState(false);
     const [isGradesOpen, setIsGradesOpen] = useState(false);
@@ -263,6 +267,41 @@ export default function AdminDashboard() {
           </ul>
 
 
+          <li
+            className={`sidebar-item sidebar-item-with-submenu`}
+            onClick={() => setIsReportOpen(!isReportOpen)}
+          >
+            <div>
+              <GiNotebook className="sidebar-icon" style={{ marginRight: '10px' }} /> Stduent Report
+            </div>
+            <span className="sidebar-toggle">
+              {isReportOpen ? <AiOutlineMinus /> : <AiOutlinePlus />}
+            </span>
+          </li>
+          <ul className={`sub-menu ${isReportOpen ? 'open' : ''}`}>
+            {/* <li>
+              <Link to="/classwise" className={`sub-menu-item`}>
+                Classwise Performance
+              </Link>
+            </li> */}
+            <li>
+              <Link to="/studentReport" className={`sub-menu-item`}>
+                Summarized
+              </Link>
+            </li>
+            <li>
+              <Link to="/studentDetailedReport" className={`sub-menu-item`}>
+                Detailed
+              </Link>
+            </li>
+            {/* <li>
+              <Link to="/employee-attendance" className={`sub-menu-item`}>
+                Employee Attendance
+              </Link>
+            </li> */}
+            
+          </ul>
+
             
 
 
@@ -342,6 +381,10 @@ export default function AdminDashboard() {
         <Route path="/add-grades" element={<AddGrading />} />
         <Route path="/security" element={<Password />} />
         <Route path="/reasons" element={<StudentAbsentReason />} />
+        <Route path="/classwise" element={<ClassPerformance />} />
+        <Route path="/StudentReport" element={<StudentPerformance />} />
+        <Route path="/StudentDetailedReport" element={<StudentDetailedPerformance />} />
+
 
         <Route path="*" element={<AdminHomeDashbboard/>} />
       </Routes>

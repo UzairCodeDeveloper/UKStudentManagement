@@ -60,7 +60,7 @@ export default function AdminDashboard() {
       <Routes>
         <Route path="/" element={<FamilyHomeDashboard />} />
         <Route path="/studentReport/:id" element={<StudentReport/>} />
-        <Route path="/settings" element={<UserProfile role='Family' />} />
+        <Route path="/user-profile" element={<UserProfile role='Family' />} />
         <Route path="*" element={<FamilyHomeDashboard />} />
       </Routes>
     );

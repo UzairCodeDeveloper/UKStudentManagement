@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { uploadResource, getResourcesByCourse, deleteResource,updateResource,getResourceById } = require('../../controller/TeacherControllers/ResourceController');
+const { uploadResource, getResourcesByCourse, deleteResource,updateResource,getResourceById,getPreSignedUrlController } = require('../../controller/TeacherControllers/ResourceController');
 const { pdfUpload } = require('../../config/multerConfigPdf'); // Correctly destructure pdfUpload
 const volunteerAuth = require('../../middleware/volunteerAuth'); // Assuming you use an auth middleware
 const studentAuth = require('../../middleware/studentAuth'); 
+const { upload } = require('../../utils/FileMulter'); // Use the updated multer config
 
+
+router.put('/getPresignedUrl',volunteerAuth,getPreSignedUrlController); 
+
+router.put('/getPresignedUrlforStudent',studentAuth,getPreSignedUrlController); 
 // Upload a resource
-router.post('/upload', volunteerAuth, pdfUpload.single('pdf'), uploadResource); // Use pdfUpload directly
+router.post('/upload', volunteerAuth, upload.single('pdf'), uploadResource); // Use pdfUpload directlyrectly
 
 // Get all resources for a specific course
 router.get('/:course_id', volunteerAuth, getResourcesByCourse);
@@ -20,6 +25,7 @@ router.get('/get/:id', volunteerAuth, getResourceById);
 
 // Update a resource by ID
 router.put('/update/:id', volunteerAuth, updateResource); // PUT request to update
+
 
 
 

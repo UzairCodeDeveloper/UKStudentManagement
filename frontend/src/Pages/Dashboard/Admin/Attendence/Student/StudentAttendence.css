@@ -54,4 +54,68 @@
   .mark-button:hover, .update-button:hover {
     background-color: #0056b3;
   }
-  
+  /* Styling for Course Titles */
+.course-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* Styling for Type Titles (Assignments, Homeworks, Quizzes) */
+.type-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #555;
+  margin-top: 20px;
+}
+
+/* Styling for Report Tables */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.report-table th, .report-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.report-table th {
+  background-color: #f4f4f4;
+  color: #555;
+}
+
+/* Pagination Styles */
+.pagination-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination {
+  display: inline-flex;
+  list-style-type: none;
+  padding: 0;
+}
+
+.pagination-button {
+  padding: 10px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination-button:hover {
+  background-color: #0056b3;
+}
+
+.pagination-button.active {
+  background-color: #0056b3;
+}

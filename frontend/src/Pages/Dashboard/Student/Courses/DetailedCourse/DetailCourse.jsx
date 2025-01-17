@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker'; // Ensure react-datepicker is install
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
 import '../../../Teacher/Courses/DetailCourse/DetailedCourse.css';
 import { MdOutlinePeopleAlt } from "react-icons/md";
-
+import { IoBookSharp } from "react-icons/io5";
 import { LuFolderSymlink } from "react-icons/lu";
 
 import { GrResources } from "react-icons/gr";
@@ -77,7 +77,7 @@ export default function DetailCourse() {
 
   // State for managing the current month being displayed
   const [currentMonthOffset, setCurrentMonthOffset] = useState(0);
-
+  const [booklink,setBooklink]=useState('')
   // Get the current month, previous month, and next month based on offset
   const currentMonth = dayjs().add(currentMonthOffset, 'month');
   const nextMonth = currentMonth.add(1, 'month');
@@ -105,6 +105,16 @@ export default function DetailCourse() {
 
   const params = useParams();
   const id = params.id;
+  useEffect(()=>{
+    CourseManager.getBookLink({role:"Student", courseId:id})
+    .then((res)=>{
+      // console.log(res.data.bookLink)
+      setBooklink(res.data.bookLink)
+    })
+    .catch((err)=>{
+      // console.log(err)
+    })
+  },[])
   console.log(id)
   useEffect(() => {
     setLoading(true); // Set loading to true before fetching
@@ -135,7 +145,15 @@ export default function DetailCourse() {
     return <Loader />; // Show loader while loading
   }
 
-
+  const getUrl=(value)=>{
+    CourseManager.getPreSignedUrl(value)
+    .then((res)=>{
+      window.open(res.data.preSignedUrl, '_blank');
+    })
+    .catch((err)=>{
+      console.log("Failed to Fetch Resource")
+    })
+  }
 
   return (
     <div className="courses-dashboard">
@@ -196,6 +214,13 @@ export default function DetailCourse() {
                       e.preventDefault(); // Prevent the default anchor behavior
                       navigate(`/handouts/${id}`); // Use navigate to change route
                     }}>Handouts</a></span>
+                  </div>
+                  <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px', marginTop: '10px' }}>
+                    <IoBookSharp style={{ backgroundColor: '#ff6514', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
+                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={(e) => {
+                      e.preventDefault();
+                      getUrl(booklink)
+                    }}>BOOK</a></span>
                   </div>
                 </div>
               </div>

@@ -114,7 +114,7 @@ export default function AddStudent() {
   
   // console.log(selectedCertificates)
   
- console.log(studentData)
+//  console.log(studentData)
 
  StudentServices.createStudent(studentData)
  .then((res) => {

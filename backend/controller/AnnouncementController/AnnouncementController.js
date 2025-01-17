@@ -23,7 +23,7 @@ module.exports = {
             await newAnnouncement.save();
             res.status(201).json({ success: true, data: newAnnouncement });
         } catch (error) {
-            console.error('Error creating announcement:', error.message);
+            console.error('Error creating announcement:');
             res.status(500).json({ msg: 'Server Error' });
         }
     },
@@ -34,7 +34,7 @@ module.exports = {
             const announcements = await Announcement.find().sort({ date: -1 });
             res.status(200).json({ success: true, data: announcements });
         } catch (error) {
-            console.error('Error fetching announcements:', error.message);
+            console.error('Error fetching announcements:');
             res.status(500).json({ msg: 'Server Error' });
         }
     },
@@ -59,7 +59,7 @@ module.exports = {
             // Respond with the fetched announcements
             res.status(200).json({ success: true, data: announcements });
         } catch (error) {
-            console.error('Error fetching announcements for teachers:', error.message);
+            console.error('Error fetching announcements for teachers:');
             res.status(500).json({ msg: 'Server Error' });
         }
     },
@@ -83,7 +83,7 @@ module.exports = {
             // Respond with the fetched announcements
             res.status(200).json({ success: true, data: announcements });
         } catch (error) {
-            console.error('Error fetching announcements for teachers:', error.message);
+            console.error('Error fetching announcements for teachers:');
             res.status(500).json({ msg: 'Server Error' });
         }
     },
@@ -107,7 +107,7 @@ module.exports = {
             // Respond with the fetched announcements
             res.status(200).json({ success: true, data: announcements });
         } catch (error) {
-            console.error('Error fetching announcements for teachers:', error.message);
+            console.error('Error fetching announcements for teachers:');
             res.status(500).json({ msg: 'Server Error' });
         }
     },
@@ -125,7 +125,7 @@ module.exports = {
             await announcement.remove();
             res.status(200).json({ success: true, msg: 'Announcement deleted successfully' });
         } catch (error) {
-            console.error('Error deleting announcement:', error.message);
+            console.error('Error deleting announcement:');
             res.status(500).json({ msg: 'Server Error' });
         }
     },

@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AiOutlinePlus } from "react-icons/ai"; // Import icons
 import CourseManager from '../../../../../api/services/teacher/course/courseManager'
+// import { getPreSignedUrl } from '../../../../../../../backend/utils/AwsConfig'
 export default function ShowStudents() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('a-z');
@@ -35,6 +36,16 @@ export default function ShowStudents() {
         setLoading(false);
       });
   }, [refresh]);
+
+  const getUrl=(value)=>{
+    CourseManager.getPreSignedUrl(value)
+    .then((res)=>{
+      window.open(res.data.preSignedUrl, '_blank');
+    })
+    .catch((err)=>{
+      console.log("Failed to Fetch Resource")
+    })
+  }
 
 
 
@@ -163,7 +174,18 @@ export default function ShowStudents() {
               {filteredResources.map((student,key) => (
                 <tr key={student._id}>
                   <td>{key+1}</td>
-                  <td><a href={student.resource_url} target='_blank'>{student.title}</a></td>
+                  <td>
+                    <a
+                      onClick={() => { if (student.resource_url) getUrl(student.resource_url); }}
+                      style={{
+                        color: student.resource_url ? '#007bff' : 'inherit',
+                        textDecoration: student.resource_url ? 'underline' : 'none',
+                        cursor: student.resource_url ? 'pointer' : 'default',
+                      }}
+                    >
+                      {student.title}
+                    </a>
+                  </td>
                   {
                     (student?.due_date === null) ? <td>Not Set</td> : <td>{new Date(student?.due_date).toLocaleDateString()}</td>
                   }

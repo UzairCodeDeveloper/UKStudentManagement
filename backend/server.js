@@ -94,6 +94,9 @@ app.use('/api/password', require('./routes/api/password'));
 
 // Family APIs
 app.use('/api/family', require('./routes/api/family'));
+app.use('/api/report', require('./routes/api/report'));
+app.use('/api/userprofile', require('./routes/api/userprofile'));
+app.use('/api/getbook', require('./routes/api/getbook'));
 
 // (async () => {
 //     try {

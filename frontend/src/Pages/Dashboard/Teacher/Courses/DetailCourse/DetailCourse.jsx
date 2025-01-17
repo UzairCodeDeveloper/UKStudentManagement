@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import { SiBookstack } from "react-icons/si";
+import { IoBookSharp } from "react-icons/io5";
 dayjs.extend(isBetween); // Extend with the isBetween plugin
 import DatePicker from 'react-datepicker'; // Ensure react-datepicker is installed
 import 'react-datepicker/dist/react-datepicker.css'; // Import date picker styles
 import './DetailedCourse.css';
 import { MdOutlinePeopleAlt } from "react-icons/md";
-
 import { LuFolderSymlink } from "react-icons/lu";
 
 import { GrResources } from "react-icons/gr";
@@ -21,6 +20,7 @@ export default function DetailCourse() {
   const [courseData, setCourseData] = useState({});
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [bookLink,setbookLink] =useState('')
   // Course duration constants
   const courseDurationMonths = 15;
   const navigate = useNavigate();
@@ -107,8 +107,20 @@ export default function DetailCourse() {
 
   const params = useParams();
   const id = params.id;
-  console.log(id)
+  // console.log(id)
   useEffect(() => {
+
+    CourseManager.getBookLink({role:"Teacher", courseId:id})
+    .then((res)=>{
+      
+      setbookLink(res.data.bookLink)
+    })
+    .catch((err)=>{
+      // console.log(err)
+    })
+
+
+
     setLoading(true); // Set loading to true before fetching
     // Fetch the course and resources separately
 CourseManager.getCourseByIdInstructor(id)
@@ -126,6 +138,8 @@ CourseManager.getCourseByIdInstructor(id)
 .finally(() => {
   setLoading(false); // Set loading to false once course data is fetched
 });
+
+
 
 // Fetch the resources separately
 CourseManager.getResourcesByCourse(id)
@@ -157,6 +171,15 @@ CourseManager.getResourcesByCourse(id)
 
 
 
+  const getUrl=(value)=>{
+    CourseManager.getPreSignedUrl(value)
+    .then((res)=>{
+      window.open(res.data.preSignedUrl, '_blank');
+    })
+    .catch((err)=>{
+      console.log("Failed to Fetch Resource")
+    })
+  }
   return (
     <div className="courses-dashboard">
       <h3>{courseData?.course?.course_name}</h3>
@@ -216,6 +239,13 @@ CourseManager.getResourcesByCourse(id)
                       e.preventDefault(); // Prevent the default anchor behavior
                       navigate(`/handouts/${id}`); // Use navigate to change route
                     }}>Handouts</a></span>
+                  </div>
+                  <div className='accordionBox' style={{ border: '1px solid #dee2e6', padding: '20px', borderRadius: '10px', marginTop: '10px' }}>
+                    <IoBookSharp style={{ backgroundColor: '#ff6514', color: 'white', fontSize: '3rem', padding: '5px', borderRadius: '5px' }} />
+                    <span style={{ fontSize: '1.2rem', marginLeft: '20px' }}><a href='' style={{ cursor: 'pointer' }} onClick={(e) => {
+                      e.preventDefault(); // Prevent the default anchor behavior
+                      getUrl(bookLink)
+                    }}>BOOK</a></span>
                   </div>
                 </div>
               </div>

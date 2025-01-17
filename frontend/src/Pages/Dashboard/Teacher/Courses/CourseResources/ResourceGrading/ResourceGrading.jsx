@@ -4,16 +4,16 @@ import Loader from "../../../../../../components/Loader/Loader";
 import Swal from "sweetalert2";
 import ResourceManager from "../../../../../../api/services/student/ResourceManager";
 import { useParams } from "react-router-dom";
-
+import CourseManager from '../../../../../../api/services/teacher/course/courseManager'
 export default function ShowClasses() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("a-z");
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState([]);
   const [refresh, setRefresh] = useState(false);
-  const [totalMarks,setTotalMarks]=useState('')
+  const [totalMarks, setTotalMarks] = useState('')
   const params = useParams();
-  
+
 
   useEffect(() => {
     setLoading(true);
@@ -29,6 +29,18 @@ export default function ShowClasses() {
         setLoading(false);
       });
   }, [refresh, params.id]);
+
+
+
+  const getUrl = (value) => {
+    CourseManager.getPreSignedUrl(value)
+      .then((res) => {
+        window.open(res.data.preSignedUrl, '_blank');
+      })
+      .catch((err) => {
+        console.log("Failed to Fetch Resource")
+      })
+  }
   if (loading) {
     return <Loader />; // Show the loader if loading
   }
@@ -142,9 +154,17 @@ export default function ShowClasses() {
 
                   <td>
                     {submission.submission_url ? (
-                      <a href={submission.submission_url} target="_blank">
+                      <a
+                        onClick={() => { if (submission?.submission_url) getUrl(submission.submission_url); }}
+                        style={{
+                          color: submission?.submission_url ? '#007bff' : 'inherit',
+                          textDecoration: submission?.submission_url ? 'underline' : 'none',
+                          cursor: submission?.submission_url ? 'pointer' : 'default',
+                        }}
+                      >
                         View File
                       </a>
+
                     ) : (
                       "No File"
                     )}
@@ -210,8 +230,8 @@ export default function ShowClasses() {
 
     // Prepare the data to be sent
     const data = {
-        submissionId: submission._id, // Use the submission's ID
-        obtained_marks: submission.obtained_marks, // Marks obtained
+      submissionId: submission._id, // Use the submission's ID
+      obtained_marks: submission.obtained_marks, // Marks obtained
     };
 
     // Send the data to the backend via ResourceManager.saveMarks

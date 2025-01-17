@@ -20,12 +20,33 @@ const getCourseForStudent = (id) => {
     });
 };
 
+const getPreSignedUrl = (fileKey) => {
+  const token = getToken(); // Get the token from Redux state or elsewhere
+  // console.log(fileKey); // Log to verify the fileKey
+
+  return httpClient.put("/resources/getPresignedUrlforStudent", {fileKey}, {
+    headers: {
+      "x-auth-token": token,   
+    },
+  });
+};
+
+const getBookLink = (data) => {
+    const token = getToken(); 
+    return httpClient.post("/getbook/Studentbooks",data, {
+      headers: {
+        "x-auth-token": token,  
+      },
+    });
+  };
 
 
 
 const exportedObject = {
     getDetailedCourse,
-    getCourseForStudent
+    getCourseForStudent,
+    getPreSignedUrl,
+    getBookLink
 };
 
 export default exportedObject;

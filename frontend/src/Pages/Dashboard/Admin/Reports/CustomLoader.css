@@ -1,0 +1,64 @@
+.popup-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .loader-content {
+    text-align: center;
+    color: #fff;
+  }
+  .performance-table {
+    overflow-x: auto;
+    margin-top: 20px;
+  }
+  table {
+    min-width: 600px;
+  }
+  
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+    left: 50px;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loader-content p {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .pdf-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: 20px;
+    font-size: 16px;
+  }
+  
+  .pdf-button:hover {
+    background-color: #45a049;
+  }
+  

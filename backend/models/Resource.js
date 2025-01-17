@@ -26,7 +26,7 @@ const resourceSchema = new Schema({
     },
     resource_type: {
         type: String,
-        enum: ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'], // Allowed types of resources
+        enum: ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK','QUIZ', 'OTHERS'], // Allowed types of resources
         required: true,
     },
     resource_url: {

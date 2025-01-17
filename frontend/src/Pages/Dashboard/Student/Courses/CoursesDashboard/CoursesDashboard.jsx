@@ -13,6 +13,7 @@ export default function CoursesDashboard() {
     CourseManager.getAllStudentCourses()
       .then(res => {
         // Check if res.data is an array before setting it to courses
+        console.log(res)
         if (Array.isArray(res.data)) {
           setCourses(res.data);
         } else {
@@ -68,8 +69,8 @@ export default function CoursesDashboard() {
               >
                 <img  src={imageUrls[index % imageUrls.length]} alt={course.course_name} className="course-image" />
                 <div className="course-content">
-                  <p>{course.courseCode}</p>
                   <h4>{course.course_name}</h4>
+                  <p>{course.instructor.volunteer_details.full_name}</p>
                   <div className="completion-bar">
                     <span>0 % complete</span>
                     <div className="progress-bar">

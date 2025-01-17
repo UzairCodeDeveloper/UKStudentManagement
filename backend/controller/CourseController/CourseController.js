@@ -1,7 +1,68 @@
 const Course = require('../../models/Course');
 const Class = require('../../models/Class');
 const Volunteer = require('../../models/Volunteer');
+const Book = require('../../models/books')
 // Create a new course
+// const createCourse = async (req, res) => {
+//     const { course_name, course_description, class_id, volunteer_id } = req.body;
+  
+//     try {
+//       // Validation checks
+//       if (!course_name) {
+//         return res.status(400).json({ msg: 'Course name is required' });
+//       }
+//       if (!class_id) {
+//         return res.status(400).json({ msg: 'Class ID is required' });
+//       }
+//       if (!volunteer_id) {
+//         return res.status(400).json({ msg: 'Instructor ID is required' });
+//       }
+
+  
+//       // Check if the course already exists for the class
+//       const course = await Course.findOne({ course_name, class_id });
+      
+//       if (course) {
+//         return res.status(400).json({ msg: 'Course already exists' });
+//       }
+
+//       const classDetails = await Class.findById(class_id);
+
+//         if (!classDetails) {
+//             return res.status(404).json({ msg: 'Class not found' });
+//         }
+
+//         const instructor = await Volunteer.findById(volunteer_id);
+
+//         if (!instructor) {
+//             return res.status(404).json({ msg: 'Instructor not found' });
+//         }
+
+//         const volunteer = await Volunteer.findById(volunteer_id);
+
+//         if (!volunteer) {
+//             return res.status(404).json({ msg: 'Instructor not found' });
+//         }
+  
+//       // Create a new course instance
+//       const newCourse = new Course({
+//         course_name,
+//         course_description,
+//         class_id,
+//         instructor: volunteer_id,
+//       });
+  
+//       // Save the course to the database
+//       await newCourse.save();
+  
+//       // Respond with success message
+//       res.status(201).json({ msg: 'Course created successfully', course: newCourse });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).json({ msg: 'Server Error' });
+//     }
+//   };
+
 const createCourse = async (req, res) => {
     const { course_name, course_description, class_id, volunteer_id } = req.body;
   
@@ -16,32 +77,22 @@ const createCourse = async (req, res) => {
       if (!volunteer_id) {
         return res.status(400).json({ msg: 'Instructor ID is required' });
       }
-
   
       // Check if the course already exists for the class
       const course = await Course.findOne({ course_name, class_id });
-      
       if (course) {
         return res.status(400).json({ msg: 'Course already exists' });
       }
-
+  
       const classDetails = await Class.findById(class_id);
-
-        if (!classDetails) {
-            return res.status(404).json({ msg: 'Class not found' });
-        }
-
-        const instructor = await Volunteer.findById(volunteer_id);
-
-        if (!instructor) {
-            return res.status(404).json({ msg: 'Instructor not found' });
-        }
-
-        const volunteer = await Volunteer.findById(volunteer_id);
-
-        if (!volunteer) {
-            return res.status(404).json({ msg: 'Instructor not found' });
-        }
+      if (!classDetails) {
+        return res.status(404).json({ msg: 'Class not found' });
+      }
+  
+      const instructor = await Volunteer.findById(volunteer_id);
+      if (!instructor) {
+        return res.status(404).json({ msg: 'Instructor not found' });
+      }
   
       // Create a new course instance
       const newCourse = new Course({
@@ -54,13 +105,42 @@ const createCourse = async (req, res) => {
       // Save the course to the database
       await newCourse.save();
   
+      // Check if a book record with the same class_id already exists
+      const existingBooks = await Book.findOne({ class_id });
+      if (!existingBooks) {
+        // Create two new book records with roles "Student" and "Teacher"
+        const bookStudent = new Book({
+          course_id: newCourse._id,
+          class_id,
+          role: 'Student',
+          book_link: '', // Set book link if required
+        });
+  
+        const bookTeacher = new Book({
+          course_id: newCourse._id,
+          class_id,
+          role: 'Teacher',
+          book_link: '', // Set book link if required
+        });
+  
+        // Save both book records to the database
+        await bookStudent.save();
+        await bookTeacher.save();
+      }
+  
       // Respond with success message
-      res.status(201).json({ msg: 'Course created successfully', course: newCourse });
+      res.status(201).json({
+        msg: 'Course created successfully with associated book records',
+        course: newCourse,
+      });
     } catch (error) {
       console.error(error.message);
       res.status(500).json({ msg: 'Server Error' });
     }
   };
+  
+  
+  
   
 // Get all courses
 const getAllCourses = async (req, res) => {

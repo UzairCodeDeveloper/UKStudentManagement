@@ -1,7 +1,9 @@
 const Submission = require('../../models/Submission');
 const cloud = require('../../utils/cloudinaryConfig');
-
-
+const { uploadToS3 } = require("../../utils/AwsConfig"); // Import S3 utility
+const Resource =require("../../models/Resource")
+const Course=require('../../models/Course')
+const Class=require('../../models/Class')
 // Add and Update Submission (Student)
 exports.addSubmission = async (req, res) => {
     const { resource } = req.body;
@@ -13,12 +15,42 @@ exports.addSubmission = async (req, res) => {
     }
 
     try {
-        let submissionUrl = null;
+        // Fetch the resource details
+        const resourceDetails = await Resource.findById(resource);
+        if (!resourceDetails) {
+            return res.status(404).json({ success: false, message: 'Resource not found' });
+        }
 
+        const resourceTitle = resourceDetails.title;
+
+        // Fetch the course details
+        const courseDetails = await Course.findById(resourceDetails.course);
+        if (!courseDetails) {
+            return res.status(404).json({ success: false, message: 'Course not found' });
+        }
+
+        const courseName = courseDetails.course_name;
+
+        // Fetch the class details
+        const classDetails = await Class.findById(courseDetails.class_id);
+        if (!classDetails) {
+            return res.status(404).json({ success: false, message: 'Class not found' });
+        }
+
+        const className = classDetails.class_name;
+
+        let submissionUrl = null;
+        // console.log(className,courseName,resourceTitle)
         // Check if a file is uploaded
         if (req.file) {
-            const result = await cloud.uploads(req.file.path);
-            submissionUrl = result.url;
+            const result = await uploadToS3(
+                req.file,
+                className,
+                courseName,
+                resourceTitle,"Student",
+                
+            );
+            submissionUrl = result.key;
         } else {
             return res.status(400).json({ success: false, message: 'File upload is required' });
         }
@@ -29,7 +61,7 @@ exports.addSubmission = async (req, res) => {
         if (existingSubmission) {
             // Update the existing submission
             existingSubmission.submission_url = submissionUrl;
-            existingSubmission.updated_at = Date.now(); // Optional: Add a timestamp for tracking updates
+            existingSubmission.updated_at = Date.now();
             await existingSubmission.save();
 
             return res.status(200).json({
@@ -58,6 +90,7 @@ exports.addSubmission = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
+
 
 
 

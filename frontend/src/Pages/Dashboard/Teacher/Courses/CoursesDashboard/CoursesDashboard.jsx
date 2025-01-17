@@ -13,6 +13,7 @@ export default function CoursesDashboard() {
     CourseManager.getAllTeacherCourses()
       .then(res => {
         // Check if res.data is an array before setting it to courses
+        // console.log(res)
         if (Array.isArray(res.data)) {
           setCourses(res.data);
         } else {

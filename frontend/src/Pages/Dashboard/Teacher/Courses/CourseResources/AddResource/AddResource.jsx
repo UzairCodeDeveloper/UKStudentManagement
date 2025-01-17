@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 import { AiOutlineHome } from "react-icons/ai";
 import { useDropzone } from 'react-dropzone';
 import { AiOutlineFileAdd, AiFillFilePdf } from "react-icons/ai";
@@ -17,68 +18,118 @@ export default function AddResource() {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalMarks, setTotalMarks] = useState("5")
-  const resources = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'OTHERS'];
+  const resources = ['BOOK', 'ASSIGNMENT', 'SYLLABUS', 'HOMEWORK', 'QUIZ','OTHERS'];
   const submission = ['No', 'Yes']
   const params = useParams();
   const id = params.id;
 
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // alert(submissionRequired)
+  
+    // Prepare the data to be sent
     const resourceData = {
       resource_type: selectedResource,
       title: resourceTitle,
-      description, // Include description in the submission
+      description,
       course_id: id,
       due_date: selectedDate,
-      pdf: uploadedFile,// Single file upload
+      pdf: uploadedFile,
       submissionRequired,
-      totalMarks:totalMarks
+      totalMarks: totalMarks
     };
-    // console.log(resourceData)
+  
+    // Show loading alert
+    Swal.fire({
+      title: 'Uploading Resource...',
+      text: 'Please wait while we upload the resource.',
+      // imageUrl: '/path-to-your-loader.gif', // Optional: You can add a custom loader image
+      imageWidth: 100,
+      imageHeight: 100,
+      imageAlt: 'Loading',
+      showConfirmButton: false,
+      allowOutsideClick: false, // Disable closing the modal during upload
+      didOpen: () => {
+        Swal.showLoading(); // Show loading spinner
+      }
+    });
+  
+    // Set loading state
     setLoading(true);
+  
     CourseManager.uploadResource(resourceData)
       .then((response) => {
-        setLoading(true);
-        // console.log('Resource uploaded successfully:', response.data);
-        alert("Resource assigned successfully");
-        setLoading(false)
+        setLoading(false);
+        Swal.close(); // Close the loader
+  
+        // Show success message and navigate back
+        Swal.fire({
+          title: 'Success!',
+          text: 'Resource assigned successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          // Navigate to the previous page after the success message is dismissed
+          window.history.back(); // Go to the previous page
+        });
+  
         // Reset fields after successful submission
         setResourceTitle('');
         setDescription('');
         setSelectedResource('');
         setSelectedDate('');
         setTotalMarks('');
-        setResourceTitle('')
-        setsubmissionRequired('')
+        setsubmissionRequired('');
         setUploadedFile(null);
       })
       .catch((error) => {
-        console.error('Error uploading resource:', error);
-        alert("Failed to upload resource");
-        setLoading(false)
+        setLoading(false);
+        Swal.close(); // Close the loader
+  
+        // Show error message
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to upload resource. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       });
   };
+  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: acceptedFiles => {
       const file = acceptedFiles[0]; // Only take the first file
-      if (file && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
+      if (
+        file && (
+          file.type.startsWith('image/') || 
+          ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/msword', 'application/vnd.ms-powerpoint', 'application/vnd.ms-excel', 'text/plain'].includes(file.type)
+        )
+      ) {
         setErrorMessage('');
+        console.log(file);
         setUploadedFile(file); // Set only one file
       } else {
-        setErrorMessage('Only image or PDF files are allowed.');
+        setErrorMessage('Only files related to educational purposes (e.g., PDF, DOCX, PPTX, images) are allowed.');
       }
     },
     accept: {
       'application/pdf': ['.pdf'],
-      // 'image/*': ['.jpeg', '.jpg', '.png']
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+      'application/msword': ['.doc'],
+      'application/vnd.ms-powerpoint': ['.ppt'],
+      'application/vnd.ms-excel': ['.xlsx'], // Ensure xlsx is here
+      'text/plain': ['.txt'],
+      'image/*': ['.jpeg', '.jpg', '.png']
     },
     onDropRejected: () => {
-      setErrorMessage('Unsupported file type. Only PDF or image files are allowed.');
+      setErrorMessage('Unsupported file type. Please upload only educational-related files (e.g., PDF, DOCX, PPTX, images).');
     },
     multiple: false // Restrict to a single file
   });
+  
 
   const removeFile = () => {
     setUploadedFile(null);

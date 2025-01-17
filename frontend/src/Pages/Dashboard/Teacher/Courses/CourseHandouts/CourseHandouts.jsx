@@ -11,9 +11,9 @@ export default function ShowStudents() {
   const [sortOrder, setSortOrder] = useState('a-z');
   const [loading, setLoading] = useState(true); // State to track loading
   const [students, setStudents] = useState([]); // State for students
-  const [refresh, setRefresh] = useState(false); 
-  
-  const [resourceData,setResourceData]=useState([])
+  const [refresh, setRefresh] = useState(false);
+
+  const [resourceData, setResourceData] = useState([])
   const navigate = useNavigate();
   const params = useParams();
   const id = params.id
@@ -27,10 +27,10 @@ export default function ShowStudents() {
     CourseManager.getResourcesByCourse(id)
       .then((res) => {
         // Filter to include only resources with types 'BOOK', 'SYLLABUS', and 'OUTLINE'
-        const filteredResources = res.data.data.filter(resource => 
+        const filteredResources = res.data.data.filter(resource =>
           ['BOOK', 'SYLLABUS', 'OUTLINE'].includes(resource.resource_type)
         );
-  
+
         setResourceData(filteredResources); // Set only the filtered resources
         setLoading(false);
       })
@@ -39,7 +39,7 @@ export default function ShowStudents() {
         setLoading(false);
       });
   }, [refresh]);
-  
+
 
 
 
@@ -56,9 +56,17 @@ export default function ShowStudents() {
       const titleB = b.title.toLowerCase();
       return sortOrder === 'a-z' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA);
     });
-   
 
-    
+  const getUrl = (value) => {
+    CourseManager.getPreSignedUrl(value)
+      .then((res) => {
+        window.open(res.data.preSignedUrl, '_blank');
+      })
+      .catch((err) => {
+        console.log("Failed to Fetch Resource")
+      })
+  }
+
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -94,9 +102,9 @@ export default function ShowStudents() {
               <option value="z-a">Z-A</option>
             </select>
           </div>
-          <div style={{display:'flex', justifyContent:'center', flexWrap:'wrap'} }>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
 
-              </div>
+          </div>
           <table className="table table-striped">
             <thead>
               <tr>
@@ -106,15 +114,27 @@ export default function ShowStudents() {
               </tr>
             </thead>
             <tbody>
-              {filteredResources.map((student,key) => (
+              {filteredResources.map((student, key) => (
                 <tr key={student._id}>
-                  <td>{key+1}</td>
-                  <td><a href={student.resource_url} target='_blank'>{student.title}</a></td>
+                  <td>{key + 1}</td>
+                  <td>
+                    <a
+                      onClick={() => { if (student.resource_url) getUrl(student.resource_url); }}
+                      style={{
+                        color: student.resource_url ? '#007bff' : 'inherit',
+                        textDecoration: student.resource_url ? 'underline' : 'none',
+                        cursor: student.resource_url ? 'pointer' : 'default',
+                      }}
+                    >
+                      {student.title}
+                    </a>
+                  </td>
+
                   {
                     (student?.due_date === null) ? <td>Not Set</td> : <td>{new Date(student?.due_date).toLocaleDateString()}</td>
                   }
                   {/* <td>{new Date(student?.due_date).toLocaleDateString()}</td> */}
-                  
+
                 </tr>
               ))}
             </tbody>

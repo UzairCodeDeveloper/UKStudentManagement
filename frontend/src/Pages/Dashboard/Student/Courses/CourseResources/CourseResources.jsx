@@ -36,6 +36,16 @@ export default function ShowStudents() {
       });
   }, [refresh]);
 
+  const getUrl=(value)=>{
+    CourseManager.getPreSignedUrl(value)
+    .then((res)=>{
+      window.open(res.data.preSignedUrl, '_blank');
+    })
+    .catch((err)=>{
+      console.log("Failed to Fetch Resource")
+    })
+  }
+
 
 
 
@@ -59,46 +69,7 @@ export default function ShowStudents() {
     });
    
 
-    function handleDelete(id) {
-      // Show confirmation dialog with SweetAlert2
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then((result) => {
-        // If user confirms the action
-        if (result.isConfirmed) {
-          // Call the delete API
-          CourseManager.deleteResource(id)
-            .then((res) => {
-              console.log(res.data);
-              // Show success notification using SweetAlert2
-              Swal.fire({
-                title: "Deleted!",
-                text: "Resource been deleted successfully.",
-                icon: "success",
-                confirmButtonColor: "#3085d6"
-              });
-              // Trigger re-fetch by toggling refresh state
-              setRefresh(!refresh);
-            })
-            .catch((err) => {
-              console.error(err);
-              // Show error notification using SweetAlert2
-              Swal.fire({
-                title: "Error!",
-                text: err.response?.data?.msg || "Something went wrong while deleting the session.",
-                icon: "error",
-                confirmButtonColor: "#d33"
-              });
-            });
-        }
-      });
-    }
+    
 
   if (loading) {
     return <Loader />; // Show the loader if loading
@@ -147,7 +118,18 @@ export default function ShowStudents() {
               {filteredResources.map((student,key) => (
                 <tr key={student._id}>
                   <td>{key+1}</td>
-                  <td><a href={student.resource_url} target='_blank'>{student.title}</a></td>
+                  <td>
+                    <a
+                      onClick={() => { if (student.resource_url) getUrl(student.resource_url); }}
+                      style={{
+                        color: student.resource_url ? '#007bff' : 'inherit',
+                        textDecoration: student.resource_url ? 'underline' : 'none',
+                        cursor: student.resource_url ? 'pointer' : 'default',
+                      }}
+                    >
+                      {student.title}
+                    </a>
+                  </td>
                   {
                     (student?.due_date === null) ? <td>Not Set</td> : <td>{new Date(student?.due_date).toLocaleDateString()}</td>
                   }
