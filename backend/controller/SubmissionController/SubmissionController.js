@@ -178,36 +178,36 @@ exports.getSubmissionsByStudent = async (req, res) => {
 };
 
 // Get Submission by Submission ID
-exports.getSubmissionById = async (req, res) => {
-    const { submissionId } = req.params;
+// exports.getSubmissionById = async (req, res) => {
+//     const { submissionId } = req.params;
 
-    // Validate required field
-    if (!submissionId) {
-        return res.status(400).json({ success: false, message: 'Submission ID is required' });
-    }
+//     // Validate required field
+//     if (!submissionId) {
+//         return res.status(400).json({ success: false, message: 'Submission ID is required' });
+//     }
 
-    try {
-        // Find the submission by the given submissionId
-        const submission = await Submission.findById(submissionId)
-            .populate({
-                path: 'resource', // Populating the resource data
-                select: 'title description totalMarks', // Specify the fields you want from the resource model
-            })
-            .populate({
-                path: 'student_id', // Populating student data
-                select: 'roll_number studentData.forename studentData.surname email', // Select relevant student fields
-            });
+//     try {
+//         // Find the submission by the given submissionId
+//         const submission = await Submission.findById(submissionId)
+//             .populate({
+//                 path: 'resource', // Populating the resource data
+//                 select: 'title description totalMarks', // Specify the fields you want from the resource model
+//             })
+//             .populate({
+//                 path: 'student_id', // Populating student data
+//                 select: 'roll_number studentData.forename studentData.surname email', // Select relevant student fields
+//             });
 
-        if (!submission) {
-            return res.status(404).json({ success: false, message: 'Submission not found' });
-        }
+//         if (!submission) {
+//             return res.status(404).json({ success: false, message: 'Submission not found' });
+//         }
 
-        res.status(200).json({ success: true, submission });
-    } catch (error) {
-        console.error('Error fetching submission by ID:', error.message);
-        res.status(500).json({ success: false, message: 'Server Error' });
-    }
-};
+//         res.status(200).json({ success: true, submission });
+//     } catch (error) {
+//         console.error('Error fetching submission by ID:', error.message);
+//         res.status(500).json({ success: false, message: 'Server Error' });
+//     }
+// };
 
 // Update Marks for a Submission (Teacher)
 exports.markSubmissionMarks = async (req, res) => {

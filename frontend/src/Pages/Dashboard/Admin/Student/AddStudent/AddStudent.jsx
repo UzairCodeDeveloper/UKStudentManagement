@@ -866,7 +866,7 @@ export default function AddStudent() {
                 Please sign to confirm below:
               </h6>
               <div className="signature-input">
-                <label htmlFor="signature">Signature:</label>
+                <label htmlFor="signature" style={{color:'black'}}>Signature:</label>
                 <input type="text" id="signature" name="signature" placeholder="Enter your signature" value={signature} onChange={(e) => setSignature(e.target.value) } required/>
               </div>
             </div>

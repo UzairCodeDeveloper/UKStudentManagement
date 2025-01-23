@@ -25,7 +25,7 @@ export default function AdminDashboard() {
     useEffect(()=>{
       FamilyManager.getfamilystudents().then
       ((res)=>{
-        // console.log(res.data)
+        
       })
       .catch((err)=>[
         console.log(err)

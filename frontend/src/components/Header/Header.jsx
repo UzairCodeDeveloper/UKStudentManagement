@@ -40,7 +40,7 @@ export default function Header({ toggleSidebar, UserProfile }) {
 
   }
   const user = useSelector((state) => state.user.user);
-  // console.log(user)
+  
   if (loading) {
     return <Loader />; // Show the loader if loading
   }

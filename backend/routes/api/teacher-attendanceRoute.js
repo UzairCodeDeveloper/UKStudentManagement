@@ -7,7 +7,7 @@ const adminAuth = require('../../middleware/adminAuth');
 const {FetchAttendanceRecord,FetchReasonForLeave} =require('../../controller/AttendanceController/StudentAttendanceController')
 // Route to mark or update teacher attendance
 // POST /api/teacher-attendance
-router.post('/', teacherAttendanceController.markOrUpdateTeacherAttendance);
+// router.post('/', teacherAttendanceController.markOrUpdateTeacherAttendance);
 
 // Route to get attendance of all teachers for a specific date
 // GET /api/teacher-attendance/:date

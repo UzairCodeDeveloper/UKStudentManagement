@@ -159,36 +159,36 @@ const getVolunteers = async (req, res) => {
 };
 
 // Get volunteer by ID
-const getVolunteerById = async (req, res) => {
-    const { id } = req.params;
+// const getVolunteerById = async (req, res) => {
+//     const { id } = req.params;
 
-    try {
-        // Check if ID is provided
-        if (!id) {
-            return res.status(400).json({ msg: 'Volunteer ID is required' });
-        }
+//     try {
+//         // Check if ID is provided
+//         if (!id) {
+//             return res.status(400).json({ msg: 'Volunteer ID is required' });
+//         }
 
-        // Validate if ID is a valid MongoDB ObjectID
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({ msg: 'Invalid volunteer ID' });
-        }
+//         // Validate if ID is a valid MongoDB ObjectID
+//         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+//             return res.status(400).json({ msg: 'Invalid volunteer ID' });
+//         }
 
-        // Fetch the volunteer by ID and populate the 'role' field
-        const volunteer = await Volunteer.findById(id);
+//         // Fetch the volunteer by ID and populate the 'role' field
+//         const volunteer = await Volunteer.findById(id);
         
-        // Check if the volunteer exists
-        if (!volunteer) {
-            return res.status(404).json({ msg: 'Volunteer not found' });
-        }
+//         // Check if the volunteer exists
+//         if (!volunteer) {
+//             return res.status(404).json({ msg: 'Volunteer not found' });
+//         }
 
-        // Return the volunteer object, which should include _id by default
-        return res.status(200).json(volunteer);
+//         // Return the volunteer object, which should include _id by default
+//         return res.status(200).json(volunteer);
 
-    } catch (error) {
-        console.error(error.message);
-        return res.status(500).json({ msg: 'Server Error', error });
-    }
-};
+//     } catch (error) {
+//         console.error(error.message);
+//         return res.status(500).json({ msg: 'Server Error', error });
+//     }
+// };
 
 
 // Update volunteer by ID
@@ -261,7 +261,7 @@ const deleteVolunteer = async (req, res) => {
 module.exports = {
     createVolunteer,
     getVolunteers   ,
-    getVolunteerById,
+    
     updateVolunteer,
     deleteVolunteer,
     loginVolunteer

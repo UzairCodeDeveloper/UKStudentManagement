@@ -12,7 +12,7 @@ router.post('/login', loginVolunteer);
 router.get('/get-all',adminAuth, getVolunteers);
 
 // Route to get volunteer by ID
-router.get('/get/:id', getVolunteerById);
+// router.get('/get/:id', getVolunteerById);
 
 
 // Update volunteer by ID

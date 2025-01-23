@@ -40,7 +40,12 @@ const getTimetableforStudentByClass = (classId) => {
 
 // GET API: Get timetable by teacher (Token not required)
 const getTimetableByTeacher = (teacherId) => {
-    return httpClient.get(`/time-table/teacher/${teacherId}`);
+    const token=getToken();
+    return httpClient.get(`/time-table/teacher/${teacherId}`,{
+        headers: {
+         "x-auth-token": token, // Pass the token in the headers
+       },
+     });
 };
 
 // DELETE API: Delete a timetable entry (Token required)

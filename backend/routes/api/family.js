@@ -13,8 +13,8 @@ router.get('/',adminAuth, familyController.getAllFamilies);
 // Route to get a family by its familyRegNo (GET)
 router.get('/:familyRegNo',adminAuth, familyController.getFamilyByRegNo);
 
-// Route to delete a family by ID (soft delete - update isActive to false) (DELETE)
-router.delete('/delete/:familyId', familyController.deleteFamilyById);
+// // Route to delete a family by ID (soft delete - update isActive to false) (DELETE)
+// router.delete('/delete/:familyId', familyController.deleteFamilyById);
 
 // Family login route
 router.post("/login", familyController.familyLogin);

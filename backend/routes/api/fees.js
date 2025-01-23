@@ -9,6 +9,6 @@ router.get('/fees',adminAuth, getAllFees);
 
 // Bulk update fees for all families
 router.put('/fees',adminAuth, updateFees);
-router.post('/familyfees', getDueAmount);
+router.post('/familyfees',familyAuth, getDueAmount);
 
 module.exports = router;

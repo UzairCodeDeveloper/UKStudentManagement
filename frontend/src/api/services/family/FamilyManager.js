@@ -63,8 +63,11 @@ const getStudentCoursePercentage = (studentId) => {
 
   const getFees = (data) => {
     const token = getToken(); 
-    console.log("hllle"+data)
-    return httpClient.post("/fees/familyfees",data );
+    return httpClient.post("/fees/familyfees",data,{
+      headers: {
+        "x-auth-token": token, // Pass the token in the headers correctly
+      },
+    } );
   };
 
 const exportedObject = {

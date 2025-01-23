@@ -43,7 +43,6 @@ export default function AdminHomeDashbboard() {
   const [eventlength, setEventLength] = useState(0);
 
   const [volunteerData] = useState(useSelector((state) => state?.user?.user?.familyRegNo));
-  console.log(volunteerData)
   const data = {
     labels: ['Ali', 'Hamza', 'Saira'],
     datasets: [
@@ -85,7 +84,7 @@ export default function AdminHomeDashbboard() {
       
       familyManager.getAbsentees(studentIds)
         .then((res) => {
-          console.log(res);
+          
 
           // Process the absentee data to group by studentId
           const groupedAbsentees = res.data.reduce((acc, record) => {

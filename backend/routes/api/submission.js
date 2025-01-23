@@ -25,10 +25,13 @@ router.put('/marks/:submissionId', teacherAuth, updateSubmissionMarks);
 // Get all submissions for a specific student (Student)
 router.get('/student/:studentId', studentAuth, getSubmissionsByStudent);
 
-// Get submission by ID
-router.get('/submission/:submissionId', getSubmissionById);
+
 
 // Route to mark obtained marks for a submission (Teacher)
 router.put('/grade',teacherAuth, markSubmissionMarks);
+
+
+// Get submission by ID
+// router.get('/submission/:submissionId', getSubmissionById);
 
 module.exports = router;

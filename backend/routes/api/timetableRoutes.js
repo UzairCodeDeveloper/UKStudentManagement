@@ -3,6 +3,7 @@ const router = express.Router();
 const timetableController = require('../../controller/TimeTableController/TimeTableAdminController');
 const adminAuth = require('../../middleware/adminAuth');
 const studentAuth = require('../../middleware/studentAuth');
+const volunteerAuth = require('../../middleware/volunteerAuth');
 // add middlware (--------------------------------------------------
 // --------------------------------------------------)
 
@@ -16,7 +17,7 @@ router.get('/class/:class_id',adminAuth, timetableController.getTimetableByClass
 router.get('/classstudent/:class_id',studentAuth, timetableController.getTimetableByClass);
 
 // // Route to get timetable for a specific teacher (Admin)
-router.get('/teacher/:teacherId', timetableController.getTimetableByTeacher);
+router.get('/teacher/:teacherId',volunteerAuth, timetableController.getTimetableByTeacher);
 
 // // Route to update a specific timetable entry (Admin)
 // router.put('/timetable/:timetableId', timetableController.updateTimetable);

@@ -20,7 +20,7 @@ export default function ShowClasses() {
     // Fetch actual attendance data from the API
     Attendance.getAttendance()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
 
         // Check if res.data.data is an array
         if (Array.isArray(res.data.data)) {

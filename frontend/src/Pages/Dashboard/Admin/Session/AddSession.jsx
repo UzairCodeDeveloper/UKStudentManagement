@@ -94,7 +94,7 @@ export default function AddClass() {
                                     id="startDate"
                                     className="form-input"
                                     value={startDate}
-                                    min={getMinDate()} // Set minimum date dynamically
+                                    
                                     onChange={(e) => setStartDate(e.target.value)}
                                     required
                                 />
